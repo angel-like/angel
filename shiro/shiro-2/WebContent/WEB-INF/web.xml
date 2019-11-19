@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://java.sun.com/xml/ns/javaee" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+id="WebApp_ID" version="2.5">
+  <display-name>shiro-2</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <!--1.  1.1spring核心配置文件    这些在springmvc里面都用过-->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+	<!-- 上下两个总结：context-param和Spring监听器是为了启动的时候 能连接到spring和mybatis的核心配置文件，才能调用里面的数据 -->
+	<!--  1.2 监听（初始化spring核心配置文件） 为了读取context-param上下文-->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!-- 2.springmvc前端控制器 -->
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup> 
+		<!-- 默认找 /WEB-INF/[servlet的名称]-servlet.xml -->
+		<!--2.1前端控制器进入springmvc.xml 
+		<init-param>
+      		<param-name>contextConfigLocation</param-name>
+      		<param-value>classpath:springmvc.xml</param-value> 
+    	</init-param>-->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!--3. Shiro Filter is defined in the spring application context: -->
+	<!-- 
+		3.1  配置  Shiro 的 shiroFilter.  
+		3.2 DelegatingFilterProxy 实际上是 Filter 的一个代理对象. 默认情况下, Spring 会到 IOC 容器中查找和 
+		<filter-name> 对应的 filter bean. 也可以通过 targetBeanName 的初始化参数来配置 filter bean 的 id.	 
+		3.2————6 ：对应applicationContext.xml配置文件里的 6. 配置 ShiroFilter. 
+	-->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>    
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!--3.2 <init-param>
+            <param-name>targetBeanName</param-name>
+            <param-value>abc</param-value>
+        </init-param>-->
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
