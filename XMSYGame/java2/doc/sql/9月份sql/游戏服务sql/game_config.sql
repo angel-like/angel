@@ -1,0 +1,1 @@
+ALTER TABLE game_config MODIFY val varchar(500) NOT NULL DEFAULT '0' COMMENT '游戏概率';

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.gamerebaterecord.dao.GameRebateRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.gamerebaterecord.entity.GameRebateRecordEntity" id="gameRebateRecordMap">
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="gameId" column="game_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="rebateCoin" column="rebate_coin"/>
+        <result property="rebateTime" column="rebate_time"/>
+    </resultMap>
+
+
+</mapper>

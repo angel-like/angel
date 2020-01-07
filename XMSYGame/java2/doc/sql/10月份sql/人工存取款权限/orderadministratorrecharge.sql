@@ -1,0 +1,1 @@
+INSERT INTO `webhome`.`sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('912', '下载CSV', NULL, 'orderadministratorrecharge:orderadministratorrecharge:list,orderadministratorrecharge:orderadministratorrecharge:info', '2', NULL, '0');

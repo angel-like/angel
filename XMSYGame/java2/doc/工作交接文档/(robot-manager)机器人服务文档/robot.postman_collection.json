@@ -1,0 +1,349 @@
+{
+	"id": "4d1dcad4-65b0-4f71-a6ca-e5b92cc1be70",
+	"name": "robot",
+	"description": "",
+	"auth": null,
+	"events": null,
+	"variables": [],
+	"order": [
+		"9b1d1c4c-d6b6-4ef1-81f2-9255c39fa281",
+		"09920414-e727-454c-959a-0f2116c38285",
+		"3ec8e4c7-9f31-4fde-b995-4cd3c585e048",
+		"c8a759d2-ad49-4526-a6a9-7aa656c9597c",
+		"bb73b56d-7cf3-49da-aac2-b19479ee31e2",
+		"c2ba0c02-817e-4aec-8c34-12be65108196",
+		"8db45285-8508-4ccc-8412-ea95214cc96b",
+		"5a2828a8-f216-4cda-aaf5-e804795ae2f8",
+		"2fb89f81-2f3a-4577-93a3-5dd72847782d",
+		"b9ad5d1f-4f52-4b58-a3f5-ac22d1d39e86",
+		"53c9be7c-483b-45f1-9a3d-562f79046dff"
+	],
+	"folders_order": [],
+	"folders": [],
+	"requests": [
+		{
+			"id": "09920414-e727-454c-959a-0f2116c38285",
+			"name": "回收机器人",
+			"url": "{{robotUrl}}/V1.0/robot/recyclingRobot",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8"
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"rawModeData": "{\n\"coin\":\"11000000\",\n\"token\":\"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMDQwOSIsImlhdCI6MTU1MzE2NTgwN30.1jwwkvLJMuw7qV6Fw6A9-qf1eny5dNgxk45ZPDSWquQ\"\n}",
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "2fb89f81-2f3a-4577-93a3-5dd72847782d",
+			"name": "回收机器人",
+			"url": "http://85.208.56.186:10202/offlineroboturl",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"rawModeData": "[\"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxOTEzMDAiLCJpYXQiOjE1NTU0MTY1MzF9.LsvV6RaomZofK6jhigoMcgwQTBGwbX33JV9h60VBq78\"]",
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3ec8e4c7-9f31-4fde-b995-4cd3c585e048",
+			"name": "获取机器人信息",
+			"url": "{{robotUrl}}/V1.0/robot/robotInfo",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMDQxMCIsImlhdCI6MTU1MzE2NzE0MH0.0p9tnd5Ud9vQYEI25E224x8ACLsXD9YZsaDrEsSZL0M",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMDQwOSIsImlhdCI6MTU1MzE2NTgwN30.1jwwkvLJMuw7qV6Fw6A9-qf1eny5dNgxk45ZPDSWquQ",
+					"equals": true,
+					"description": "",
+					"enabled": false
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMDQxMCIsImlhdCI6MTU1MzE2NzE0MH0.0p9tnd5Ud9vQYEI25E224x8ACLsXD9YZsaDrEsSZL0M\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "53c9be7c-483b-45f1-9a3d-562f79046dff",
+			"name": "强制下线所有机器人",
+			"url": "http://85.208.56.186:10101/forceoffroboturl",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "5a2828a8-f216-4cda-aaf5-e804795ae2f8",
+			"name": "筛选掉在游戏中的机器人",
+			"url": "http://85.208.56.186:10101/checkroboturl",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"rawModeData": "[\nRobotEntity(coin=200000000, profitCoin=82000000, name=9wrk7048, enable=true, status=true, sex=true, portrait=boy_3, gameId=4, gradeId=3, token=eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMzkiLCJpYXQiOjE1NTU3NTA3MzZ9.lgSXDDJQ4kR-Ykk30zZ3PaBkO9Z-rIG5M9nhwFPVv6M, gameInfoId=0, gameServerId=0, gameName=null),\nRobotEntity(coin=200000000, profitCoin=1755000000, name=ywhG9444, enable=true, status=true, sex=false, portrait=girl_3, gameId=4, gradeId=3, token=eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNDEiLCJpYXQiOjE1NTU3NTA3MzZ9.GCOfWOX9YRtTQ6m5MJfN3BIY3vDL7RkVTz39hQl59-c, gameInfoId=0, gameServerId=0, gameName=null),\nRobotEntity(coin=200000000, profitCoin=374000000, name=iTZx0084, enable=true, status=true, sex=false, portrait=girl_3, gameId=4, gradeId=3, token=eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNjciLCJpYXQiOjE1NTU3NTA3MzZ9.VbyzBBQjHYR32rljEOWzj6GJ3QArxyEegHCla7SEjtE, gameInfoId=0, gameServerId=0, gameName=null), \nRobotEntity(coin=200000000, profitCoin=397000000, name=j1zg3966, enable=true, status=true, sex=false, portrait=girl_1, gameId=4, gradeId=3, token=eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxODAiLCJpYXQiOjE1NTU3NTA3MzZ9.o_PVxbipMp2kBrkLSN0mt9XqbopNdP4a9ccmGAAT7fs, gameInfoId=0, gameServerId=0, gameName=null)\n]\n\n",
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "8db45285-8508-4ccc-8412-ea95214cc96b",
+			"name": "提交对应游戏对应场次的机器人配置",
+			"url": "http://85.208.56.186:10101/putrobotconfurl",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "[\n        {\n            \"alias\": \"机器人的数量\",\n            \"name\": \"num\",\n            \"value\": \"1\",\n            \"type\": \"input\"\n        },\n        {\n            \"alias\": \"最小初始金额\",\n            \"name\": \"initCoinMin\",\n            \"value\": \"20000\",\n            \"type\": \"input\"\n        },\n        {\n            \"alias\": \"最大初始金额\",\n            \"name\": \"initCoinMax\",\n            \"value\": \"30000\",\n            \"type\": \"input\"\n        }\n    ]",
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "9b1d1c4c-d6b6-4ef1-81f2-9255c39fa281",
+			"name": "分配一个机器人",
+			"url": "{{topUrl}}/V1.0/robotinterface/distributionRobot?gameId=1&gradeId=1&hallId=1&coin=1000000",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "gameId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "gradeId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "hallId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "coin",
+					"value": "1000000",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "b9ad5d1f-4f52-4b58-a3f5-ac22d1d39e86",
+			"name": "还原机器人",
+			"url": "http://85.208.56.186:10101/forceonroboturl",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "bb73b56d-7cf3-49da-aac2-b19479ee31e2",
+			"name": "获取游戏列表",
+			"url": "http://85.208.56.186:9000/gamelist?gameId=1&roomId&gradeId",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": null,
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "gameId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "roomId",
+					"value": "",
+					"equals": false,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "gradeId",
+					"value": "",
+					"equals": false,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"rawModeData": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "c2ba0c02-817e-4aec-8c34-12be65108196",
+			"name": "获取每个游戏每个场次机器人配置",
+			"url": "http://85.208.56.186:10101/getrobotconfurl",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": null,
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"pathVariables": {}
+		},
+		{
+			"id": "c8a759d2-ad49-4526-a6a9-7aa656c9597c",
+			"name": "修改所有机器人状态",
+			"url": "{{robotUrl}}/V1.0/robotinterface/returnRobot",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ0b2tlbiIsImlhdCI6MTU1Mjg5ODIyMn0.uSfTj7U9XcEAHddfjv742Ti44ZthUhRTWk4_ke1s9R8\n",
+			"pathVariables": {}
+		}
+	]
+}

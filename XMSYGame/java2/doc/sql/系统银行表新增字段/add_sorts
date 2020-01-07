@@ -1,0 +1,2 @@
+ALTER TABLE `cash_bank`
+ADD COLUMN `sorts`  int(11) NOT NULL COMMENT '排序' AFTER `enable`;

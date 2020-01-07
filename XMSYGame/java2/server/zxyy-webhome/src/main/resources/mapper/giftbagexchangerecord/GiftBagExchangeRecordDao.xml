@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.giftbagexchangerecord.dao.GiftBagExchangeRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.giftbagexchangerecord.entity.GiftBagExchangeRecordEntity" id="giftBagExchangeRecordMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="userName" column="user_name"/>
+        <result property="exchangeCode" column="exchange_code"/>
+        <result property="exchangeTime" column="exchange_time"/>
+        <result property="acountMoney" column="acount_money"/>
+
+    </resultMap>
+
+
+</mapper>

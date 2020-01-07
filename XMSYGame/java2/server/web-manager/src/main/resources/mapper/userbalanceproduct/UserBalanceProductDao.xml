@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userbalanceproduct.dao.UserBalanceProductDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userbalanceproduct.entity.UserBalanceProductEntity" id="userBalanceProductMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="productName" column="product_name"/>
+        <result property="settlementType" column="settlement_type"/>
+        <result property="minMoney" column="min_money"/>
+        <result property="maxMoney" column="max_money"/>
+        <result property="rate" column="rate"/>
+        <result property="rateMoneyMax" column="rate_money_max"/>
+        <result property="remaindBuyNum" column="remaind_buy_num"/>
+        <result property="betMultiple" column="bet_multiple"/>
+        <result property="userTodayBuyNum" column="user_today_buy_num"/>
+        <result property="issueNum" column="issue_num"/>
+        <result property="issueTime" column="issue_time"/>
+        <result property="settlementCycle" column="settlement_cycle"/>
+        <result property="enable" column="enable"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+
+
+</mapper>

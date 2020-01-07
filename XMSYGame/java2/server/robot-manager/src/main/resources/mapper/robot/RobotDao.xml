@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.robot.modules.manager.robot.dao.RobotDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.robot.modules.manager.robot.entity.RobotEntity" id="robotMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="coin" column="coin"/>
+        <result property="profitCoin" column="profit_coin"/>
+        <result property="name" column="name"/>
+        <result property="enable" column="enable"/>
+        <result property="status" column="status"/>
+        <result property="sex" column="sex"/>
+        <result property="portrait" column="portrait"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="token" column="token"/>
+    </resultMap>
+		
+		<!-- 新增机器人返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.robot.modules.manager.robot.entity.RobotEntity">
+		INSERT INTO robot 
+		(`create_time`,`update_time`,
+		`coin`,`name`,`enable`,
+		`status`,
+		`sex`,`portrait`,`game_id`,`grade_id`)
+		VALUES
+		(now(),
+		#{updateTime},
+		#{coin},
+		#{name},#{enable},
+		#{status},
+		#{sex},#{portrait},#{gameId},
+		#{gradeId}) 
+	</insert>
+		
+		<!-- 根据ID修改金额 -->
+		<update id="updateProfitCoin" >
+			update robot set
+			<if test="variableCoin != null">
+				profit_coin =profit_coin+#{variableCoin},
+			</if>
+			status=0,
+			enable=1,
+			update_time=now()
+			where id=#{id}
+			and version=#{version}
+		</update>
+		
+	<!-- 查找在线游戏时间超过30分钟的机器人 -->
+	<select id="taskRecyclingRobot"
+		resultType="com.xmsy.server.zxyy.robot.modules.manager.robot.entity.RobotEntity">
+			SELECT
+				*
+			FROM
+				robot a
+			WHERE
+				a.update_time &lt;= date_sub(
+					date_format(now(), '%Y-%m-%d %H:%i:00'),
+					INTERVAL 30 MINUTE
+				)
+			AND a. STATUS = 1
+			AND a. game_id = #{gameId}
+			AND a. grade_id = #{gradeId}
+	</select>
+	
+		<!-- 获取机器人当日总盈利 -->
+	<select id="countProfitCoin"
+		resultType="Long">
+			SELECT
+			-IFNULL(SUM(profit_coins),0)
+			FROM
+				game_record a
+			WHERE
+				a.delete_status = 0
+			and date_format(a.create_time, '%Y-%m-%d') =date_format(now(), '%Y-%m-%d')
+			<if test="entity.name !=null and entity.name!=''">
+			AND a.user_account=#{entity.name}
+			</if>
+			<if test="entity.gameId !=null and entity.gameId!=''">
+			AND a.game_id=#{entity.gameId}
+			</if>
+			<if test="entity.gradeId !=null and entity.gradeId!=''">
+			AND a.grade_id=#{entity.gradeId}
+			</if>
+	</select>
+	<!-- 根据ID修改金额 -->
+	<update id="updateRobot" >
+		update robot set
+		<if test="entity.coin != null">
+			coin =#{entity.coin},
+		</if>
+		<if test="entity.profitCoin != null">
+			profit_coin =#{entity.profitCoin},
+		</if>
+		<if test="entity.enable != null">
+			enable =#{entity.enable},
+		</if>
+		<if test="entity.status != null">
+			status =#{entity.status},
+		</if>
+		<if test="entity.sex != null">
+			sex =#{entity.sex},
+		</if>
+		<if test="entity.portrait != null and entity.portrait!=''">
+			portrait = #{entity.portrait},
+		</if>
+		<if test="entity.gameId != null">
+			game_id = #{entity.gameId},
+		</if>
+		<if test="entity.gradeId != null">
+			grade_id =#{entity.gradeId},
+		</if>
+		<if test="entity.token != null and entity.token!=''">
+			token =#{entity.token},
+		</if>
+		<if test="entity.gameInfoId != null">
+			game_Info_Id =#{entity.gameInfoId},
+		</if>
+		<if test="entity.gameServerId != null">
+			game_server_id =#{entity.gameServerId},
+		</if>
+<!-- 		<if test="entity.updateTime != null"> -->
+<!-- 			update_time =#{entity.updateTime}, -->
+<!-- 		</if> -->
+<!-- 		version=version+1 -->
+		update_time = now()
+		where id=#{entity.id}
+	</update>
+</mapper>

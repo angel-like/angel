@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.gamerecordkaiyuan.dao.GameRecordKaiyuanDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.gamerecordkaiyuan.entity.GameRecordKaiyuanEntity" id="gameRecordKaiyuanMap">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="accounts" column="accounts"/>
+        <result property="serverId" column="server_id"/>
+        <result property="kindId" column="kind_id"/>
+        <result property="tableId" column="table_id"/>
+        <result property="chairId" column="chair_id"/>
+        <result property="userCount" column="user_count"/>
+        <result property="cardValue" column="card_value"/>
+        <result property="cellScore" column="cell_score"/>
+        <result property="allBet" column="all_bet"/>
+        <result property="profit" column="profit"/>
+        <result property="revenue" column="revenue"/>
+        <result property="gameStartTime" column="game_start_time"/>
+        <result property="gameEndTime" column="game_end_time"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="cardStr" column="card_str"/>
+        <result property="lineCode" column="line_code"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+	
+	<select id="findCardType"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.gamerecord.entity.GameRecordFindCardType">
+		SELECT user_id as userId, game_id as gameId,chair_id as chairId,card_value AS cardsStr,card_str as  cardString
+		from game_record_kaiyuan g
+		where 1=1
+		<if test="gameRoundNo !=null and gameRoundNo !=''">
+			and g.game_id=#{gameRoundNo}
+		</if>
+	</select>
+
+</mapper>

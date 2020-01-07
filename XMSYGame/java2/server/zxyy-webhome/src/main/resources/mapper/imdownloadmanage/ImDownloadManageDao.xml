@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.imdownloadmanage.dao.ImDownloadManageDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.imdownloadmanage.entity.ImDownloadManageEntity" id="imDownloadManageMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="downloadUrl" column="download_url"/>
+        <result property="enclosureId" column="enclosure_id"/>
+        <result property="enable" column="enable"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="type" column="type"/>
+    </resultMap>
+    <select id="selectListForType" resultType="com.xmsy.server.zxyy.webhome.modules.webim.homepage.result.ImDownloadManageResult">
+	    SELECT
+			a.title as title,
+			a.platform as platform,
+			a.content as content,
+			a.download_url as downloadUrl,
+			b.url as enclosureUrl
+		FROM
+			im_download_manage a
+		LEFT JOIN webhome_enclosure b ON a.enclosure_id = b.id
+		AND b.delete_status = 0
+		WHERE
+			a.delete_status = 0
+		AND a.`enable` = 1
+		AND a.type = #{type}
+		ORDER BY
+			order_no
+    </select>
+
+    <select id="selectImDownloadList" resultType="com.xmsy.server.zxyy.webhome.modules.webim.homepage.result.ImDownloadResult">
+        SELECT
+        b.url as enclosureUrl,
+        a.platform as platform
+        FROM
+        im_download_manage a
+        LEFT JOIN webhome_enclosure b ON a.enclosure_id = b.id
+        AND b.delete_status = 0
+        WHERE
+        a.delete_status = 0
+        AND a.`enable` = 1
+        AND a.type = #{type}
+        ORDER BY
+        order_no
+    </select>
+</mapper>

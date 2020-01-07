@@ -1,0 +1,725 @@
+{
+	"id": "3905096d-4912-4978-b2a9-3a78804b5253",
+	"name": "webhome_app",
+	"description": "",
+	"auth": null,
+	"events": null,
+	"variables": [],
+	"order": [
+		"f44c2400-b621-4a16-9a2b-8fdbec79004d",
+		"42e14f0a-061a-47e0-9606-dfee6aea90ba",
+		"5ac169b3-8293-4063-957a-b3ce99366df9",
+		"cc1d006f-f47a-4570-b55d-220901d2edc1",
+		"7fe32db3-8b77-4644-a7fc-97ad9eca1a4a",
+		"012b6b6a-2d0f-4dfc-98e3-4ae709ce30dd",
+		"f960434c-9556-4aa5-a0e0-41c0922bc780",
+		"ba043518-e69d-41e0-80ef-774b81533050",
+		"9d25ea47-c8c1-4d81-b9c1-0d6615e6118c",
+		"43150305-67d9-47fd-a52a-c38c2de3700a",
+		"081e7291-d80d-442c-8107-ed3c8f30093d",
+		"ce970024-896d-42c7-8105-bef171eba8dd",
+		"c3c5f43f-bff8-4c6b-bbf5-34bdd9c35f0b",
+		"a1bd5d2b-370e-413a-9d8e-69d7e77e01dd",
+		"1ffd64f6-61e8-454e-aef0-a17a958362e3",
+		"4b12a8b5-f35a-48c6-872d-bf55f4953baf",
+		"5884ca3b-bb20-4617-826f-9c7d50cf1a40",
+		"61fb74ae-7b05-490f-936b-20634a768b6f",
+		"3af8f9ed-2aa1-4117-b878-763080e0636f",
+		"99d4f2c1-ae8f-43e8-a604-33bcaa4285e6",
+		"df8dc4bd-394c-406c-ab4e-4c5c6b61067a",
+		"457f9a3d-309e-43ef-9474-a4a4546beb67",
+		"78d71afd-0fe5-4ce0-b766-bd043ed3de9a",
+		"f9e81ebd-dcc9-479f-9dca-6003f661f33b"
+	],
+	"folders_order": [],
+	"folders": [],
+	"requests": [
+		{
+			"id": "012b6b6a-2d0f-4dfc-98e3-4ae709ce30dd",
+			"name": "获取支付方式",
+			"url": "{{url}}/V1.0/App/paymentMethod?navigationId=14",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "navigationId",
+					"value": "14",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "081e7291-d80d-442c-8107-ed3c8f30093d",
+			"name": "分享榜",
+			"url": "{{url}}/V1.0/App/shareRanking",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "page",
+					"value": "",
+					"equals": false,
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "limit",
+					"value": "",
+					"equals": false,
+					"description": "",
+					"enabled": false
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "1ffd64f6-61e8-454e-aef0-a17a958362e3",
+			"name": "站内信未读数量",
+			"url": "{{url}}/V1.0/App/unreadnum",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"type": "text"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3af8f9ed-2aa1-4117-b878-763080e0636f",
+			"name": "游戏记录---游戏记录",
+			"url": "{{url}}/V1.0/Game/userGameRecordForGameId?gameId=1",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "gameId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "42e14f0a-061a-47e0-9606-dfee6aea90ba",
+			"name": "获取广告列表",
+			"url": "{{url}}/V1.0/App/appadConfig",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "43150305-67d9-47fd-a52a-c38c2de3700a",
+			"name": "日排行榜",
+			"url": "{{url}}/V1.0/App/dayRanking",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "457f9a3d-309e-43ef-9474-a4a4546beb67",
+			"name": "app获取活动类型",
+			"url": "{{url}}/V1.0/App/configure/getPromotionsTypeList",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": null,
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"pathVariables": {}
+		},
+		{
+			"id": "4b12a8b5-f35a-48c6-872d-bf55f4953baf",
+			"name": "批量设置删除",
+			"url": "{{url}}/V1.0/App/setDelete",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"type": "text"
+				}
+			],
+			"method": "DELETE",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"rawModeData": "[58,59]",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "5884ca3b-bb20-4617-826f-9c7d50cf1a40",
+			"name": "公告",
+			"url": "{{url}}/V1.0/App/noticeList",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "5ac169b3-8293-4063-957a-b3ce99366df9",
+			"name": "获取客服",
+			"url": "{{url}}/V1.0/App/appCustomerService",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "61fb74ae-7b05-490f-936b-20634a768b6f",
+			"name": "游戏记录---游戏列表",
+			"url": "{{url}}/V1.0/Game/userGameForRoomId?roomId=1",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "roomId",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "78d71afd-0fe5-4ce0-b766-bd043ed3de9a",
+			"name": "通过类型ID获取列表",
+			"url": "{{url}}/V1.0/App/configure/getPromotionsListForTypeId?typeId=12",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": null,
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "typeId",
+					"value": "12",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"pathVariables": {}
+		},
+		{
+			"id": "7fe32db3-8b77-4644-a7fc-97ad9eca1a4a",
+			"name": "获取支付侧边导航内容",
+			"url": "{{url}}/V1.0/App/appRechargeNavigationChild?navigationId=14",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "navigationId",
+					"value": "14",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "99d4f2c1-ae8f-43e8-a604-33bcaa4285e6",
+			"name": "邀请二维码",
+			"url": "{{url}}/V1.0/App/recommendationQrCode",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "9d25ea47-c8c1-4d81-b9c1-0d6615e6118c",
+			"name": "周充值排行榜",
+			"url": "{{url}}/V1.0/App/weeklyRanking",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "a1bd5d2b-370e-413a-9d8e-69d7e77e01dd",
+			"name": "批量设置已读",
+			"url": "{{url}}/V1.0/App/setRead",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"type": "text"
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "ba043518-e69d-41e0-80ef-774b81533050",
+			"name": "推荐详情",
+			"url": "{{url}}/V1.0/App/recommendationListForUserId?page=1&limit=20&account=bul001",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "page",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "limit",
+					"value": "20",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "account",
+					"value": "bul001",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "c3c5f43f-bff8-4c6b-bbf5-34bdd9c35f0b",
+			"name": "获取站内信详情",
+			"url": "{{url}}/V1.0/App/MailInfo?messageId=57&statusId=0",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"type": "text"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "messageId",
+					"value": "57",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "statusId",
+					"value": "0",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "cc1d006f-f47a-4570-b55d-220901d2edc1",
+			"name": "获取支付侧边导航",
+			"url": "{{url}}/V1.0/App/appRechargeNavigation",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "ce970024-896d-42c7-8105-bef171eba8dd",
+			"name": "站内信列表",
+			"url": "{{url}}/V1.0/App/MailList?page=1&limit=10",
+			"description": null,
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"type": "text"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "page",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "limit",
+					"value": "10",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"rawModeData": "",
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "df8dc4bd-394c-406c-ab4e-4c5c6b61067a",
+			"name": "获取支付方式 Copy",
+			"url": "{{url}}/V1.0/App/firstPayForApp",
+			"description": null,
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "f44c2400-b621-4a16-9a2b-8fdbec79004d",
+			"name": "获取VIP充值通道",
+			"url": "{{url}}/V1.0/App/appPayConfig",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"key": "token",
+					"value": "{{token}}",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "f960434c-9556-4aa5-a0e0-41c0922bc780",
+			"name": "获取弹框广告列表",
+			"url": "{{url}}/V1.0/App/appAlertCofig",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": [
+				{
+					"description": "",
+					"enabled": true,
+					"key": "token",
+					"type": "text",
+					"value": "{{token}}"
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "token: {{token}}\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "f9e81ebd-dcc9-479f-9dca-6003f661f33b",
+			"name": "试玩",
+			"url": "{{url}}/V1.0/App/Login/trialAccount",
+			"description": "",
+			"data": null,
+			"dataMode": null,
+			"headerData": null,
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"pathVariables": {}
+		}
+	]
+}

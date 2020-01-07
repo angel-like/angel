@@ -1,0 +1,2 @@
+ALTER TABLE `recharge_amount`
+ADD COLUMN `payment_method_id`  bigint(22) NOT NULL COMMENT '支付方式id' AFTER `version`;

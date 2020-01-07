@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.messageuser.dao.MessageUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.messageuser.entity.MessageUserEntity" id="messageUserMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="messageId" column="message_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="status" column="status"/>
+        <result property="deleteMessage" column="delete_message"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="contentType" column="content_type"/>
+		<result property="effectTime" column="effect_time"/>
+		<result property="failureTime" column="failure_time"/>
+    </resultMap>
+
+    <delete id="deleteUserByMessageId">
+    	delete from sys_message_user where message_id=#{messageId}
+    </delete>
+	<insert id="insertEntityReturnId"
+			useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+			parameterType="com.xmsy.server.zxyy.webhome.modules.manager.messageuser.entity.MessageUserEntity">
+    	INSERT INTO sys_message_user
+    	(create_time,update_time,title,content,content_type,effect_time,failure_time,user_id,user_account,delete_status,delete_message,status,activity_type,activity_id,receive,readonly)
+    	VALUES (now(),now(),#{title},#{content},#{contentType},#{effectTime},#{failureTime}
+    	,#{userId},#{userAccount},#{deleteStatus},#{deleteMessage},#{status},#{activityType},#{activityId},#{receive},#{readonly})
+	</insert>
+    <insert id="insertBatch" >
+    	insert into sys_message_user(message_id,user_id,user_account,status,delete_message,create_time,receive,title,content,content_type,failure_time,effect_time)
+    	values
+    	<foreach collection="list" item="item" separator=",">
+    		(#{item.messageId},#{item.userId},#{item.userAccount},#{item.status},#{item.deleteMessage},now(),#{item.receive},#{item.title},#{item.content},#{item.contentType},#{item.failureTime},#{item.effectTime})
+    	</foreach>
+    </insert>
+    <select id="findMessageUser"  resultMap="messageUserMap">
+    	select *  from sys_message_user
+    	where delete_status=0
+    	and user_id = #{userId}
+    	and message_id in
+    	<foreach collection="messageIds" item="item" separator="," open="("  close=")">
+    		#{item}
+    	</foreach>
+    </select>
+
+    <select id="queryByMessageId" resultType="com.xmsy.server.zxyy.webhome.modules.manager.messageuser.entity.MessageUserEntity">
+    	SELECT * From sys_message_user
+    	where delete_status=0
+    	and message_id=#{messageId}
+    	and user_id=#{userId}
+    </select>
+
+	<select id="findMessageByUserId" resultType="map">
+		SELECT  IFNULL(a.id,0) messageId,a.title,IFNULL(a.id,0) statusId ,IFNULL(a.`status`,0) status , case
+		WHEN receive = 1 THEN
+		1
+		WHEN readonly = 1 THEN
+		1
+		ELSE
+		0
+		END AS receive,
+		readonly AS readOnly
+		 from  sys_message_user a
+		 where a.delete_status= 0 and a.delete_message = 0 and a.content_type=#{vo.contentType}
+		 and  a.user_id=#{vo.userId}
+		<if test="vo.registerDate != null">
+			and a.effect_time &gt; #{vo.registerDate}
+		</if>
+		and a.effect_time &lt;= now() and (a.failure_time &gt;= now() or a.failure_time is null)
+		ORDER BY a.create_time DESC
+	</select>
+
+	<!-- 通过用户id查找 当前用户所有 未领取道具信息-->
+	<select id="findMessageProp"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.sysmessageprop.entity.SysMessagePropEntity">
+		SELECT a.id ,a.message_id as messageId,a.prop_id propId,a.prop_num as propNum,b.user_id as userId
+		FROM sys_message_prop a
+		INNER JOIN sys_message_user b ON a.message_id=b.id
+		where
+		a.delete_status=0 and b.delete_status=0 and b.delete_message=0 and
+		b.receive=0
+		and
+		 b.effect_time &lt;= now() and (b.failure_time &gt;= now() or b.failure_time is null)
+		and
+		user_id=#{vo.userId}
+	</select>
+	<!-- 通过用户id查找包含有 未领取 道具邮件的   站内信用户关系表 -->
+	<select id="findMessageUserByUserId" resultMap="messageUserMap">
+		SELECT a.id,a.message_id,a.user_id,a.user_account
+		FROM  sys_message_user a
+		LEFT JOIN sys_message_prop b ON a.id = b.message_id
+		where
+		a.delete_status=0 and b.delete_status=0 and a.delete_message=0 and
+		a.receive=0
+		and
+		a.effect_time &lt;= now() and (a.failure_time &gt;= now() or a.failure_time is null)
+		and
+		user_id=#{vo.userId}  GROUP BY a.id
+	</select>
+</mapper>

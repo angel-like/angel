@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.adchannelconfig.dao.AdChannelConfigDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.adchannelconfig.entity.AdChannelConfigEntity" id="adChannelConfigMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="channelCode" column="channel_code"/>
+        <result property="channelAddress" column="channel_address"/>     
+        <result property="publishUrl" column="publish_url"/>
+        <result property="remake" column="remake"/>
+    </resultMap>
+	<delete id="delPhysicalAdChannelConfig">
+		delete from ad_channel_config where id=#{id}
+	</delete>
+	<select id="findAdChannelByChannelCode" resultMap="adChannelConfigMap">
+		select * from ad_channel_config where channel_code=#{channelCode};
+	</select>
+	<insert id="addNullChannelCode">
+		INSERT INTO ad_channel_config( `delete_status`,`create_time`, `update_time`,
+		 	`version`, `channel_name`,`channel_code`, `channel_address`, `remake`) 
+		VALUES (0, now(), now(),0, #{adChannelConfig.channelName}, #{adChannelConfig.channelCode},
+			#{adChannelConfig.channelAddress}, #{adChannelConfig.remake});
+	</insert>
+</mapper>

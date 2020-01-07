@@ -1,0 +1,1 @@
+INSERT INTO `webhome`.`sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('18', '²é¿´vip¼ÇÂ¼', NULL, 'userviprecord:userviprecord:list', '2', NULL, '0');

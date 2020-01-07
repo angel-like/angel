@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.orderadministratorrecharge.dao.OrderAdministratorRechargeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap
+            type="com.xmsy.server.zxyy.manager.modules.manager.orderadministratorrecharge.entity.OrderAdministratorRechargeEntity"
+            id="orderAdministratorRechargeMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="sysUserAccount" column="sys_user_account"/>
+        <result property="sysUserId" column="sys_user_id"/>
+        <result property="amount" column="amount"/>
+        <result property="remake" column="remake"/>
+        <result property="account" column="account"/>
+        <result property="hierarchyId" column="hierarchy_id"/>
+        <result property="rechargeType" column="recharge_type"/>
+    </resultMap>
+
+    <select id="getCount" resultType="map">
+
+        SELECT
+
+         count(1) as total,
+        IFNULL(sum(discount_amount),0) as disTotal,
+        IFNULL(sum(amount),0)  as money
+         from order_administrator_recharge o
+        where delete_status=0 and designated=1
+        <if test="entity.amountMin !=null">
+            AND amount &gt;=#{entity.amountMin}
+        </if>
+        <if test="entity.amountMax !=null">
+            AND amount &lt;=#{entity.amountMax}
+        </if>
+        <if test="entity.startTime !=null">
+            AND create_time &gt;=#{entity.startTime}
+        </if>
+        <if test="entity.endTime !=null">
+            AND create_time &lt;=#{entity.endTime}
+        </if>
+        <if test="entity.orderNo !=null and entity.orderNo!='' ">
+            AND order_no=#{entity.orderNo}
+        </if>
+        <if test="entity.operationType !=null">
+            AND operation_type=#{entity.operationType}
+        </if>
+        <if test="entity.sysUserAccount !=null and entity.sysUserAccount !=''">
+            AND sys_user_account=#{entity.sysUserAccount}
+        </if>
+        <if test="entity.account !=null and entity.account !=''">
+            AND account=#{entity.account}
+        </if>
+        <if test="entity.rechargeType !=null">
+            AND recharge_type=#{entity.rechargeType}
+        </if>
+    </select>
+
+    <!-- 为了获取csv下载数据而进行的查询 -->
+    <select id="selectListRecharge" resultType="map">
+        SELECT id,
+        order_no orderNo,
+        sys_user_account sysUserAccount,
+        sys_user_id sysUserId,
+        account,
+        (select d.name from sys_dictionary d where d.parent_code = #{orderAdministratorRecharge.rechargeTypeName} and d.code = o.recharge_type)
+        rechargeTypeName,
+        case operation_type
+        when 0 then '存款'
+        when 1 then '取款'
+        else '其他' END operationType ,
+        amount,
+        discount_amount discountAmount,
+        vip_discount vipDiscount,
+        remake,
+        discount_multiple discountMultiple,
+        recharge_multiple rechargeMultiple,
+        create_time createTime from order_administrator_recharge o
+        where delete_status=0 and designated=1
+        <if test="orderAdministratorRecharge.amountMin !=null">
+            AND amount &gt;=#{orderAdministratorRecharge.amountMin}
+        </if>
+        <if test="orderAdministratorRecharge.amountMax !=null">
+            AND amount &lt;=#{orderAdministratorRecharge.amountMax}
+        </if>
+        <if test="orderAdministratorRecharge.startTime !=null">
+            AND create_time &gt;=#{orderAdministratorRecharge.startTime}
+        </if>
+        <if test="orderAdministratorRecharge.endTime !=null">
+            AND create_time &lt;=#{orderAdministratorRecharge.endTime}
+        </if>
+        <if test="orderAdministratorRecharge.orderNo !=null and orderAdministratorRecharge.orderNo!='' ">
+            AND order_no=#{orderAdministratorRecharge.orderNo}
+        </if>
+        <if test="orderAdministratorRecharge.operationType !=null">
+            AND operation_type=#{orderAdministratorRecharge.operationType}
+        </if>
+        <if test="orderAdministratorRecharge.sysUserAccount !=null and orderAdministratorRecharge.sysUserAccount !=''">
+            AND sys_user_account=#{orderAdministratorRecharge.sysUserAccount}
+        </if>
+        <if test="orderAdministratorRecharge.account !=null and orderAdministratorRecharge.account !=''">
+            AND account=#{orderAdministratorRecharge.account}
+        </if>
+        <if test="orderAdministratorRecharge.rechargeType !=null">
+            AND recharge_type=#{orderAdministratorRecharge.rechargeType}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.cashbank.dao.CashBankDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.cashbank.entity.CashBankEntity"
+		id="cashBankMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="name" column="name" />
+		<result property="hierarchyId" column="hierarchy_id" />
+		<result property="bankAccount" column="bank_account" />
+		<result property="bankUser" column="bank_user" />
+		<result property="bankAddress" column="bank_address" />
+		<result property="enable" column="enable" />
+		<result property="sorts" column="sorts" />
+		<result property="hierarchyName" column="hierarchy_name" />
+	</resultMap>
+
+
+	<!-- 获取层级收款银行 -->
+	<select id="findCashBanks"
+		resultMap="cashBankMap">
+		SELECT
+		c.id,
+		c.bank_account,
+		c.bank_address,
+		c.bank_user,
+		c.`enable`,
+		c.`sorts`,
+		c.`name`,
+		c.hierarchy_id,
+		u.`name` AS hierarchy_name
+		FROM
+		cash_bank c
+		LEFT JOIN user_hierarchy u ON c.hierarchy_id = u.id
+		WHERE
+		c.delete_status = FALSE
+		<if test="hierarchyId !=null and hierarchyId !=''">
+			and FIND_IN_SET(#{hierarchyId},c.hierarchy_id)
+		</if>
+		<if test="hierarchyName !=null and hierarchyName !=''">
+			and u.name=#{hierarchyName}
+		</if>
+		<if test="name !=null  and name !=''">
+			and c.name=#{name}
+		</if>
+		<if test="enable !=null">
+			and c.enable=#{enable}
+		</if>
+		ORDER BY c.`sorts` 
+	</select>
+
+</mapper>

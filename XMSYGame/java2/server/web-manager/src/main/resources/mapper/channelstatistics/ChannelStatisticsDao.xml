@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.channelstatistics.dao.ChannelStatisticsDao">
+		
+	<!-- 获取所有的 渠道名称 跟 渠道代码 -->
+	<select id="selectAllChannelData" resultType="com.xmsy.server.zxyy.manager.modules.manager.channelstatistics.entity.ChannelStatisticsParam">
+		select channel_name as channelName,create_time as createTime,channel_code as channelCode
+	    from ad_channel_config  
+	    where delete_status=0
+	    <if test="channelStatistics.channelName!=null and channelStatistics.channelName!=''">
+			and channel_name=#{channelStatistics.channelName}
+		</if>
+<!-- 		<if test="channelStatistics.startTime !=null and channelStatistics.startTime!=''"> -->
+<!-- 			AND create_time &gt;= #{channelStatistics.startTime} -->
+<!-- 		</if> -->
+<!-- 		<if test="channelStatistics.endTime !=null and channelStatistics.endTime!=''"> -->
+<!-- 			AND create_time &lt;= #{channelStatistics.endTime} -->
+<!-- 		</if> -->
+	</select>
+	
+	<!-- 通过渠道码查询所有的会员数量 -->
+	<select id="getCountUserByChannelCode" resultType="Long">
+		select count(*) from user 
+		where delete_status=0
+		<if test="channelStatistics.channelCode!=null and channelStatistics.channelCode!=''">
+			and channel_code=#{channelStatistics.channelCode}
+		</if>
+		<if test="channelStatistics.startTime !=null and channelStatistics.startTime!=''">
+			AND create_time &gt;= #{channelStatistics.startTime}
+		</if>
+		<if test="channelStatistics.endTime !=null and channelStatistics.endTime!=''">
+			AND create_time &lt;= #{channelStatistics.endTime}
+		</if>
+	</select>
+	
+	<!-- 通过渠道码查询所有的会员id -->	
+	<select id="selectUserIdByChannelCode" resultType="Long">
+		select u.id 
+		from user u 
+		where delete_status=0
+		<if test="channelStatistics.channelCode!=null and channelStatistics.channelCode!=''">
+			and channel_code=#{channelStatistics.channelCode}
+		</if>
+		<if test="channelStatistics.startTime !=null and channelStatistics.startTime!=''">
+			AND u.create_time &gt;= #{channelStatistics.startTime}
+		</if>
+		<if test="channelStatistics.endTime !=null and channelStatistics.endTime!=''">
+			AND u.create_time &lt;= #{channelStatistics.endTime}
+		</if>
+	</select>
+	
+	<!-- 通过会员id集合查询打码量-->
+	<select id="getValitBetByUserId" resultType="Long">
+		select sum(valid_bet)
+		from game_record
+		where delete_status=0 and room_id !=2 and user_id in
+		<foreach collection="list" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+	
+	<!-- 通过会员id集合查询充值金额-->
+	<select id="getAmountByUserId" resultType="Long">
+		select sum(amount)
+		from order_recharge
+		where delete_status=0 and status=2 and user_id in
+		<foreach collection="list" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+	<!-- 通过会员id集合查询取款金额-->
+	<select id="getDrawAmountByUserId" resultType="Long">
+		select sum(take_amount)
+		from order_take_money
+		where delete_status=0 and status=2 and user_id in
+		<foreach collection="list" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+	<!-- 通过会员渠道码查询要展示的会员信息对象-->
+	<select id="getUserChannelParamListByChannelCode" resultType="com.xmsy.server.zxyy.manager.modules.manager.channelstatistics.entity.UserChannelParam">
+		select id as userId,account as userAccount
+		from user 
+		where  delete_status=0
+		<if test="channelStatistics.channelCode!=null and channelStatistics.channelCode!=''">
+			and channel_code=#{channelStatistics.channelCode}
+		</if>
+		<if test="channelStatistics.startTime !=null and channelStatistics.startTime!=''">
+			AND create_time &gt;= #{channelStatistics.startTime}
+		</if>
+		<if test="channelStatistics.endTime !=null and channelStatistics.endTime!=''">
+			AND create_time &lt;= #{channelStatistics.endTime}
+		</if>
+	</select>
+	<!-- 通过会员渠道码查询要展示的会员信息对象-->
+	<select id="getUserAmountParamListByChannelCode" resultType="com.xmsy.server.zxyy.manager.modules.manager.channelstatistics.entity.UserAmountParam">
+		select id as userId,account as userAccount
+		from user
+		where  delete_status=0
+		<if test="channelStatistics.channelCode!=null and channelStatistics.channelCode!=''">
+			and channel_code=#{channelStatistics.channelCode}
+		</if>
+		<if test="channelStatistics.startTime !=null and channelStatistics.startTime!=''">
+			AND create_time &gt;= #{channelStatistics.startTime}
+		</if>
+		<if test="channelStatistics.endTime !=null and channelStatistics.endTime!=''">
+			AND create_time &lt;= #{channelStatistics.endTime}
+		</if>
+	</select>
+	<!-- 通过会员id查询会员打码量-->
+	<select id="getUserValidBetByUserId" resultType="Long">
+		select sum(valid_bet)
+		from game_record
+		where delete_status=0 and room_id !=2
+		<if test="id != null">
+			and user_id=#{id}
+		</if>
+	</select>
+	<!-- 通过会员id查询会员充值金额-->
+	<select id="getUserAmountByUserId" resultType="Long">
+		select sum(amount)
+		from order_recharge
+		where delete_status=0 and status=2
+		<if test="id != null">
+			and user_id=#{id}
+		</if>
+	</select>
+</mapper>

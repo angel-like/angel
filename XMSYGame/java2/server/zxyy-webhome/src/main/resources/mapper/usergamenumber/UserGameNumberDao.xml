@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.usergamenumber.dao.UserGameNumberDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.usergamenumber.entity.UserGameNumberEntity" id="userGameNumberMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="roomId" column="room_id"/>
+        <result property="roomName" column="room_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="countDate" column="count_date"/>
+        <result property="gameNum" column="game_num"/>
+        <result property="winNum" column="win_num"/>
+        <result property="loseNum" column="lose_num"/>
+    </resultMap>
+    
+   <update id="updateUserGameNumber">
+   		update user_game_number
+   		set game_num=game_num+#{gameNum},
+   			lose_num=lose_num+#{loseNum},
+   			win_num=win_num+#{winNum},
+   			update_time=now()
+   		where user_id=#{userId} and room_id=#{roomId} and 
+   			  game_id=#{gameId} and count_date=#{countDate}  
+   </update>
+   
+   <select id="queryNum" resultType="com.xmsy.server.zxyy.webhome.modules.manager.usergamenumber.entity.UserGameNumberEntity">
+   	SELECT sum(game_num) gameNum,sum(win_num) winNum,sum(lose_num) loseNum from user_game_number 
+   	where delete_status=0 
+   	<if test="userId != null">
+		and	user_id=#{userId}
+	</if>
+   	<if test="roomId != null and roomId != 0">
+		and	room_id=#{roomId}
+	</if>
+	<if test="gameId !=null and gameId != 0">
+		and	game_id=#{gameId}
+	</if>
+	<if test="countDate != null">
+		and	count_date &gt;=#{countDate}
+	</if>
+	
+   </select>
+
+
+</mapper>

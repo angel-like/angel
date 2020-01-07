@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.immaterial.dao.ImMaterialDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.immaterial.entity.ImMaterialEntity" id="imMaterialMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="category" column="category"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="jumpUrl" column="jump_url"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+    
+    <!-- 游戏记录列表 -->
+	<select id="getImMaterials"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.immaterial.entity.ImMaterialEntity">
+		SELECT
+		im.id,
+		im.title as title,
+		im.image_url as imageUrl,
+		im.jump_url as jumpUrl,
+		im.create_time as createTime
+		FROM
+		im_material im
+		where im.delete_status=false
+		<if test="imMaterial.category != null">
+	    		and im.category=#{imMaterial.category}
+	    </if>
+	    ORDER BY order_num
+	</select>
+
+
+</mapper>

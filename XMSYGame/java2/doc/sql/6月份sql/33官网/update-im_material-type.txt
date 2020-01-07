@@ -1,0 +1,2 @@
+ALTER TABLE `im_material`
+MODIFY COLUMN `type`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '素材类型' AFTER `content`;

@@ -1,0 +1,1 @@
+INSERT INTO `webhome`.`sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('1472', '操作记录', NULL, 'gamestockoperationrecord:gamestockoperationrecord:list,gamestockoperationrecord:gamestockoperationrecord:info', '2', NULL, NULL);

@@ -1,0 +1,1 @@
+UPDATE  user_transaction_record  a  SET  a.type =3 WHERE a.type = 14

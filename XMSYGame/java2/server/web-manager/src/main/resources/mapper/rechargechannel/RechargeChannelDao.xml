@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.manager.modules.manager.rechargechannel.dao.RechargeChannelDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.manager.modules.manager.rechargechannel.entity.RechargeChannelEntity"
+		id="rechargeChannelMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="minAmount" column="min_amount" />
+		<result property="enable" column="enable" />
+		<result property="appIconId" column="app_icon_id" />
+		<result property="appIconMd5" column="app_icon_md5" />
+		<result property="webIconId" column="web_icon_id" />
+		<result property="webIconMd5" column="web_icon_md5" />
+		<result property="enclosureId" column="enclosure_id" />
+		<result property="md5" column="md5" />
+		<result property="alias" column="alias" />
+		<result property="orderNo" column="order_no" />
+	</resultMap>
+
+	<!-- 根据支付公司id和渠道id获取对应的支付信息 -->
+	<select id="selectByPayIdAndChannelId"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.rechargechannel.entity.RechargeChannelResultEntity">
+		SELECT
+		rc.id AS id,
+		rc. NAME AS `name`,
+		pcc.id as pccId,
+		pcc.high_limit AS highLimit,
+		pcc.low_limit AS lowLimit,
+		b.url AS iconUrl,
+		rc.app_icon_md5 AS iconMd5,
+		rc.alias as alias,
+		pcc.amount as amount,
+		pcc.enable as enable,
+		pcc.show_name as showName,
+		pcc.order_no as orderNo,
+		GROUP_CONCAT(distinct hpr.hierarchy_id) as hierarchyId
+		FROM
+		pay_config pc
+		LEFT JOIN recharge_channel rc ON FIND_IN_SET(rc.id, pc.payment_method)
+		LEFT JOIN pay_channel_config pcc ON pc.id = pcc.pay_id and
+		rc.id=pcc.channel_id
+		left join  hierarchy_paychannelconfig_relationship  hpr on  hpr.paychannelconfig_id = pcc.id
+		and  hpr.delete_status =false
+		LEFT JOIN webhome_enclosure b ON rc.app_icon_id = b.id
+		WHERE
+		pc.id =#{id}
+		and rc.id=#{channelId}
+		AND pc.`enable` = TRUE
+		AND rc.`enable` = TRUE
+		AND pc.delete_status = FALSE
+		AND rc.delete_status = FALSE
+		GROUP BY rc.id
+		<!-- and pcc.high_limit>#{amount} and pcc.low_limit &lt; #{amount} -->
+	</select>
+
+	<!-- 根据支付公司id获取对应的渠道列表信息 -->
+	<select id="selectChannelsByPayId"
+			resultType="com.xmsy.server.zxyy.manager.modules.manager.rechargechannel.entity.RechargeChannelResultEntity">
+		SELECT
+		rc.id AS id,
+		rc. NAME AS `name`,
+		pcc.id as pccId,
+		pcc.high_limit AS highLimit,
+		pcc.low_limit AS lowLimit,
+		b.url AS iconUrl,
+		rc.app_icon_md5 AS iconMd5,
+		rc.alias as alias,
+		pcc.amount as amount,
+		pcc.enable as enable,
+		pcc.show_name as showName,
+		pcc.order_no as orderNo,
+		GROUP_CONCAT(distinct hpr.hierarchy_id) as hierarchyId
+		FROM
+		pay_config pc
+		LEFT JOIN recharge_channel rc ON FIND_IN_SET(rc.id, pc.payment_method)
+		LEFT JOIN pay_channel_config pcc ON pc.id = pcc.pay_id and
+		rc.id=pcc.channel_id
+		left join  hierarchy_paychannelconfig_relationship  hpr on hpr.paychannelconfig_id = pcc.id
+		and  hpr.delete_status =false
+		LEFT JOIN webhome_enclosure b ON rc.app_icon_id = b.id
+		WHERE
+		pc.id = #{id}
+		AND pc.`enable` = TRUE
+		AND rc.`enable` = TRUE
+		AND pc.delete_status = FALSE
+		AND rc.delete_status = FALSE
+		GROUP BY rc.id
+		<!-- and pcc.high_limit>#{amount} and pcc.low_limit &lt; #{amount} -->
+	</select>
+
+	<!-- 获取首推支付渠道 -->
+	<select id="selectFirstRecommendForWeb"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.payconfig.entity.PayConfigFirstEntity">
+		SELECT
+		pc.id AS id,
+		rc.id AS payId,
+		rc. NAME aliasName,
+		b.url
+		AS iconUrl,
+		rc.web_icon_md5 AS iconMd5
+		FROM
+		pay_config pc
+		LEFT JOIN
+		pay_channel_config pcc ON pc.id = pcc.pay_id
+		LEFT JOIN recharge_channel
+		rc ON pcc.channel_id = rc.id
+		LEFT JOIN webhome_enclosure b ON
+		rc.web_icon_id = b.id
+		WHERE
+		pc.first_push = TRUE
+		AND pc.`enable` = TRUE
+		AND rc.`enable` = TRUE
+		AND pcc.`enable` = TRUE
+		AND rc.type IN (12, 13)
+	</select>
+
+	<!-- 获取首推支付渠道 -->
+	<select id="selectFirstRecommendForApp"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.payconfig.entity.PayConfigFirstEntity">
+		SELECT
+		pc.id AS id,
+		rc.id AS payId,
+		rc. NAME aliasName,
+		b.url
+		AS iconUrl,
+		rc.app_icon_md5 AS iconMd5
+		FROM
+		pay_config pc
+		LEFT JOIN
+		pay_channel_config pcc ON pc.id = pcc.pay_id
+		LEFT JOIN recharge_channel
+		rc ON pcc.channel_id = rc.id
+		LEFT JOIN webhome_enclosure b ON
+		rc.app_icon_id = b.id
+		WHERE
+		pc.first_push = TRUE
+		AND pc.`enable` = TRUE
+		AND rc.`enable` = TRUE
+		AND pcc.`enable` = TRUE
+		AND rc.type IN (12, 13)
+	</select>
+</mapper>

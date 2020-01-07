@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.webhomepopulargames.dao.WebhomePopularGamesDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.webhomepopulargames.entity.WebhomePopularGamesEntity" id="webhomePopularGamesMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="name" column="name"/>
+        <result property="enclosureId" column="enclosure_id"/>
+        <result property="introduction" column="Introduction"/>
+        <result property="type" column="type"/>
+        <result property="typeId" column="type_id"/>
+        <result property="url" column="url"/>
+        <result property="enable" column="enable"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+
+	<!-- 官网获取图片列表 -->
+	<select id="selectEnableListForWeb" resultType="com.xmsy.server.zxyy.webhome.modules.web.homepage.entity.PopularGamesEntity">
+			SELECT
+				a.id as id,
+				a.`name` as name,
+				b.url as enclosureUrl,
+				a.Introduction AS introduction,
+				a.type as type,
+				a.type_id as typeId,
+				a.url as url
+			FROM
+				webhome_popular_games a
+			LEFT JOIN webhome_enclosure b ON a.enclosure_id = b.id
+			WHERE
+			a.delete_status!=1
+			and
+				a.`enable` = '1'
+			ORDER BY a.order_num
+	</select>
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.game.modules.manager.sys.dao.SysUserDao">
+	<!-- select u.user_id,u.username, s.role_id,s.role_name,GROUP_CONCAT(s.role_name) 
+		as 'roleNames' from sys_user u left JOIN sys_role s ON FIND_IN_SET(s.role_id,u.roleIds) 
+		GROUP BY u.user_id -->
+
+	<!-- SELECT * FROM test WHERE FIND_IN_SET('75',name) -->
+
+
+
+	<!-- 查询用户详情 -->
+	<select id="findSysUserDetails"
+		resultType="com.xmsy.server.zxyy.game.modules.manager.sys.entity.param.SysUserDetail">
+		select DISTINCT u.user_id as userId,
+		u.username,
+		u.email,
+		u.mobile,
+		u.status,
+		u.create_time,
+		u.create_user_id,
+		u.role_ids as roleIds
+		from sys_user u, sys_role s,sys_user_role syr
+		where
+		u.user_id=syr.user_id
+		and syr.role_id=s.role_id
+		<trim>
+			<if
+				test="null!=sysUserDetail.username and sysUserDetail.username.trim() != ''">
+				AND u.username = #{sysUserDetail.username}
+			</if>
+			<if
+				test="null!=sysUserDetail.createUserId and sysUserDetail.createUserId != 0">
+				AND (u.create_user_id = #{sysUserDetail.createUserId}
+				OR u.user_id = #{sysUserDetail.createUserId})
+			</if>
+			<if
+				test="null!=sysUserDetail.roleId and sysUserDetail.roleId !=0 ">
+				AND s.role_id = #{sysUserDetail.roleId}
+			</if>
+		</trim>
+	</select>
+
+	<!-- 查询用户的所有权限 -->
+	<select id="queryAllPerms" resultType="string">
+		select m.perms from
+		sys_user_role ur
+		LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id
+		LEFT JOIN sys_menu m on rm.menu_id = m.menu_id
+		where ur.user_id =
+		#{userId}
+	</select>
+
+	<!-- 查询用户的所有菜单ID -->
+	<select id="queryAllMenuId" resultType="long">
+		select distinct
+		rm.menu_id from sys_user_role ur
+		LEFT JOIN sys_role_menu rm on
+		ur.role_id = rm.role_id
+		where ur.user_id = #{userId}
+	</select>
+
+	<select id="queryByUserName"
+		resultType="com.xmsy.server.zxyy.game.modules.manager.sys.entity.SysUserEntity">
+		select
+		user_id,username,password,email,salt,mobile,status,create_user_id,create_time,role_ids
+		as roleIds,token from sys_user where username = #{username}
+	</select>
+	
+	<select id="queryByUserNameList"
+		resultType="com.xmsy.server.zxyy.game.modules.manager.sys.entity.SysUserEntity">
+		select
+		user_id userId,username,email,salt,mobile,status,create_user_id,create_time,role_ids
+		as roleIds,token from sys_user 
+		where username in
+		<foreach collection="userNameList" item="item" open="(" separator="," close=")">
+				#{item}
+		</foreach>
+	</select>
+
+	<insert id="insertUser"
+		parameterType="com.xmsy.server.zxyy.game.modules.manager.sys.entity.SysUserEntity"
+		useGeneratedKeys="true" keyProperty="userId">
+		insert into sys_user(username,password,salt,email,mobile,status,create_user_id,create_time,role_ids,token)
+		values(#{username}, #{password}, #{salt}, #{email}, #{mobile},
+		#{status}, #{createUserId}, #{createTime}, #{roleIds}, #{token})
+	</insert>
+
+
+</mapper>

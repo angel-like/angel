@@ -1,0 +1,3 @@
+ALTER TABLE `payment_type_configuration`
+ADD COLUMN `type`  int(11) NOT NULL COMMENT '充值类型' AFTER `order_num`;
+ADD COLUMN `payment_type`  int(11) NOT NULL DEFAULT 0 COMMENT '支付类型' AFTER `type`;

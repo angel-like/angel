@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.signrewardcontinuouseveryday.dao.SignRewardContinuousEveryDayDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.signrewardcontinuouseveryday.entity.SignRewardContinuousEveryDayEntity"
+		id="signRewardContinuousEveryDayMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="dayName" column="day_name" />
+		<result property="reward" column="reward" />
+		<result property="dayNum" column="day_num" />
+		<result property="vipId" column="vip_id" />
+	</resultMap>
+
+	<!-- 获取本周签到详情 -->
+	<select id="getSignDetails"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.user.param.SignSignDetailEntity">
+		SELECT
+		a.id AS id,
+		a.day_name AS dayName,
+		a.reward AS reward,
+		a.day_num AS dayNum,
+		a.vip_id AS vipId,
+		(
+			CASE
+			WHEN ISNULL(b.id) THEN
+				1
+			ELSE
+				0
+			END
+		) AS STATUS
+		FROM
+		sign_reward_continuous_every_day a
+		LEFT JOIN sign_user_record b ON a.id = b.day_id
+		AND b.user_id = #{userId}
+		AND b.sign_date &gt;= #{startDate}
+		AND b.sign_date &lt;= #{endDate}
+		WHERE a.delete_status=0
+		<if test="vipId != null">
+			and a.vip_id=#{vipId}
+		</if>
+		ORDER BY
+		a.id
+	</select>
+	
+	<select id="selectSignIn" resultType="com.xmsy.server.zxyy.webhome.modules.manager.signrewardcontinuouseveryday.entity.SignRewardContinuousEveryDayEntity">
+		select id,day_name as dayName,day_num as dayNum,reward,vip_id as vipId 
+		from sign_reward_continuous_every_day 
+		WHERE delete_status=0
+		<if test="vipId != null">
+			and vip_id=#{vipId}
+		</if>
+		order by day_num
+	</select>
+	
+	<select id="selectByVipId" resultType="com.xmsy.server.zxyy.webhome.modules.manager.signrewardcontinuouseveryday.entity.SignRewardContinuousEveryDayEntity">
+    	select id,day_name as dayName,day_num as dayNum,reward,vip_id as vipId from sign_reward_continuous_every_day 
+    	WHERE delete_status=0 
+    	<if test="dayNum != null">
+			and day_num = #{dayNum}
+		</if>
+		<if test="vipId != null">
+			and vip_id = #{vipId}
+		</if>
+    </select>
+    
+</mapper>

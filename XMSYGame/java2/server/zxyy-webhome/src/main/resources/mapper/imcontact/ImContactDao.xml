@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.imcontact.dao.ImContactDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.imcontact.entity.ImContactEntity" id="imContactMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="enclosureId" column="enclosure_id"/>
+        <result property="name" column="name"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="enable" column="enable"/>
+        <result property="remake" column="remake"/>
+        <result property="url" column="url"/>
+        <result property="sort" column="sort"/>
+        <result property="contentType" column="content_type"/>
+    </resultMap>
+<!-- 官网获联系方式及官网信息-->
+	<select id="selectListByIm" resultType="com.xmsy.server.zxyy.webhome.modules.manager.imcontact.entity.ImContactManagerEntity">
+			SELECT
+				a. NAME as name,
+				a.content as content,
+				a.type as type,
+				b.url as url, 
+				a.url as jumpUrl,
+				a.content_type as contentType
+			FROM
+				im_contact a
+			LEFT JOIN webhome_enclosure b ON a.enclosure_id = b.id
+			WHERE
+			a.delete_status!=1 and
+			a.`enable` = '1' ORDER BY a.sort
+	</select>
+
+</mapper>

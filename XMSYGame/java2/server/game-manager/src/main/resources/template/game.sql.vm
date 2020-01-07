@@ -1,0 +1,15 @@
+-- 游戏信息
+INSERT INTO `game_manager`.`game_info` (`game_id`, `game_name`, `room_id`, `grade_id`, `enable`, `display`, `sence`, `version`, `create_time`, `update_time`, `rate`, `bscore`, `restrict`, `max_times`, `max_lines`, `delete_status`, `maintenance`, `limit_high`, `limit_lower`, `online_min`, `online_max`, `finished`, `provider`) 
+VALUES ('${gameId}', '${gameName}','${roomId}', '${gradeId}', ${enable}, ${display}, '${sence}', '${version}', NOW(), NOW(), '${rate}', '${bscore}', '${restrict}', '${maxTimes}', '${maxlines}', '${deleteStatus}', ${maintenance}, '${limitHigh}', '${limitLower}', '${onlineMin}', '${onlineMax}', ${finished}, '${provider}');
+-- 按钮父菜单ID
+set @parentId1 = @@identity;
+
+-- 给房间的game_ids增加新的游戏id
+update room set game_ids=CONCAT(game_ids,',',@parentId1)  where `name`='${roomName}';
+
+-- 新增游戏配置信息 循环 --
+#foreach($gameConfig in $gameConfigList)
+INSERT INTO `game_manager`.`game_config` (`game_id`, `name`, `start_val`,`end_val`,`val`, `description`, `create_time`, `update_time`) 
+SELECT @parentId1, '${gameConfig.name}', '${gameConfig.startVal}', '${gameConfig.endVal}', '${gameConfig.val}', '${gameConfig.description}', NOW(), NOW();
+#end
+

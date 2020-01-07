@@ -1,0 +1,3 @@
+ALTER TABLE `hierarchy_payment_relationship`
+MODIFY COLUMN `payment_id`  bigint(22) NOT NULL COMMENT '支付类型id' AFTER `version`,
+MODIFY COLUMN `hierarchy_id`  bigint(22) NOT NULL COMMENT '层级id' AFTER `payment_id`;

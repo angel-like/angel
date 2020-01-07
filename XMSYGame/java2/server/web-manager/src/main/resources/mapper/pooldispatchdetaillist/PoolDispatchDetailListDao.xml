@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.pooldispatchdetaillist.dao.PoolDispatchDetailListDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.pooldispatchdetaillist.entity.PoolDispatchDetailListEntity" id="poolDispatchDetailListMap">
+        <result property="id" column="id"/>
+        <result property="userid" column="userid"/>
+        <result property="taskId" column="task_id"/>
+        <result property="taskTitle" column="task_title"/>
+        <result property="taskDetailId" column="task_detail_id"/>
+        <result property="detailTitle" column="detail_title"/>
+        <result property="amount" column="amount"/>
+        <result property="dispatchTime" column="dispatch_time"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <select id="statisticsPieAwardByDay" resultType="com.xmsy.server.zxyy.manager.modules.manager.rankinglistday.entity.RankingListDayEntity">
+    	SELECT user_id,user_account,SUM(amount)  amount
+		from pool_dispatch_detail_list
+		where 1=1
+		<if test="startTime !=null and startTime!=''">
+			AND dispatch_time &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND dispatch_time &lt;= #{endTime}
+		</if>
+		GROUP BY user_id,user_account
+		order by amount DESC
+    
+    </select>
+
+
+</mapper>

@@ -1,0 +1,1422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.user.dao.UserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.user.entity.UserEntity"
+		id="userMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="account" column="account" />
+		<result property="portrait" column="portrait" />
+		<result property="sex" column="sex" />
+		<result property="userType" column="user_type" />
+		<result property="token" column="token" />
+		<result property="unionType" column="union_type" />
+		<result property="openId" column="open_id" />
+		<result property="unionId" column="union_id" />
+		<result property="superiorsId" column="superiors_id" />
+		<result property="forbiddenEnable" column="forbidden_enable" />
+		<result property="nobetEnable" column="nobet_enable" />
+		<result property="abnormalEnable" column="abnormal_enable" />
+		<result property="frozenEnable" column="frozen_enable" />
+		<result property="pointKillEnable" column="point_kill_enable" />
+		<result property="pointKillRate" column="point_kill_rate" />
+		<result property="hierarchyId" column="hierarchy_id" />
+		<result property="coin" column="coin" />
+		<result property="commission" column="commission" />
+		<result property="money" column="money" />
+		<result property="registerIp" column="register_ip" />
+		<result property="registerDeviceCode"
+			column="register_device_code" />
+		<result property="userName" column="user_name" />
+		<result property="remark" column="remark" />
+		<result property="agentEnable" column="agent_enable" />
+		<result property="noScan" column="no_scan" />
+		<result property="touristId" column="tourist_id" />
+	</resultMap>
+
+	<!-- 新增用户返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.webhome.modules.manager.user.entity.UserEntity">
+		INSERT INTO user
+		<!-- (`create_time`, `account`,`user_name`,`portrait`,`sex`, `user_type`, 
+			`register_ip`, `register_device_code`,`union_type`, `open_id`,`union_id`, 
+			`superiors_id`,`agent_enable`,`coin`, `hierarchy_id`) VALUES (#{createTime}, 
+			#{account}, #{userName}, #{portrait},#{sex}, #{userType}, #{registerIp}, 
+			#{registerDeviceCode}, #{unionType}, #{openId},#{unionId}, #{superiorsId},#{agentEnable},1000000000, 
+			#{hierarchyId}) -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			create_time,
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="account != null">
+				account,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="portrait != null">
+				portrait,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="userType != null">
+				user_type,
+			</if>
+			<if test="registerIp != null">
+				register_ip,
+			</if>
+			<if test="registerDeviceCode != null">
+				register_device_code,
+			</if>
+			<if test="unionType != null">
+				union_type,
+			</if>
+			<if test="openId != null">
+				open_id,
+			</if>
+			<if test="unionId != null">
+				union_id,
+			</if>
+			<if test="nickName != null">
+				nick_name,
+			</if>
+			<if test="superiorsId != null">
+				superiors_id,
+			</if>
+			<if test="agentEnable != null">
+				agent_enable,
+			</if>
+			<if test="hierarchyId != null">
+				hierarchy_id,
+			</if>
+			<if test="coin != null">
+				coin,
+			</if>
+			<if test="channelCode != null">
+				channel_code,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="touristId != null">
+				tourist_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{createTime},
+			<if test="updateTime != null">
+				#{updateTime},
+			</if>
+			<if test="account != null">
+				#{account},
+			</if>
+			<if test="userName != null">
+				#{userName},
+			</if>
+			<if test="portrait != null">
+				#{portrait},
+			</if>
+			<if test="sex != null">
+				#{sex},
+			</if>
+			<if test="userType != null">
+				#{userType},
+			</if>
+			<if test="registerIp != null">
+				#{registerIp},
+			</if>
+			<if test="registerDeviceCode != null">
+				#{registerDeviceCode},
+			</if>
+			<if test="unionType != null">
+				#{unionType},
+			</if>
+			<if test="openId != null">
+				#{openId},
+			</if>
+			<if test="unionId != null">
+				#{unionId},
+			</if>
+			<if test="nickName != null">
+				#{nickName},
+			</if>
+			<if test="superiorsId != null">
+				#{superiorsId},
+			</if>
+			<if test="agentEnable != null">
+				#{agentEnable},
+			</if>
+			<if test="hierarchyId != null">
+				#{hierarchyId},
+			</if>
+			<if test="coin != null">
+				#{coin},
+			</if>
+			<if test="channelCode != null">
+				#{channelCode},
+			</if>
+			<if test="phone != null">
+				#{phone},
+			</if>
+			<if test="touristId != null">
+                #{touristId},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据层级列表查询用户集合 -->
+	<select id="findUserListByHierarchy" resultMap="userMap">
+		select * from user
+		where delete_status=0
+		and hierarchy_id in
+		<foreach collection="hierarchyIDs" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+
+
+	<!-- 根据账号列表查询用户集合 -->
+	<select id="findUserListByAccount" resultMap="userMap">
+		select * from user
+		where delete_status=0
+		and account in
+		<foreach collection="accountList" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 根据userId列表查询用户集合 -->
+	<select id="findUserListByIdList" resultMap="userMap">
+		select * from user
+		where delete_status=0
+		and id in
+		<foreach collection="idList" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 会员管理页面分页查询 -->
+	<select id="findUserPage" resultType="Map">
+		SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS
+		game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id
+		superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip
+		registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable
+		forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time
+		lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type
+		deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip
+		lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin,
+		e.bank_card bankCard
+		FROM
+		`user` a
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND
+		a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN user_hierarchy
+		c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN
+		user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if
+			test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where
+			account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		<if test="user.sortOption !=null  and user.sortOption !=''">
+			ORDER BY ${user.sortOption} ${user.orientation}
+		</if>
+		<if test="user.sortOption ==null or user.sortOption ==''">
+			ORDER BY CONCAT(game_info, a.id) DESC
+		</if>
+
+	</select>
+	<!-- 会员管理页面分页查询 -->
+	<select id="findUserPageForRecharge" resultType="Map">
+	
+	SELECT
+	*
+	FROM
+		(SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		max(h.id) AS rechargeId,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin, 
+		e.bank_card bankCard
+		FROM
+		`user` a
+		LEFT JOIN order_recharge h ON a.id = h.user_id and h.status=2
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN user_hierarchy c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		<!-- <if test="user.sortOption !=null  and user.sortOption !=''">
+		    ORDER BY ${user.sortOption} ${user.orientation}
+		</if>
+		<if test="user.sortOption ==null or user.sortOption ==''">
+		    ORDER BY CONCAT(game_info, a.id) DESC
+		</if> -->
+		GROUP BY
+			a.id,b.id
+		) f
+		ORDER BY
+	f.rechargeId DESC
+	</select>
+	<!-- 会员管理页面分页查询取款总额排序 -->
+	<select id="findUserPageForRechargeNumOrder" resultType="Map">
+	
+	SELECT
+	*
+	FROM
+		(SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		sum(h.amount) AS rechargeAmount,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin, 
+		e.bank_card bankCard
+		FROM
+		`user` a
+		LEFT JOIN order_recharge h ON a.id = h.user_id and h.status=2
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN user_hierarchy c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		GROUP BY
+			a.id,b.id
+		) f
+		ORDER BY
+	f.rechargeAmount DESC
+	</select>
+	<!-- 会员管理页面分页查询 -->
+	<select id="findUserPageForTakeMoney" resultType="Map">
+	
+	SELECT
+	*
+	FROM
+		(SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		max(h.id) AS takeId,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin, 
+		e.bank_card bankCard
+		FROM
+		`user` a
+		LEFT JOIN order_take_money h ON a.id = h.user_id and h.status=2
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN user_hierarchy c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		GROUP BY
+			a.id,b.id
+		) f
+		ORDER BY
+	f.takeId DESC
+	
+	</select>
+	<!-- 会员管理页面分页查询 -->
+	<select id="findUserPageForTakeMoneyOrderNum" resultType="Map">
+	SELECT
+	*
+	FROM
+		(SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		sum(h.take_amount) AS takeAmount,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin, 
+		e.bank_card bankCard
+		FROM
+		`user` a
+		LEFT JOIN order_take_money h ON a.id = h.user_id and h.status=2
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN user_hierarchy c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		GROUP BY
+			a.id,b.id
+		) f
+		ORDER BY
+	f.takeAmount DESC
+	</select>
+	<!-- 会员管理页面分页查询 -->
+	<select id="findRiskUserPage" resultType="Map">
+		SELECT
+		a.id id,
+		c.`name` hierarchyName,
+		a.account,
+		IF(a.game_info_id = 0,
+		0, 1) AS game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.game_server_id gameServerId,
+		a.game_info_id gameInfoId,
+		a.money,
+		a.no_scan noScan,
+		a.coin
+		FROM
+		`user` a
+		LEFT JOIN
+		user_hierarchy c ON a.risk_hierarchy_id = c.id
+		where
+		a.delete_status=0 and a.risk_hierarchy_id>0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if
+			test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where
+			account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.riskHierarchyId !=null ">
+			AND a.risk_hierarchy_id=#{user.riskHierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		<if test="user.sortOption !=null  and user.sortOption !=''">
+			ORDER BY ${user.sortOption} ${user.orientation}
+		</if>
+		<if test="user.sortOption ==null or user.sortOption ==''">
+			ORDER BY CONCAT(risk_hierarchy_id, a.id) DESC
+		</if>
+
+	</select>
+	<!-- 会员管理页面 -->
+	<select id="findUserList" resultType="Map">
+		SELECT
+		a.id id,
+		c.`name` hierarchyName,
+		a.account,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id
+		superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip
+		registerIp,
+		a.forbidden_enable forbiddenEnable,
+		a.nobet_enable
+		nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		b.create_time loginTime,
+		b.ip
+		LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address address,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.money,
+		a.coin
+		FROM
+		`user` a
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND
+		login_status = "success"
+		LEFT JOIN
+		user_hierarchy c ON a.hierarchy_id
+		=
+		c.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if
+			test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where
+			account=#{user.superiorsAccount})
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		<if test="user.startTime !=null and user.startTime !=''">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null  and user.endTime !=''">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+	</select>
+
+	<!-- 用户密码信息 -->
+	<select id="getUserPasswordInfo"
+		resultType="com.xmsy.server.zxyy.webhome.modules.web.user.result.UserPasswordResult">
+		SELECT
+		u.id,
+		u.money,
+		u.coin,
+		up.bank_password as bankPassword
+		FROM
+		user u
+		LEFT JOIN user_password up ON u.id = up.user_id
+		AND up.delete_status = FALSE
+		WHERE
+		u.delete_status = FALSE
+		AND u.id = #{id}
+	</select>
+	<!-- 代理列表 -->
+	<select id="getAgentList"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.agent.param.Agent">
+		SELECT
+		u.id,
+		u.account,
+		u.coin,
+		u.commission,
+		u.money,
+		ur.num,
+		ur.amount as
+		agentCommission,
+		ur.coin as agentCoin,
+		r.name as agentHierarchyName,
+		ur.recommendation_code AS recommendationCode,
+		IFNULL(sum(g.valid_bet),0) as validBet
+		FROM
+		user u
+		LEFT JOIN
+		user_recommendation ur ON u.id = ur.user_id
+		LEFT JOIN
+		user_recommendation_record urr ON u.id = urr.promoter_id
+		LEFT JOIN
+		game_record_daily g ON urr.user_id = g.user_id
+		LEFT JOIN
+		user_agent_hierarchy r ON ur.agent_hierarchy_id = r.id
+		WHERE
+		u.agent_enable = true
+		AND ur.num > 0
+		AND u.delete_status = false
+		AND
+		ur.delete_status = false
+		<if test="user.account !=null and user.account!=''">
+			AND u.account=#{user.account}
+		</if>
+		GROUP BY u.id
+	</select>
+
+	<!-- 代理下线列表 -->
+	<select id="getAgentSubordinateList"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.agent.param.Subordinate">
+		SELECT
+		urr.id,
+		urr.user_account as account,
+		IFNULL(
+		(
+		SELECT
+		sum(g.valid_bet)
+		FROM
+		game_record g
+		WHERE
+		g.user_id = urr.user_id
+		),
+		0
+		) AS
+		valid_bet
+		FROM
+		user_recommendation_record urr
+		WHERE
+		urr.delete_status = 0
+		<if test="account !=null and account!=''">
+			AND urr.user_account=#{account}
+		</if>
+		and urr.promoter_id=#{userId}
+	</select>
+
+	<!-- 会员管理页面计算有多少条 -->
+	<select id="queryTotal" resultType="Integer">
+		select count(1) FROM `user` a
+		LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND a.token = b.token
+		AND login_status = "success"
+		LEFT JOIN
+		user_hierarchy c ON a.hierarchy_id = c.id
+		where a.delete_status=0
+		<if test="account !=null and account!=''">
+			AND a.account=#{account}
+		</if>
+		<if test="superiorsId !=null and superiorsId>0">
+			AND a.superiors_id=#{superiorsId}
+		</if>
+		<if test="superiorsAccount !=null and superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where
+			account=#{superiorsAccount})
+		</if>
+		<if test="userName !=null and userName !=''">
+			AND a.user_name=#{userName}
+		</if>
+		<if test="bankCard !=null and bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			bank_card=#{bankCard})
+		</if>
+		<if test="hierarchyId !=null ">
+			AND a.hierarchy_id=#{hierarchyId}
+		</if>
+		<if test="registerIp !=null and registerIp !=''">
+			AND a.register_ip=#{registerIp}
+		</if>
+		<if test="loginIp !=null and loginIp !=''">
+			AND b.ip=#{loginIp}
+		</if>
+		<if test="deviceCode !=null and deviceCode!=''">
+			AND b.device_code=#{deviceCode}
+		</if>
+		<if test="deviceType !=null and deviceType!=''">
+			AND b.device_type=#{deviceType}
+		</if>
+		<if test="userType !=null and userType!=''">
+			AND a.user_type=#{userType}
+		</if>
+		<if test="trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="forbiddenEnable !=null and forbiddenEnable!=''">
+			AND a.forbidden_enable=#{forbiddenEnable}
+		</if>
+		<if test="nobetEnable !=null and nobetEnable!=''">
+			AND a.nobet_enable=#{nobetEnable}
+		</if>
+		<if test="abnormalEnable !=null and abnormalEnable!=''">
+			AND a.abnormal_enable=#{abnormalEnable}
+		</if>
+		<if test="frozenEnable !=null and frozenEnable!=''">
+			AND a.frozen_enable=#{frozenEnable}
+		</if>
+		<if test="startTime !=null and startTime !=''">
+			AND a.create_time &gt;=#{startTime}
+		</if>
+		<if test="endTime !=null and endTime !=''">
+			AND a.create_time &lt;=#{endTime}
+		</if>
+	</select>
+
+	<!-- 删除会员的银行卡信息 -->
+	<update id="deleteBankInfo">
+		update user_info set
+		bank_name='',bank_address='',bank_card='',bank_account_name=''
+		where
+		user_id=#{userId}
+	</update>
+
+	<!-- 修改用户是否首冲 -->
+	<update id="updateUserFirstRecharge">
+		update user set first_recharge=true,
+		update_time=now()
+		where id=#{id}
+	</update>
+
+	<!-- 修改备注 -->
+	<update id="updateUserBaseInfo">
+		update user set
+		<if test="remark !=null ">
+			remark =#{remark},
+		</if>
+		update_time =now()
+		where id=#{id}
+	</update>
+
+	<!-- 根据用户ID修改金额 -->
+	<update id="updateUserWalletByUserId">
+		update user set
+		<if test="coin != null">
+			coin =coin+#{coin},
+		</if>
+		<if test="commission != null">
+			commission =commission+#{commission},
+		</if>
+		<if test="money != null">
+			money =money+#{money},
+		</if>
+		<if test="freezeCoin != null">
+			freeze_coin = freeze_coin + #{freezeCoin},
+		</if>
+		<if test="roomCard != null">
+			room_card =room_card+#{roomCard},
+		</if>
+		update_time=now()
+		where id=#{id}
+		<if test="coin != null">
+			and coin+#{coin} &gt;= 0
+		</if>
+		<if test="commission != null">
+			and commission+#{commission} &gt;= 0
+		</if>
+		<if test="money != null">
+			and money+#{money} &gt;= 0
+		</if>
+		<if test="roomCard != null">
+			and room_card+#{roomCard} &gt;= 0
+		</if>
+
+	</update>
+
+	<!-- 根据用户ID修改金额 -->
+	<update id="freezeUserCoinByUserId">
+		update user set
+		<if test="user.coin != null">
+			coin = #{user.coin},
+		</if>
+		<if test="user.freezeCoin != null">
+			freeze_coin =#{user.freezeCoin}
+		</if>
+		where id=#{user.id}
+
+	</update>
+
+    <!-- 根据用户ID修改金额 -->
+    <update id="unfreezeUserCoin">
+        update user set
+        <if test="user.coin != null">
+            coin = coin + #{user.coin},
+        </if>
+        <if test="user.freezeCoin != null">
+            freeze_coin =  #{user.freezeCoin}
+        </if>
+        where id=#{user.id}
+
+    </update>
+
+	<!-- 试玩账号列表 包含删除 -->
+	<select id="getTrialUserList" resultMap="userMap">
+		SELECT * from `user`
+		where user_type='TRIAL'
+		ORDER BY delete_status,account
+	</select>
+
+	<!-- 根据账号查询用户的数量 -->
+	<select id="countUserByAccount" resultType="Integer">
+		SELECT count(1) from
+		`user`
+		where account=#{account}
+	</select>
+	<!-- 修改删除状态为0 -->
+	<update id="updateUserDeleteStatus">
+		UPDATE `user` SET
+		delete_status=0,money=0,coin=0
+		where
+		id=#{id}
+	</update>
+
+	<!-- 统计会员数量，有效会员数量(有充值)====非试玩账号 -->
+	<select id="getStatisticsNumber" resultType="Map">
+		SELECT
+		COUNT(*) AS
+		userNumber,
+		(
+		SELECT
+		COUNT(*)
+		FROM
+		`user` a
+		LEFT JOIN order_recharge b ON
+		a.id = b.user_id
+		WHERE
+		b.fristrecharge = 1
+		AND a.user_type != 'TRIAL'
+		AND
+		a.delete_status = 0
+		) AS validUserNumber
+		FROM
+		`user` a
+		WHERE
+		a.user_type !=
+		'TRIAL'
+		AND a.delete_status = 0
+	</select>
+
+	<!-- 获取前7天及当前的新增会员数====非试玩账号 -->
+	<select id="getInsertUserNumber" resultType="Map">
+		SELECT
+		COUNT(*) AS
+		numbers,
+		date_format(a.create_time, '%Y-%m-%d') as time
+		FROM
+		user a
+		WHERE
+		DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(a.create_time)
+		and
+		a.user_type != 'TRIAL'
+		and a.delete_status=0
+		GROUP BY
+		date_format(a.create_time, '%Y-%m-%d')
+	</select>
+	<!-- 根据时间获取新增会员数 -->
+	<select id="sumUserForDate" resultType="Map">
+		SELECT
+		IFNULL(COUNT(*), 0) AS userNumber,
+		IFNULL((
+		SELECT
+		COUNT(*)
+		FROM
+		`user` a
+		LEFT JOIN order_recharge b ON a.id = b.user_id
+		WHERE
+		b.fristrecharge = 1
+		AND a.user_type != 'TRIAL'
+		AND a.delete_status = 0
+		<if test="startDate !=null and startDate !=''">
+			and date_format(a.create_time, '%Y-%m-%d')
+			&gt;=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			and date_format(a.create_time, '%Y-%m-%d') &lt;=#{endDate}
+		</if>
+		), 0) AS validUserNumber
+		FROM
+		user a
+		WHERE
+		a.user_type != 'TRIAL'
+		and
+		a.delete_status=0
+		<if test="startDate !=null and startDate !=''">
+			and date_format(a.create_time, '%Y-%m-%d')
+			&gt;=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			and date_format(a.create_time, '%Y-%m-%d') &lt;=#{endDate}
+		</if>
+	</select>
+
+	<!-- 按照日期范围统计充值的金额 -->
+	<select id="statisticsWealthByDay"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglistday.entity.RankingListDayEntity">
+		SELECT id userId,account userAccount,money amount FROM
+		`user`
+		WHERE user_type !='TRIAL'
+		order by amount DESC;
+	</select>
+
+	<delete id="deleteUserById">
+		delete from `user` where id=#{id}
+	</delete>
+	
+	<!-- 统计异常账号 -->
+	<select id="statisticsRiskNum"
+		resultType="Long">
+		SELECT COUNT(*) FROM `user` a WHERE a.risk_hierarchy_id &gt; 0
+	</select>
+
+	<!-- 根据账号和用户手机号查询用户 -->
+	<select id="findUserByAccountOrPhone" resultType="com.xmsy.server.zxyy.webhome.modules.manager.user.entity.UserEntity">
+		select account,phone from user
+		where delete_status=0
+		and (account=#{account} or phone=#{phone})
+	</select>
+	
+	<!-- 根据用户ID修改用户上级id -->
+	<update id="updateSuperiorsId">
+		update user set superiors_id=#{superiorsId}
+		where
+		id=#{userId}
+	</update>
+	<select id="getGmUser" resultType="Long">
+		select id from user where user_type = 'TEST'
+	</select>
+    <select id="findUserListByPhone"  resultMap="userMap">
+
+		select * from user
+		where delete_status=0
+		and  (account = #{phone}
+
+         or phone = #{phone}
+		)
+
+	</select>
+
+    <select id="findUserListByTouristId" resultMap="userMap">
+		select * from user
+		where delete_status=0
+		and tourist_id = #{touristId}
+
+	</select>
+
+	<!-- 更新用户 -->
+	<update id="batchUpgradeUserAccount"  statementType="CALLABLE">
+		{CALL PROC_BATCH_UPGRADE_USER_RECORD(#{userId,mode=IN},#{account,mode=IN})}
+	</update>
+</mapper>
+

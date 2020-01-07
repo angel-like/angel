@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.manager.modules.manager.userpointkill.dao.UserPointKillDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.manager.modules.manager.userpointkill.entity.UserPointKillEntity"
+		id="userPointKillMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="pointKillRate" column="point_kill_rate" />
+		<result property="removeAmount" column="remove_amount" />
+		<result property="remainAmount" column="remain_amount" />
+		<result property="sysUserPointKill" column="sys_user_point_kill" />
+		<result property="pointKillRemake" column="point_kill_remake" />
+		<result property="sysUserAccount" column="sys_user_account" />
+		<result property="operationTime" column="operation_time" />
+		<result property="pointKillEnable" column="point_kill_enable" />
+		<result property="remake" column="remake" />
+	</resultMap>
+	<select id="findUserPointKillManagerPage" resultType="Map">
+		SELECT sum(g.prize_coins) profit,
+			sum(if(g.prize_coins&gt;0,g.prize_coins,0)) as totalOutput,
+			sum(if(g.prize_coins&lt;0,-g.prize_coins,0)) as totalInput,
+			g.user_id as userId,u.account userAccount,u.point_kill_enable pointKillEnable
+		from game_record g
+		left JOIN user u on u.id=g.user_id
+		where room_id!=2
+			<if
+				test="userPointKillManagerParam.startTime !=null and userPointKillManagerParam.startTime!='' ">
+				AND g.create_time &gt;= #{userPointKillManagerParam.startTime}
+			</if>
+			<if
+				test="userPointKillManagerParam.endTime !=null and userPointKillManagerParam.endTime!='' ">
+				AND g.create_time &lt;= #{userPointKillManagerParam.endTime}
+			</if>
+			<if
+				test="userPointKillManagerParam.userAccount !=null and userPointKillManagerParam.userAccount!='' ">
+				AND u.account = #{userPointKillManagerParam.userAccount}
+			</if>
+			<if
+				test="userPointKillManagerParam.pointKillEnable !=null ">
+				AND u.point_kill_enable = #{userPointKillManagerParam.pointKillEnable}
+			</if>
+		group by user_id
+		ORDER BY profit desc
+	</select>
+
+</mapper>

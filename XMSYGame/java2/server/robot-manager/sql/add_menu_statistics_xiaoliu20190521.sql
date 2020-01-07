@@ -1,0 +1,3 @@
+INSERT INTO `robot_manager`.`sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('565', '560', '总盈利', NULL, 'statistics:statistics:sumProfitForGame', '2', NULL, '0');
+INSERT INTO `robot_manager`.`sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('566', '560', '盈利列表', '', 'statistics:statistics:sumProfitForRecord', '2', '', '0');
+INSERT INTO `robot_manager`.`sys_menu` (`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES ('567', '560', '盈利详情', '', 'statistics:statistics:sumProfitForGradeRecord', '2', '', '0');

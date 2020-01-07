@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.game.modules.manager.hall.dao.HallDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.game.modules.manager.hall.entity.HallEntity" id="hallMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="roomIds" column="room_ids"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 更新用户基本信息 没有内容更新为空 -->
+	<update id="updateHallById">
+		update hall set
+		<if test="roomIds !=null ">
+			room_ids =#{roomIds},
+		</if>
+		<if test="name !=null and name!=''">
+			name =#{name}
+		</if>
+		where id=#{id}
+	</update>
+</mapper>

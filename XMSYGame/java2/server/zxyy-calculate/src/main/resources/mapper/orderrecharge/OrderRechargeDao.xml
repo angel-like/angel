@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.calculate.modules.manager.orderrecharge.dao.OrderRechargeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.calculate.modules.manager.orderrecharge.entity.OrderRechargeEntity"
+		id="orderRechargeMap">
+		<result property="id" column="id" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="version" column="version" />
+		<result property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="type" column="type" />
+		<result property="orderNo" column="order_no" />
+		<result property="amount" column="amount" />
+		<result property="remake" column="remake" />
+		<result property="fristrecharge" column="fristrecharge" />
+		<result property="money" column="money" />
+		<result property="coin" column="coin" />
+		<result property="commission" column="commission" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<!-- 新增用户返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.calculate.modules.manager.orderrecharge.entity.OrderRechargeEntity">
+		insert into
+		order_recharge(user_id,user_account,type,order_no,amount,remake,
+		fristrecharge,money,coin,commission,status,create_time)
+		values(#{userId},#{userAccount},#{type},#{orderNo},#{amount},#{remake},
+		#{fristrecharge},#{money},#{coin},#{commission},#{status},now())
+	</insert>
+	<update id="updateOrderRechargeByOrderNo">
+		UPDATE order_recharge
+		SET
+		<if test="merchantOrderNo !=null and merchantOrderNo !=''">
+			merchant_order_no = #{merchantOrderNo},
+		</if>
+		<if test="userNeedBet !=null and userNeedBet != 0">
+			user_need_bet = #{userNeedBet},
+		</if>
+		<if test="discountAmount !=null and discountAmount != 0">
+			discount_amount = #{discountAmount},
+		</if>
+		<if test="fristrecharge">
+			fristrecharge = #{fristrecharge},
+		</if>
+		final_money = pre_money + amount + #{discountAmount},
+		STATUS =2,
+		recharge_time=#{rechargeTime}
+		WHERE
+		order_no = #{orderNo}
+		AND STATUS = 0
+	</update>
+	<update id="updateOrderRecharge">
+		UPDATE order_recharge
+		SET
+		<if test="merchantOrderNo !=null and merchantOrderNo !=''">
+			merchant_order_no = #{merchantOrderNo},
+		</if>
+		<if test="userNeedBet !=null and userNeedBet != 0">
+			user_need_bet = #{userNeedBet},
+		</if>
+		final_money = pre_money + amount + discount_amount,
+		STATUS =2,
+		recharge_time=#{rechargeTime}
+		WHERE
+		order_no = #{orderNo}
+		AND STATUS = 0
+	</update>
+	<select id="sumRechargeAmountByUserId" resultType="Long">
+		select sum(amount) from order_recharge
+		where user_id = #{userId} and status=2 and delete_status = 0
+	</select>
+
+	<!-- 通过会员id +时间范围 查询用户充值总额 =》天降财神红包使用 -->
+	<select id="getRechargeAmount" resultType="Long">
+		SELECT
+		IFNULL(sum(gr.amount), 0)
+		FROM
+		order_recharge gr
+		where gr.status=2 and
+		gr.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+			AND gr.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND gr.create_time &lt;= #{endTime}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,2 @@
+INSERT INTO `sys_menu`(`parent_id`,`name`,`url`,`perms`,`type`,`icon`,`order_num`)
+VALUES(NULL,'会员抽奖记录',NULL,'useractivitiesmanager:tabs:luckyrecord,luckyuserrecord:luckyuserrecord:info,luckyuserrecord:luckyuserrecord:list',2,NULL,0);

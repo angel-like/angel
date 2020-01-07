@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.reportgamedaily.dao.ReportGameDailyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.reportgamedaily.entity.ReportGameDailyEntity" id="reportGameDailyMap">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="participateNum" column="participate_num"/>
+        <result property="investmentTotal" column="investment_total"/>
+        <result property="outputTotal" column="output_total"/>
+        <result property="winTotal" column="win_total"/>
+        <result property="countDay" column="count_day"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    	<!-- 通过时间 获取  玩家人数（playerNum）  游戏名称（gameName）游戏ID(gameId)   游戏盈利（profit）-->
+	<select id="sumPlayerProfit"
+		resultType="Map">
+		select 
+			participate_num as playerNum,
+			game_name as gameName,
+			game_id as gameId,
+			win_total as profit 
+		FROM report_game_daily
+		WHERE delete_status = 0
+		<if test="startDate !=null and startDate!=''">
+			AND date_format(count_day, '%Y-%m-%d') = #{startDate}
+		</if>
+		<if test="endDate !=null and endDate!=''">
+			AND date_format(update_time, '%Y-%m-%d') &lt;= #{endDate}
+		</if>
+	</select>
+</mapper>

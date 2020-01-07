@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.userhierarchy.dao.UserHierarchyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.userhierarchy.entity.UserHierarchyEntity"
+		id="userHierarchyMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="rechargeMultiple" column="recharge_multiple" />
+		<result property="discountMultiple" column="discount_multiple" />
+		<result property="administrativeRate" column="administrative_rate" />
+		<result property="betRate" column="bet_rate" />
+		<result property="gameRate" column="game_rate" />
+		<result property="hierarchyType" column="hierarchy_type" />
+		<result property="vipEnable" column="vip_enable" />
+		
+	</resultMap>
+	
+	<!-- 新增用户返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.webhome.modules.manager.userhierarchy.entity.UserHierarchyEntity">
+		INSERT INTO user_hierarchy (`create_time`,
+		`name`,`type`,`recharge_multiple`,`discount_multiple`,`relaxation_rate`,`administrative_rate`,`bet_rate`,`vip_enable`,`game_rate`,`hierarchy_type`)
+		VALUES
+		(#{createTime},
+		#{name},
+		#{type},
+		#{rechargeMultiple},#{discountMultiple},#{relaxationRate},#{administrativeRate},#{betRate},#{vipEnable},#{gameRate},#{hierarchyType})
+	</insert>
+	
+	<update id="updateType">
+		update user_hierarchy SET type=#{type}
+		<if test="id != null">
+			where id=#{id}
+		</if>
+
+	</update>
+
+
+</mapper>

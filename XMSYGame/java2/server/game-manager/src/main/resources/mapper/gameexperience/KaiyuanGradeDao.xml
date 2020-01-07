@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.game.modules.manager.gameexperience.dao.KaiyuanGradeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.game.modules.manager.gameexperience.entity.KaiyuanGradeEntity"
+               id="kaiyuanGradeMap">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="serviceId" column="service_id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="gradeId" column="grade_id"/>
+    </resultMap>
+    <select id="findList"
+            resultType="com.xmsy.server.zxyy.game.modules.manager.gameexperience.entity.KaiyuanGradeEntity">
+        SELECT
+        k.*,
+        g.game_name as gameName,
+        gg.name as gradeName
+        FROM kaiyuan_grade k
+
+        LEFT JOIN game_info g ON g.id = k.game_id
+        LEFT JOIN game_grade gg ON  gg.id= k.grade_id
+        WHERE
+        k.delete_status = FALSE
+
+        <if test="kaiYuanGradeParam.gameId !=null and kaiYuanGradeParam.gameId>0">
+            and k.game_id=#{kaiYuanGradeParam.gameId}
+        </if>
+        <if test="kaiYuanGradeParam.name !=null and kaiYuanGradeParam.name!=''">
+            and k.name=#{kaiYuanGradeParam.name}
+        </if>
+        <if test="kaiYuanGradeParam.gradeId !=null and kaiYuanGradeParam.gradeId>0">
+            and k.grade_id=#{kaiYuanGradeParam.gradeId}
+        </if>
+        <if test="kaiYuanGradeParam.serviceId !=null and kaiYuanGradeParam.serviceId>0">
+            and k.service_id=#{kaiYuanGradeParam.serviceId}
+        </if>
+    </select>
+
+</mapper>

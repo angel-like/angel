@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.poolgame.dao.PoolGameDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.poolgame.entity.PoolGameEntity" id="poolGameMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="pool" column="pool"/>
+        <result property="enable" column="enable"/>
+        <result property="gameId" column="game_id"/>
+        <result property="betRate" column="bet_rate"/>
+    </resultMap>
+<!--     查询奖池列表用于下拉框 -->
+    <select id="findPoolList" resultType="map" >
+    	 SELECT CONCAT(b.`name`,'奖池') name,a.id FROM pool_game a
+		 LEFT JOIN game_info b on a.game_id= b.id
+		 where a.delete_status=0 and a.`enable`=1
+    </select>
+<!--     更新奖池根据id -->
+      <update id="updatePool" >
+    	 update pool_game set pool=pool+#{pool}
+		 where id=#{id} and  pool+#{pool} &gt;=0
+    </update>
+<!--     查询奖池的总金额 -->
+    <select id="sumAllPool" resultType="java.math.BigDecimal" >
+    	SELECT SUM(pool) pool from pool_game
+    	where delete_status=0 and `enable`=1
+    </select>
+    
+   
+
+
+</mapper>

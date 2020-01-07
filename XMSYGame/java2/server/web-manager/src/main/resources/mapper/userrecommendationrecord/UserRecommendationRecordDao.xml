@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userrecommendationrecord.dao.UserRecommendationRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userrecommendationrecord.entity.UserRecommendationRecordEntity" id="userRecommendationRecordMap">
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="recommendationCode" column="recommendation_code"/>
+        <result property="promoterId" column="promoter_id" />
+        <result property="promoterAccount" column="promoter_account"/>
+        <result property="promotingProfit" column="promoting_profit"/>
+         <result property="coin" column="coin"/>
+    </resultMap>
+	<!-- 新增用户返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.manager.modules.manager.userrecommendationrecord.entity.UserRecommendationRecordEntity">
+		INSERT INTO user_recommendation_record (`create_time`, `user_id`,`user_account`,
+		`recommendation_code`, `promoter_id`, `promoter_account`, `promoting_profit`
+		)
+		VALUES (#{createTime}, #{userId}, #{userAccount},
+		#{recommendationCode},#{promoterId}, #{promoterAccount}, #{promotingProfit})
+	</insert>
+	<!--获取用户推广详情(下级信息)-->
+	<select id="selectRecommendationListForUserId" resultType="com.xmsy.server.zxyy.manager.modules.web.user.result.UserRecommendationRecordResult">
+		SELECT
+			DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%S') AS createTime,
+			a.user_account AS userName,
+			a.promoting_profit AS promotingProfit,
+			a.coin AS coin,
+			a.user_id AS userId
+		FROM
+			user_recommendation_record a
+		WHERE
+			a.promoter_id = #{userId}
+			<if test="account != null">
+				and a.user_account =#{account}
+			</if>
+			
+	</select>
+	<!-- 根据用户ID修改记录盈利 -->
+	<update id="updateRecordAmount" keyProperty="com.xmsy.server.zxyy.manager.modules.manager.userrecommendationrecord.entity.UserRecommendationRecordEntity">
+		update 
+			user_recommendation_record 
+		set 
+		<if test="promotingProfit != null">
+			amount =#{promotingProfit},
+		</if>
+		<if test="coin != null">
+			coin =#{coin},
+		</if>   
+		update_time=now()
+		where user_id=#{userId} 
+	</update>
+	
+	<update id="updateRecommendationRecordAmount" keyProperty="com.xmsy.server.zxyy.manager.modules.manager.userrecommendationrecord.entity.UserRecommendationRecordEntity">
+		update 
+			user_recommendation_record 
+		set 
+		<if test="promotingProfit != null">
+			promoting_profit =promoting_profit+#{promotingProfit},
+		</if>
+		<if test="coin != null">
+			coin =coin+#{coin},
+		</if>   
+		update_time=now()
+		where user_id=#{userId} 
+		<if test="promotingProfit != null">
+			and promoting_profit+#{promotingProfit} &gt; 0
+		</if>
+		<if test="coin != null">
+			and coin+#{coin} &gt; 0
+		</if>   
+	</update>
+	
+	<update id="updateRecommendationRecordAmountForZero">
+		update
+		user_recommendation_record
+		set
+		promoting_profit = 0,
+		update_time=now()
+		where user_id=#{userId}
+	</update>
+</mapper>

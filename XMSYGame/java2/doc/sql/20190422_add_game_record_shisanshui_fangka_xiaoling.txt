@@ -1,0 +1,2 @@
+ALTER TABLE `game_record_shisanshui_fangka`
+ADD COLUMN `game_module`  int(9) NOT NULL COMMENT '游戏模式（1.积分模式2.金币模式）' AFTER `room_name`;

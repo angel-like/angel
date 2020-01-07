@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.robot.modules.manager.gamerecord.dao.GameRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.robot.modules.manager.gamerecord.entity.GameRecordEntity"
+		id="gameRecordMap">
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="gameId" column="game_id" />
+		<result property="gameName" column="game_name" />
+		<result property="gradeId" column="grade_id" />
+		<result property="gradeName" column="grade_name" />
+		<result property="roomId" column="room_id" />
+		<result property="roomName" column="room_name" />
+		<result property="betCoins" column="bet_coins" />
+		<result property="prizeCoins" column="prize_coins" />
+		<result property="userType" column="user_type" />
+		<result property="version" column="version" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="mini" column="mini" />
+		<result property="profitCoins" column="profit_coins" />
+		<result property="waterProfit" column="water_profit" />
+		<result property="exchangeRate" column="exchange_rate" />
+		<result property="waterRate" column="water_rate" />
+		<result property="gameRoundNo" column="game_round_no" />
+		<result property="validBet" column="valid_bet" />
+		<result property="robot" column="robot" />
+	</resultMap>
+	<!-- 删指定时间之前的数据 -->
+	<delete id="deleteGameRecord">
+		DELETE from game_record
+		WHERE create_time &lt; #{date}
+	</delete>
+	<delete id="deleteGameRecordByDays">
+		DELETE from game_record
+		WHERE create_time &lt; CURDATE()-interval #{days} day; 
+	</delete>
+	<!-- 获取机器人总盈利 -->
+	<select id="sumCountProfit" resultType="Long">
+		SELECT
+		IFNULL(SUM(a.profit_coins),0)
+		FROM
+		game_record a
+		WHERE
+		a.delete_status = 0
+		<if test="entity.gameId !=null and entity.gameId!=''">
+			AND a.game_id=#{entity.gameId}
+		</if>
+		<if test="entity.gradeId !=null and entity.gradeId!=''">
+			AND a.grade_id=#{entity.gradeId}
+		</if>
+		<if test="entity.userAccount !=null and entity.userAccount!=''">
+			AND a.user_account=#{entity.userAccount}
+		</if>
+
+		<if test="entity.queryTime !=null and entity.queryTime!=''">
+			AND date_format(a.create_time, '%Y-%m-%d')=
+			#{entity.queryTime}
+		</if>
+	</select>
+	<!-- 获取指定房间不包含当日的指定时间盈利 -->
+	<select id="sumProfitForGame" resultType="Long">
+		SELECT
+		IFNULL((SUM(a.profit_coin)), 0)
+		FROM
+		robot_profit_record a
+		WHERE
+		a.game_id IN
+		<foreach collection="list" item="gameIds" open="("
+			separator="," close=")">
+			#{gameIds}
+		</foreach>
+		<if test="queryTime !=null and queryTime!=''">
+			AND date_format(a.create_time, '%Y-%m-%d') &gt;=
+			#{queryTime}
+		</if>
+
+	</select>
+	<!-- 获取指定房间今日盈利 -->
+	<select id="sumProfitTodayForGame" resultType="Long">
+
+		SELECT
+		IFNULL((- SUM(b.prize_coins)), 0)
+		FROM
+		game_record b
+		WHERE
+		DATE_FORMAT(b.create_time, '%Y-%m-%d') = DATE_FORMAT(NOW(),
+		'%Y-%m-%d')
+		and b.game_id IN
+		<foreach collection="list" item="gameIds" open="("
+			separator="," close=")">
+			#{gameIds}
+		</foreach>
+
+	</select>
+	<!-- 获取指定房间每款游戏的盈利盈利 -->
+	<select id="sumProfitForRecord"
+		resultType="com.xmsy.server.zxyy.robot.modules.manager.gamerecord.entity.GameRecordSumEntity">
+		SELECT
+		IFNULL((SUM(a.profit_coin)), 0)+
+		<if test="timeStatus">
+			(
+			SELECT
+			IFNULL((- SUM(b.prize_coins)), 0)
+			FROM
+			game_record b
+			WHERE
+			b.delete_status=0
+			AND b.game_id = a.game_id
+			AND DATE_FORMAT(b.create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d')
+			)
+		</if>
+		<if test="! timeStatus">
+			0
+		</if>
+		AS prizeCoin,
+		a.game_id
+		FROM
+		robot_profit_record a
+		WHERE
+		a.delete_status=0
+
+		<if test="queryStartTime !=null and queryStartTime !=''">
+			AND date_format(a.create_time, '%Y-%m-%d') &gt;=
+			#{queryStartTime}
+		</if>
+		<if test="queryEndTime !=null and queryEndTime !=''">
+			AND date_format(a.create_time, '%Y-%m-%d') &lt;=
+			#{queryEndTime}
+		</if>
+
+		AND a.game_id IN
+		<foreach item="gameIds" collection="list" open="("
+			separator="," close=")">
+			#{gameIds}
+		</foreach>
+		GROUP BY
+		a.game_id
+		ORDER BY
+		a.game_id
+	</select>
+	<!-- 获取指定房间每款游戏的盈利盈利 -->
+	<select id="sumProfitForGradeRecord"
+		resultType="com.xmsy.server.zxyy.robot.modules.manager.gamerecord.entity.GameRecordSumEntity">
+		SELECT
+		IFNULL((SUM(a.profit_coin)), 0) +
+		<if test="timeStatus">
+			(
+			SELECT
+			IFNULL((- SUM(b.prize_coins)), 0)
+			FROM
+			game_record b
+			WHERE
+			b.delete_status=0
+			AND b.game_id = a.game_id
+			AND a.grade_id = b.grade_id
+			AND DATE_FORMAT(b.create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d')
+			)
+		</if>
+		<if test="! timeStatus">
+			0
+		</if>
+		AS prizeCoin,
+		a.grade_id
+		FROM
+		robot_profit_record a
+		WHERE
+		a.delete_status=0
+		and a.game_id =#{gameId}
+		<if test="queryStartTime !=null and queryStartTime !=''">
+			AND date_format(a.create_time, '%Y-%m-%d') &gt;=
+			#{queryStartTime}
+		</if>
+		<if test="queryEndTime !=null and queryEndTime !=''">
+			AND date_format(a.create_time, '%Y-%m-%d') &lt;=
+			#{queryEndTime}
+		</if>
+		GROUP BY
+		a.grade_id
+		ORDER BY
+		a.grade_id
+	</select>
+</mapper>

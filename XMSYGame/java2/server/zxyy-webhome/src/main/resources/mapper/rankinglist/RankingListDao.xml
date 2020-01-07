@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.dao.RankingListDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.entity.RankingListEntity" id="rankingListMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="rankListName" column="rank_list_name"/>
+        <result property="enable" column="enable"/>
+    </resultMap>
+	<!--     查找昨日的榜单排名  -->
+    <select id="getRankingListForYesterday" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+    	SELECT user_id userId,user_account userAccount,position,amount,ranking_list_id rankingListId 
+    	FROM ranking_list_day
+    	WHERE that_day=#{yesterday}
+    	AND ranking_list_id=#{rankingListId}
+    	ORDER BY position
+		LIMIT #{limit}
+    </select>
+    	<!--     查找指定周的榜单排名  -->
+    <select id="getRankingListForLastWeek" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+    	SELECT user_id userId,user_account userAccount,position,amount,ranking_list_id rankingListId 
+    	FROM ranking_list_week
+    	WHERE week_of_year=#{weekOfYear}
+    	AND ranking_list_id=#{rankingListId}
+    	ORDER BY position
+		LIMIT #{limit}
+    </select>
+	<!--     查找昨日的榜单排名 首页  -->
+    <select id="getRankingListForYesterdayToHomePage" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+    	SELECT insert(user_account, 3, 5, '*****') userAccount,amount,position
+    	FROM ranking_list_day
+    	WHERE that_day=#{yesterday}
+    	AND ranking_list_id=#{rankingListId}
+    	ORDER BY position
+		LIMIT #{limit}
+    </select>
+    	<!--     查找指定周的榜单排名  首页 -->
+    <select id="getRankingListForLastWeekToHomePage" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+    	SELECT insert(user_account, 3, 5, '*****') userAccount,amount,position
+    	FROM ranking_list_week
+    	WHERE week_of_year=#{weekOfYear}
+    	AND ranking_list_id=#{rankingListId}
+    	ORDER BY position
+		LIMIT #{limit}
+    </select>
+    
+     <select id="getRankingListByYesterday" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+		SELECT insert(user_account, 4, 5, '*****') userAccount,amount,
+		IFNULL(b.portrait,'') portrait,
+		c.user_address address
+    	FROM ranking_list_day a
+			LEFT JOIN `user` b on a.user_id=b.id
+			LEFT JOIN user_info c on a.user_id=c.user_id
+    	WHERE 1=1
+    		<if test="yesterday != null">
+    		 	AND a.that_day=#{yesterday}
+    		</if>
+    		AND a.ranking_list_id=#{rankingListId}
+			AND b.delete_status = 0
+			AND	b.forbidden_enable = 0
+			AND b.nobet_enable = 0
+			AND b.frozen_enable = 0
+			AND c.user_address_status = 1
+    	ORDER BY that_day DESC,position
+    	LIMIT #{limit}
+ 	</select>
+ 	<select id="getImRankingListByYesterday" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+		SELECT insert(user_account, 4, 5, '*****') userAccount,amount,
+		IFNULL(b.portrait,'') portrait,
+		c.user_address address
+    	FROM ranking_list_day a
+			LEFT JOIN `user` b on a.user_id=b.id
+			LEFT JOIN user_info c on a.user_id=c.user_id
+    	WHERE a.that_day=DATE_SUB(curdate(),INTERVAL 1 DAY)
+    		AND a.ranking_list_id=#{rankingListId}
+			AND b.delete_status = 0
+			AND	b.forbidden_enable = 0
+			AND b.nobet_enable = 0
+			AND b.frozen_enable = 0
+			AND c.user_address_status = 1
+    	ORDER BY position
+    	LIMIT #{limit}
+ 	</select>
+ 	<select id="getRankingListByDataInterval" resultType="com.xmsy.server.zxyy.webhome.modules.manager.rankinglist.vo.RankingListUserVo">
+		SELECT insert(user_account, 4, 5, '*****') userAccount,
+		IFNULL(b.portrait,'') portrait,
+		c.user_address address,sum(amount) amount
+    	FROM ranking_list_day a
+		LEFT JOIN `user` b on a.user_id=b.id
+		LEFT JOIN user_info c on a.user_id=c.user_id
+    	WHERE a.that_day &gt;=#{startDate}
+    		AND a.that_day &lt;=#{endDate}
+    		AND a.ranking_list_id=#{rankingListId}
+			AND b.delete_status = 0
+			AND	b.forbidden_enable = 0
+			AND b.nobet_enable = 0
+			AND b.frozen_enable = 0
+		GROUP BY a.user_account,portrait,c.user_address
+    	ORDER BY amount desc
+    	LIMIT #{limit}
+ 	</select>
+
+</mapper>

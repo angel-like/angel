@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.apppopulargames.dao.AppPopularGamesDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.apppopulargames.entity.AppPopularGamesEntity" id="appPopularGamesMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+		<result property="type" column="type"/>
+        <result property="gameId" column="game_id"/>
+    </resultMap>
+
+	<select id="selectListForApp" resultType="com.xmsy.server.zxyy.webhome.modules.app.configuration.param.AppPopularGamesParam">
+			SELECT
+				a.game_id as id
+			FROM
+				app_popular_games a
+			where a.delete_status=0
+			ORDER BY
+				a.sort
+	</select>
+
+	<select id="selectListForAppHotgamesList" resultType="Long">
+			SELECT
+				a.game_id as id
+			FROM
+				app_popular_games a
+			where a.delete_status=0
+			and a.type = 0
+			ORDER BY
+				a.sort
+	</select>
+	<select id="selectSoonList" resultType="Long">
+			SELECT
+				a.game_id as id
+			FROM
+				app_popular_games a
+			where a.delete_status=0
+			and a.type = 2
+			ORDER BY
+				a.sort
+	</select>
+
+
+	<select id="selectListForAppReturnIdList" resultType="Long">
+			SELECT
+				a.game_id as id
+			FROM
+				app_popular_games a
+			where a.delete_status=0
+		and
+		a.type =0
+
+		<!--
+            <if test="recentGameId !=null and  recentGameId.size >0">
+                and
+                a.game_id not in
+
+                <foreach collection="recentGameId" open="(" separator="," close=")" item="rGameId">
+                    #{rGameId}
+                </foreach>
+
+            </if>
+    -->
+
+		<if test="games !=null and games.size >0">
+			and
+			a.game_id  in
+
+			<foreach collection="games" open="(" separator="," close=")" item="rGameId">
+				#{rGameId}
+			</foreach>
+
+		</if>
+			ORDER BY
+				a.sort limit 6
+	</select>
+
+	<select id="selectListForAppNewgemes" resultType="Long">
+		SELECT
+		a.game_id as id
+		FROM
+		app_popular_games a
+		where a.delete_status=0
+		and
+		a.type =1
+
+
+<!--
+		<if test="ignore !=null and ignore.length >0">
+			and
+			a.game_id not in
+
+			<foreach collection="ignore" open="(" separator="," close=")" item="rGameId">
+				#{rGameId}
+			</foreach>
+
+		</if>
+-->
+		<if test="games !=null and games.size >0">
+			and
+			a.game_id  in
+
+			<foreach collection="games" open="(" separator="," close=")" item="rGameId">
+				#{rGameId}
+			</foreach>
+
+		</if>
+		ORDER BY
+		a.sort limit 9
+	</select>
+
+	<select id="selectsoongamesList" resultType="map">
+			SELECT
+				a.game_id as id,
+				a.room_id as roomId
+			FROM
+				soon_games a
+			where a.delete_status=0
+			ORDER BY
+				a.sort
+	</select>
+	<!-- 最新游戏-->
+	<select id="selectListForAppRecentgames" resultType="Long">
+			SELECT
+				distinct  a.game_id as id
+			FROM
+				game_record a
+			where
+			 a.room_id &lt;&gt; 2
+		<if test="userId !=null">
+			and a.user_id=${userId}
+		</if>
+
+		<if test="games !=null and games.size >0">
+			and
+			a.game_id  in
+
+			<foreach collection="games" open="(" separator="," close=")" item="rGameId">
+				#{rGameId}
+			</foreach>
+
+		</if>
+			ORDER BY
+		a.create_time desc  LIMIT 3;
+	</select>
+
+</mapper>

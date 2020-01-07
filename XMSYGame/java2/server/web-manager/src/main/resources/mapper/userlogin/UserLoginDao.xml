@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userlogin.dao.UserLoginDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userlogin.entity.UserLoginEntity" id="userLoginMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="ip" column="ip"/>
+        <result property="deviceCode" column="device_code"/>
+        <result property="deviceType" column="device_type"/>
+        <result property="region" column="region"/>
+        <result property="nation" column="nation"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="domain" column="domain"/>
+        <result property="edition" column="edition"/>
+        <result property="browser" column="browser"/>
+        <result property="loginStatus" column="login_status"/>
+        <result property="token" column="token"/>
+    </resultMap>
+	<select id="pageList" resultType="com.xmsy.server.zxyy.manager.modules.manager.userlogin.entity.UserLoginEntity">
+		SELECT
+			a.id AS id,
+			a.create_time AS createTime,
+			a.login_status AS loginStatus,
+			a.ip_address AS ipAddress,
+			a.ip AS ip,
+			b.account AS account
+		FROM
+			user_login a
+		LEFT JOIN `user` b ON a.user_id = b.id
+		where a.delete_status = 0
+		<if test="entity.account !=null and entity.account !=''">
+				AND b.account =#{entity.account}
+		</if>
+		<if test="entity.startTime !=null and entity.startTime!=''">
+				AND a.create_time &gt;= #{entity.startTime}
+		</if>
+		<if test="entity.endTime !=null and entity.endTime!=''">
+			AND a.create_time &lt;= #{entity.endTime}
+		</if>
+		<if test="entity.loginStatus !=null and entity.loginStatus!=''">
+			AND a.login_status = #{entity.loginStatus}
+		</if>
+		ORDER BY a.create_time DESC
+	</select>
+	<select id="countLoginNumByDeviceType" resultType="map">
+		SELECT device_type deviceType,COUNT(DISTINCT user_id) num 
+		from user_login
+		where create_time>=date_add(NOW(), interval -6 hour)
+		and login_status='success' 
+		GROUP BY device_type;
+	</select>
+	<select id="countOnlineNumByDeviceType" resultType="map">
+		SELECT a.device_type deviceType,COUNT(DISTINCT user_id) num 
+		from user_login a,user b
+		where a.token = b.token and b.game_info_id>0  
+		AND user_type = 'USER'  and user_id=b.id
+		and login_status='success' 
+		 and a.create_time>=NOW()-interval 3 HOUR
+		GROUP BY device_type;
+	</select>
+	<select id="getUserLoginByUserId" resultType="Map">
+		SELECT b.create_time loginTime,
+		b.last_login_time lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser from user_login b
+		where  login_status = "success"
+		 and  user_id = #{userId} 
+		 and  token = #{token} 
+	</select>
+
+</mapper>

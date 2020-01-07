@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.userbalance.dao.UserBalanceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.userbalance.entity.UserBalanceEntity" id="userBalanceMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="money" column="money"/>
+        <result property="unprofitMoney" column="unprofit_money"/>
+        <result property="profit" column="profit"/>
+        <result property="profitYesterday" column="profit_yesterday"/>
+    </resultMap>
+	<update id="updateUserBalanceByUserId">
+		update user_balance 
+		set 
+		<if test="money!=null">
+			money=money+#{money},
+		</if>
+		<if test="unprofitMoney!=null">
+			unprofit_money=unprofit_money+#{unprofitMoney},
+		</if>
+		<if test="countMoney!=null">
+			count_money=count_money+#{countMoney},
+		</if>
+		update_time = now()
+		where user_id=#{userId}
+		<if test="money!=null">
+			and money+#{money} &gt;=0
+		</if>
+		<if test="unprofitMoney!=null">
+			and unprofit_money+#{unprofitMoney} &gt;=0
+		</if>
+	</update>
+	<!-- 新版本余额宝 -->
+	<update id="updateUserBalanceByUserIdNew">
+		update user_balance 
+		set 
+		<if test="money!=null">
+			money=money+#{money},
+		</if>
+		<if test="unprofitMoney!=null">
+			unprofit_money=unprofit_money+#{unprofitMoney},
+		</if>
+		<if test="countMoney!=null">
+			count_money=count_money+#{countMoney},
+		</if>
+		update_time = now()
+		where user_id=#{userId} and user_balance_product_id=#{userBalanceProductId}
+		<if test="money!=null">
+			and money+#{money} &gt;=0
+		</if>
+		<if test="unprofitMoney!=null">
+			and unprofit_money+#{unprofitMoney} &gt;=0
+		</if>
+	</update>
+</mapper>

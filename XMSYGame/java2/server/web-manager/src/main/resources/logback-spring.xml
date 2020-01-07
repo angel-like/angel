@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false">
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+	<springProperty scope="context" name="logLevel" source="log.level" />
+	<springProperty scope="context" name="logPath" source="log.path" />
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%thread]%-5level-%logger{50}-%msg%n</pattern>
+		</encoder>
+	</appender> 
+	<!-- 按照每天生成日志文件,单个文件最大100，最多保留30天的,全部文件最大10G -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logPath}/log.txt</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<FileNamePattern>${logPath}/log-%d{yyyy-MM-dd}.%i.log
+			</FileNamePattern>
+			<!--日志文件保留天数 -->
+			<maxFileSize>100MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>10GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level- %logger{50}-%msg</pattern>
+		</encoder>
+	</appender>
+	<!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+	<logger name="org.hibernate.type.descriptor.sql.BasicBinder"
+		level="TRACE" />
+	<logger name="org.hibernate.type.descriptor.sql.BasicExtractor"
+		level="DEBUG" />
+	<logger name="org.hibernate.SQL" level="DEBUG" />
+	<logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
+	<logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
+
+	<!--myibatis log configure -->
+	<logger name="com.apache.ibatis" level="TRACE" />
+	<logger name="java.sql.Connection" level="DEBUG" />
+	<logger name="java.sql.Statement" level="DEBUG" />
+	<logger name="java.sql.PreparedStatement" level="DEBUG" />
+<!--     <logger name="com.xmsy.server.zxyy.manager.modules.manager.userinfo.dao" level="DEBUG" /> -->
+<!--     <logger name="com.xmsy.server.zxyy.manager.modules.manager.user.dao" level="DEBUG" /> -->
+      <!--  <logger name="com.xmsy.server.zxyy.manager.modules.manager.orderpreferential.dao" level="DEBUG" /> -->
+      <!--  <logger name="com.xmsy.server.zxyy.manager.modules.manager.pushdispatchdetail.dao" level="DEBUG" />-->
+      <!--  <logger name="com.xmsy.server.zxyy.manager.modules.manager.ordercashexamine.dao" level="DEBUG" />-->
+      <!--  <logger name="com.xmsy.server.zxyy.manager.modules.manager.ordertakemoney.dao" level="DEBUG" />--> 
+	<!-- 日志输出级别 -->
+	<root level="${logLevel}">
+		<appender-ref ref="STDOUT" /> 
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

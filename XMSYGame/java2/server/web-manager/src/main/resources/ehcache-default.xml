@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation = "http://ehcache.org/ehcache.xsd"
+         updateCheck = "false">
+
+  <!-- 指定一个文件目录，当EHCache把数据写到硬盘上时，将把数据写到这个文件目录下 -->
+  <diskStore path = "java.io.tmpdir"/>
+  <!--    RMI 集群模式-自动方式 需要3个步骤-->
+  <!--   参考网址： -->
+<!--   http://www.cnblogs.com/hoojo/archive/2012/07/19/2599534.html -->
+<!-- 常见的问题： -->
+<!-- 广播阻断： -->
+<!-- 自动的peer discovery与广播息息相关。广播可能被路由阻拦，像Xen和VMWare这种虚拟化的技术也可以阻拦广播。如果这些都打开了，你可能还在要将你的网卡的相关配置打开。一个简单的办法可以告诉广播是否有效， -->
+<!-- 那就是使用ehcache remote debugger来看“心跳”是否可用。 -->
+  
+<!-- 1 首先配置多播地址 Configuring the Peer Provider  -->
+<!-- 【注意自动成员发现 server1与server2的配置相同】 -->
+   <cacheManagerPeerProviderFactory  
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"  
+		properties="peerDiscovery=automatic, multicastGroupAddress=224.1.1.1,  
+            multicastGroupPort=40001, timeToLive=1" />   
+<!--   peerDiscovery 方式：atutomatic 为自动 ； manual 为手动-->
+<!--   mulicastGroupAddress 广播组地址：230.0.0.1；mulicastGroupPort 广播组端口：40001； -->
+<!--   timeToLive 搜索某个网段上的缓存：0是限制在同一个服务器，1是限制在同一个子网， -->
+<!--   32是限制在同一个网站，64是限制在同一个region， -->
+<!--   128是同一块大陆，还有个256，我就不说了； -->
+<!--   hostName：主机名或者ip，用来接受或者发送信息的接口。 -->
+<!--   同时组播地址可以指定 D 类 IP 地址空间， -->
+<!--   范围从 224.0.1.0 到 238.255.255.255 中的任何一个地址。 -->
+
+<!-- 2 然后配置CacheManagerPeerListener 用来接收其他集群服务器发来的消息 -->
+<!--cacheManagerPeerListenerFactory用来监听从其他成员发送过到当前CacheManager的信息 -->
+<cacheManagerPeerListenerFactory  
+        class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"  
+        properties="hostName=127.0.0.1,port=5000,socketTimeoutMillis=120000" /> 
+<!-- hostName (可选)-运行监听的服务器的主机名，指定了需要进行组播的主机和接受信息的集群。
+在CacheManager启动的时候就会检查主机是否可达，如果不可达将会跑出连接拒绝的异常。
+如果没有指定主机名，主机名将会使用 InetAddress.getLocalHost().getHostAddress()来作为默认的主机名。
+需要注意的时，除非你的集群配置同一台机器，千万不要把主机名设置为127.0.0.1，
+因为这个地址在网络是不可见的，所以无法接受远程主机发送的数据。 -->
+<!-- port(必选)-监听器监听的端口。 -->
+<!-- socketTimeoutMillis (可选)-同步超时时间，默认事2000ms。  -->
+<!--
+
+ 备注  hostName为本机的真实ip，防止启动报错先用127.0.0.1，如果是在同一台主机上开启多个应用port不能一样；
+
+-->
+  <!-- 默认的管理策略 -->
+  <defaultCache
+      eternal = "false"
+      maxElementsInMemory = "10000"
+      overflowToDisk = "true"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      diskExpiryThreadIntervalSeconds = "120"
+      memoryStoreEvictionPolicy = "LRU"/>
+      
+    <!--phone-->
+  <cache
+      name = "phoneCache"
+      eternal = "false"
+      maxElementsInMemory = "20000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+  	<cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+    <!-- 用于在初始化缓存，以及自动设置 -->
+	<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+
+  <!--token-->
+  <cache
+      name = "tokenCache"
+      eternal = "false"
+      maxElementsInMemory = "200000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+<!--      3.配置 cacheEventListenerFactory -->
+ <!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" -->
+<!-- properties="replicateAsynchronously=true,replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true "/> -->
+<!--        支持以下属性： -->
+<!-- replicatePuts=true | false – 当一个新元素增加到缓存中的时候是否要复制到其他的peers. 默认是true。 -->
+<!-- replicateUpdates=true | false – 当一个已经在缓存中存在的元素被覆盖时是否要进行复制。默认是true。 -->
+<!-- replicateRemovals= true | false – 当元素移除的时候是否进行复制。默认是true。 -->
+<!-- replicateAsynchronously=true | false – 复制方式是异步的（指定为true时）还是同步的（指定为false时）。默认是true。 -->
+<!-- replicatePutsViaCopy=true | false – 当一个新增元素被拷贝到其他的cache中时是否进行复制指定为true时为复制，默认是true。 -->
+<!-- replicateUpdatesViaCopy=true | false – 当一个元素被拷贝到其他的cache中时是否进行复制（指定为true时为复制），默认是true。 -->
+<!-- 你可以使用ehcache的默认行为从而减少配置的工作量，默认的行为是以异步的方式复制每件事； -->
+  	<cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+    
+  <!--充值优惠活动-->
+  <cache
+      name = "orderPreferentialCache"
+      eternal = "false"
+      maxElementsInMemory = "50"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+   <!--收款银行-->
+  <cache
+      name = "cashBankCache"
+      eternal = "false"
+      maxElementsInMemory = "50"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "3600"
+      timeToLiveSeconds = "4800"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+  <!--验证码缓存-->
+  <cache
+      name = "captchaCahce"
+      eternal = "false"
+      maxElementsInMemory = "10000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+      
+ <!--注册选填选项缓存-->
+  <cache
+      name = "registerNecessaryCache"
+      eternal = "false"
+      maxElementsInMemory = "10"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+     <!--用户会员层级缓存-->
+  <cache
+      name = "userHierarchyCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+
+  <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+    </cache>  
+     <!--金币奖励配置缓存-->
+  <cache
+      name = "giftCoinConfigCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+
+  <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+    </cache> 
+       <!--会员连输统计缓存-->
+  <cache
+      name = "userVictoryRecordCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+
+  <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+    </cache>   
+      <!--用户代理层级缓存-->
+  <cache
+      name = "userAgentHierarchyCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+    </cache>  
+      <!--黑名单缓存-->
+  <cache
+      name = "userBlacklistCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+  <!--ip黑名单缓存-->
+  <cache
+      name = "ipBlacklistCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+      
+      <!--网址绑定-->
+      <cache
+      name = "domainManagementCache"
+      eternal = "false"
+      maxElementsInMemory = "100"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+  
+      <!--支付公司配置-->
+      <cache
+      name = "payConfigCache"
+      eternal = "false"
+      maxElementsInMemory = "5000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+     </cache>
+     
+     <!--支付渠道配置-->
+      <cache
+      name = "payChannelCache"
+      eternal = "false"
+      maxElementsInMemory = "5000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+     </cache>
+     
+      <!--系统配置-->
+      <cache
+      name = "sysDictionaryCache"
+      eternal = "false"
+      maxElementsInMemory = "5000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+  
+  <!--充值优惠活动-->
+  <cache
+      name = "sysConfigCache"
+      eternal = "false"
+      maxElementsInMemory = "50"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "1"
+      timeToLiveSeconds = "1"
+      memoryStoreEvictionPolicy = "LRU">
+      <cacheEventListenerFactory
+       class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+       <!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+  </cache>
+
+  <!-- maxElementsInMemory 内存中最大缓存对象数，看着自己的heap大小来搞 -->
+  <!-- eternal：true表示对象永不过期，此时会忽略timeToIdleSeconds和timeToLiveSeconds属性，默认为false -->
+  <!-- maxElementsOnDisk：硬盘中最大缓存对象数，若是0表示无穷大 -->
+  <!-- overflowToDisk：true表示当内存缓存的对象数目达到了maxElementsInMemory界限后，
+      会把溢出的对象写到硬盘缓存中。注意：如果缓存的对象要写入到硬盘中的话，则该对象必须实现了Serializable接口才行。-->
+  <!-- diskSpoolBufferSizeMB：磁盘缓存区大小，默认为30MB。每个Cache都应该有自己的一个缓存区。-->
+  <!-- diskPersistent：是否缓存虚拟机重启期数据  -->
+  <!-- diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认为120秒 -->
+
+  <!-- timeToIdleSeconds： 设定允许对象处于空闲状态的最长时间，以秒为单位。当对象自从最近一次被访问后，
+      如果处于空闲状态的时间超过了timeToIdleSeconds属性值，这个对象就会过期，
+  EHCache将把它从缓存中清空。只有当eternal属性为false，该属性才有效。如果该属性值为0，
+      则表示对象可以无限期地处于空闲状态 -->
+
+  <!-- timeToLiveSeconds：设定对象允许存在于缓存中的最长时间，以秒为单位。当对象自从被存放到缓存中后，
+      如果处于缓存中的时间超过了 timeToLiveSeconds属性值，这个对象就会过期，
+  EHCache将把它从缓存中清除。只有当eternal属性为false，该属性才有效。如果该属性值为0，
+      则表示对象可以无限期地存在于缓存中。timeToLiveSeconds必须大于timeToIdleSeconds属性，才有意义 -->
+
+  <!-- memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，
+  Ehcache将会根据指定的策略去清理内存。可选策略有：LRU（最近最少使用，默认策略）、
+  FIFO（先进先出）、LFU（最少访问次数）。-->
+
+</ehcache>

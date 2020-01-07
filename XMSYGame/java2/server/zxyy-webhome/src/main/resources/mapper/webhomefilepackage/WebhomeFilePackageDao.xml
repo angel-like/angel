@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.webhomefilepackage.dao.WebhomeFilePackageDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.webhomefilepackage.entity.WebhomeFilePackageEntity" id="webhomeFilePackageMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="proxyNo" column="proxy_no"/>
+        <result property="proxyAlias" column="proxy_alias"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="channelCode" column="channel_code"/>
+        <result property="iosName" column="ios_name"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="updateUrl" column="update_url"/>
+        <result property="remark" column="remark"/>
+        <result property="iosFileUrl" column="ios_file_url"/>
+        <result property="androidFileUrl" column="android_file_url"/>
+    </resultMap>
+
+
+</mapper>

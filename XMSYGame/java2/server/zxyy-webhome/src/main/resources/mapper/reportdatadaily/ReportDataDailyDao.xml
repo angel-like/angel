@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.reportdatadaily.dao.ReportDataDailyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.reportdatadaily.entity.ReportDataDailyEntity" id="reportDataDailyMap">
+        <result property="id" column="id"/>
+        <result property="rechargeTotal" column="recharge_total"/>
+        <result property="rechargeNum" column="recharge_num"/>
+        <result property="registereNum" column="registere_num"/>
+        <result property="activeNum" column="active_num"/>
+        <result property="winNum" column="win_num"/>
+        <result property="loseNum" column="lose_num"/>
+        <result property="investmentTotal" column="investment_total"/>
+        <result property="outputTotal" column="output_total"/>
+        <result property="winTotal" column="win_total"/>
+        <result property="countDay" column="count_day"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+</mapper>

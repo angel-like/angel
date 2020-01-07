@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userbalance.dao.UserBalanceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userbalance.entity.UserBalanceEntity" id="userBalanceMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="money" column="money"/>
+        <result property="unprofitMoney" column="unprofit_money"/>
+        <result property="profit" column="profit"/>
+        <result property="profitYesterday" column="profit_yesterday"/>
+		<result property="countDay" column="count_day"/>
+    </resultMap>
+	<!--统计查询-->
+	<select id="count" resultType="Map">
+SELECT sum(money+unprofit_money) yuEBaoMoneyCount from user_balance where user_id in (SELECT id from user where superiors_id=#{id})
+	</select>
+
+	<update id="updateUserBalanceByUserId">
+		update user_balance
+		set
+		<if test="money!=null">
+			money=money+#{money},
+		</if>
+		<if test="unprofitMoney!=null">
+			unprofit_money=unprofit_money+#{unprofitMoney},
+		</if>
+		update_time = now()
+		where user_id=#{userId}
+		<if test="money!=null">
+			and money+#{money} &gt;=0
+		</if>
+		<if test="unprofitMoney!=null">
+			and unprofit_money+#{unprofitMoney} &gt;=0
+		</if>
+	</update>
+	<select id="findUserBalanceByUserId" resultMap="userBalanceMap">
+		select u.user_id,sum(u.money+u.unprofit_money) as money
+		 from user_balance u
+		where u.delete_status=0 and u.user_id in
+		<foreach collection="idList" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		group by u.user_id
+	</select>
+	<!--总金额统计-->
+	<select id="AllMoney" resultType="Long">
+		select SUM(money)
+	FROM user_balance WHERE delete_status=0
+		<if test="userBalance.userAccount !=null and userBalance.userAccount!=''">
+			AND user_account=#{userBalance.userAccount}
+		</if>
+		<if test="userBalance.startTime !=null and userBalance.startTime!=''">
+			AND count_day &gt;= #{userBalance.startTime}
+		</if>
+		<if test="userBalance.endTime !=null and userBalance.endTime!=''">
+			AND count_day &lt;= #{userBalance.endTime}
+		</if>
+	</select>
+
+	<!--总收益统计-->
+	<select id="AllPrize" resultType="Long">
+		select SUM(profit)
+		FROM user_balance  WHERE delete_status=0
+		<if test="userBalance.userAccount !=null and userBalance.userAccount!=''">
+			AND user_account=#{userBalance.userAccount}
+		</if>
+		<if test="userBalance.startTime !=null and userBalance.startTime!=''">
+			AND count_day &gt;= #{userBalance.startTime}
+		</if>
+		<if test="userBalance.endTime !=null and userBalance.endTime!=''">
+			AND count_day &lt;= #{userBalance.endTime}
+		</if>
+	</select>
+	<!--总昨日收益统计-->
+	<select id="AllProfitYesterday" resultType="Long">
+		select SUM(profit_yesterday)
+		FROM user_balance WHERE delete_status=0
+		<if test="userBalance.userAccount !=null and userBalance.userAccount!=''">
+			AND user_account=#{userBalance.userAccount}
+		</if>
+		<if test="userBalance.startTime !=null and userBalance.startTime!=''">
+			AND count_day &gt;= #{userBalance.startTime}
+		</if>
+		<if test="userBalance.endTime !=null and userBalance.endTime!=''">
+			AND count_day &lt;= #{userBalance.endTime}
+		</if>
+	</select>
+</mapper>

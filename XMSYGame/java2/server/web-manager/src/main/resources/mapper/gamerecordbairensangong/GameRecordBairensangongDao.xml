@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.gamerecordbairensangong.dao.GameRecordBairensangongDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.gamerecordbairensangong.entity.GameRecordBairensangongEntity" id="gameRecordBairensangongMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="gradeNumber" column="grade_number"/>
+        <result property="roomId" column="room_id"/>
+        <result property="roomName" column="room_name"/>
+        <result property="betArea" column="bet_area"/>
+        <result property="betAreaStr" column="bet_area_str"/>
+        <result property="betCoins" column="bet_coins"/>
+        <result property="prizeCoins" column="prize_coins"/>
+        <result property="bankerCard" column="banker_card"/>
+        <result property="bankerCardStr" column="banker_card_str"/>
+        <result property="idleCard" column="idle_card"/>
+        <result property="idleCardStr" column="idle_card_str"/>
+        <result property="multipleType" column="multiple_type"/>
+        <result property="coinsBefore" column="coins_before"/>
+        <result property="coinsAfter" column="coins_after"/>
+        <result property="robot" column="robot"/>
+        <result property="gameRoundNo" column="game_round_no"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <select id="findCardType"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.gamerecord.entity.GameRecordFindCardType">
+		SELECT user_id as userId, bet_area_str as betAreaStr,game_round_no as
+		gameRoundNo , banker_card_str as bankerCardStr , idle_card_str as idleCardStr
+		from game_record_bairensangong g
+		where 1=1
+		<if test="gameRoundNo !=null and gameRoundNo !=''">
+			and g.game_round_no=#{gameRoundNo}
+		</if>
+	</select>
+
+
+</mapper>

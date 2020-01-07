@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.gamerecorddaily.dao.GameRecordDailyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.gamerecorddaily.entity.GameRecordDailyEntity" id="gameRecordDailyMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="validBet" column="valid_bet"/>
+        <result property="prizeCoins" column="prize_coins"/>
+        <result property="waterProfit" column="water_profit"/>
+        <result property="profitCoins" column="profit_coins"/>
+        <result property="countDay" column="count_day"/>
+        <result property="userWaterProfit" column="user_water_profit"/>
+        <result property="userWaterRate" column="user_water_rate"/>
+        <result property="userReturn" column="user_return"/>
+        <result property="agentReturn" column="agent_return"/>
+        <result property="abnormal" column="abnormal"/>
+        <result property="abnormalContent" column="abnormal_content"/>
+        <result property="agentAbnormal" column="agent_abnormal"/>
+        <result property="agentAbnormalContent" column="agent_abnormal_content"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <select id="selectuserPumpTotal" resultType="Map">
+    	select user_id userId, user_account userAccount, SUM(valid_bet) validBet,
+    	SUM(prize_coins) prizeCoins,
+    	SUM(water_profit) waterProfit,
+    	SUM(user_water_profit) userWaterProfit 
+    	from game_record_daily
+    	where delete_status=0
+    	<if test="gameRecordDaily.userAccount !=null and gameRecordDaily.userAccount!='' ">
+			AND user_account =#{gameRecordDaily.userAccount}
+		</if>
+		<if test="gameRecordDaily.startTime !=null and gameRecordDaily.startTime!='' ">
+			AND count_day &gt;=#{gameRecordDaily.startTime}
+		</if>
+		<if test="gameRecordDaily.endTime !=null and gameRecordDaily.endTime!='' ">
+			AND count_day &lt;=#{gameRecordDaily.endTime}
+		</if> 
+		GROUP BY user_account,user_id
+    </select>
+    
+    <select id="selectuserPumpList" resultType="com.xmsy.server.zxyy.manager.modules.manager.gamerecorddaily.entity.GameRecordDailyEntity">
+    	select user_id userId, user_account userAccount, SUM(valid_bet) validBet,
+    	SUM(prize_coins) prizeCoins,
+    	SUM(water_profit) waterProfit,
+    	SUM(user_water_profit) userWaterProfit 
+    	from game_record_daily
+    	where delete_status=0
+    	<if test="gameRecordDaily.userAccount !=null and gameRecordDaily.userAccount!='' ">
+			AND user_account =#{gameRecordDaily.userAccount}
+		</if>
+		<if test="gameRecordDaily.startTime !=null and gameRecordDaily.startTime!='' ">
+			AND count_day &gt;=#{gameRecordDaily.startTime}
+		</if>
+		<if test="gameRecordDaily.endTime !=null and gameRecordDaily.endTime!='' ">
+			AND count_day &lt;=#{gameRecordDaily.endTime}
+		</if> 
+		GROUP BY user_account,user_id
+    </select>
+    
+
+
+</mapper>

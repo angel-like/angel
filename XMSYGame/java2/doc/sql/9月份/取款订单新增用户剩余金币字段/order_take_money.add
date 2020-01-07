@@ -1,0 +1,2 @@
+ALTER TABLE `order_take_money`
+ADD COLUMN `user_surplus_coin`  bigint(22) NOT NULL DEFAULT 0 COMMENT '用户剩余金币' AFTER `obtain_amount`;

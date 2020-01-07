@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.gamerecordcattlqiangzhuang.dao.GameRecordCattlQiangzhuangDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.gamerecordcattlqiangzhuang.entity.GameRecordCattlQiangzhuangEntity" id="gameRecordCattlQiangzhuangMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="roomId" column="room_id"/>
+        <result property="roomName" column="room_name"/>
+        <result property="baseScore" column="base_score"/>
+        <result property="coinsBefore" column="coins_before"/>
+        <result property="betCoins" column="bet_coins"/>
+        <result property="coins" column="coins"/>
+        <result property="coinsAfter" column="coins_after"/>
+        <result property="cardsInt" column="cards_int"/>
+        <result property="cardsStr" column="cards_str"/>
+        <result property="betMultiple" column="bet_multiple"/>
+        <result property="brandMultiple" column="brand_multiple"/>
+        <result property="multiple" column="multiple"/>
+        <result property="robot" column="robot"/>
+        <result property="banker" column="banker"/>
+        <result property="gameRoundNo" column="game_round_no"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <select id="findCardType" resultType="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.entity.GameRecordFindCardType">
+	    SELECT user_id as userId, cards_str as cardsStr ,game_round_no as gameRoundNo
+	    from game_record_cattl_qiangzhuang g
+	    where 1=1
+	    <if test="gameRoundNo !=null and gameRoundNo !=''">
+			and g.game_round_no=#{gameRoundNo}
+		</if>
+    </select>
+
+
+</mapper>

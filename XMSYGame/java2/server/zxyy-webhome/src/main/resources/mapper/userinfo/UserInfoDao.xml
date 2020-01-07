@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.userinfo.dao.UserInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.userinfo.entity.UserInfoEntity"
+		id="userInfoMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="userIdentity" column="user_identity" />
+		<result property="userPhone" column="user_phone" />
+		<result property="userEmail" column="user_email" />
+		<result property="postCode" column="post_code" />
+		<result property="userAddress" column="user_address" />
+		<result property="userAddressStatus" column="user_address_status" />
+		<result property="userQq" column="user_qq" />
+		<result property="userBirthday" column="user_birthday" />
+		<result property="bankName" column="bank_name" />
+		<result property="bankAddress" column="bank_address" />
+		<result property="bankCart" column="bank_cart" />
+		<result property="bankAccountName" column="bank_account_name" />
+		<result property="userId" column="user_id" />
+		<result property="alipayAccount" column="alipay_account" />
+		<result property="integral" column="integral"></result>
+	</resultMap>
+
+
+	<!-- 更新用户基本信息 没有内容更新为空 -->
+	<update id="updateUserBaseInfo">
+		update user_info set
+		<if test="userIdentity !=null ">
+			user_identity =#{userIdentity},
+		</if>
+		<if test="userPhone !=null ">
+			user_phone =#{userPhone},
+		</if>
+		<if test="userEmail !=null ">
+			user_email =#{userEmail},
+		</if>
+		<if test="userQq !=null ">
+			user_qq =#{userQq},
+		</if>
+		update_time =now()
+		where id=#{id}
+	</update>
+	<!-- 更新用户基本信息 没有内容更新为空 -->
+	<update id="updateUserInfo">
+		update user_info set
+			user_identity =#{userIdentity},
+			user_phone =#{userPhone},
+			user_email =#{userEmail},
+			user_qq =#{userQq},
+			post_code =#{postCode},
+			user_address =#{userAddress},
+			user_birthday =#{userBirthday},
+		    update_time =now()
+		where id=#{id}
+	</update>
+
+	<!-- 根据用户id更新用户详情 -->
+	<update id="updateByUserId">
+		update user_info set
+		<if test="jpushRegId !=null and jpushRegId !=''">
+			jpush_reg_id =#{jpushRegId},
+		</if>
+		<if test="integral != null">
+			integral =integral+#{integral},
+		</if>
+		<if test="userAddress !=null ">
+			user_address =#{userAddress},
+		</if>
+		<if test="userPhone !=null ">
+			user_phone =#{userPhone},
+		</if>
+		<if test="userEmail !=null ">
+			user_email =#{userEmail},
+		</if>
+		<if test="userQq !=null ">
+			user_qq =#{userQq},
+		</if>
+		<if test="bankCard !=null ">
+			bank_card =#{bankCard},
+		</if>
+		<if test="bankAddress !=null ">
+			bank_address =#{bankAddress},
+		</if>
+		<if test="bankName !=null ">
+			bank_name =#{bankName},
+		</if>
+		<if test="bankAccountName !=null ">
+			bank_account_name =#{bankAccountName},
+		</if>
+		update_time =now()
+		where user_id=#{userId}
+		<if test="integral != null">
+			and integral+#{integral} &gt;=0
+		</if>
+	</update>
+
+	<delete id="deleteUserInfoByUserId">
+		delete from user_info where user_id=#{userId}
+	</delete>
+
+	<!-- 根据账号列表查询用户集合 -->
+	<select id="findUserInfoListByAccount"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.userinfo.entity.result.UserPushInfo">
+		SELECT
+		ui.jpush_reg_id as jpushRegId,
+		u.account
+		FROM
+		user u,
+		user_info ui
+		WHERE
+		u.id =
+		ui.user_id
+		AND u.delete_status = FALSE
+		AND ui.delete_status =FALSE
+		AND u.account IN
+		<foreach collection="accountList" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 根据层级查询用户集合 -->
+	<select id="findUserInfoListByhierarchyId" resultType="String">
+		SELECT
+		distinct(ui.jpush_reg_id) AS jpushRegId
+		FROM
+		user u,
+		user_info ui
+		WHERE
+		u.id = ui.user_id
+		AND u.delete_status = FALSE
+		AND ui.delete_status = FALSE
+		AND ui.jpush_reg_id is not null
+		<if test="hierarchyIds !=null ">
+			AND u.hierarchy_id IN
+		<foreach collection="hierarchyIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		</if>
+	</select>
+
+
+</mapper>

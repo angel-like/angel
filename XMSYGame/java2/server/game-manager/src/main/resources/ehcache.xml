@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation = "http://ehcache.org/ehcache.xsd"
+         updateCheck = "false">
+
+  <!-- 指定一个文件目录，当EHCache把数据写到硬盘上时，将把数据写到这个文件目录下 -->
+  <diskStore path = "java.io.tmpdir"/>
+
+  <!-- 默认的管理策略 -->
+  <defaultCache
+      eternal = "false"
+      maxElementsInMemory = "10000"
+      overflowToDisk = "true"
+      diskPersistent = "false"
+      timeToIdleSeconds = "3600"
+      timeToLiveSeconds = "3600"
+      diskExpiryThreadIntervalSeconds = "120"
+      memoryStoreEvictionPolicy = "LRU"/>
+
+  <!--游戏信息-->
+  <cache
+      name = "gameInfoCache"
+      eternal = "false"
+      maxElementsInMemory = "3000"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "3600"
+      timeToLiveSeconds = "3600"
+      memoryStoreEvictionPolicy = "LRU"/>
+      
+   <!--游戏场次-->
+  <cache
+      name = "gradeInfoCache"
+      eternal = "false"
+      maxElementsInMemory = "30"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "3600"
+      timeToLiveSeconds = "3600"
+      memoryStoreEvictionPolicy = "LRU"/>
+      
+  <!--游戏大厅-->
+  <cache
+      name = "hallCahce"
+      eternal = "false"
+      maxElementsInMemory = "10"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "180"
+      timeToLiveSeconds = "180"
+      memoryStoreEvictionPolicy = "LRU"/>
+      
+      
+ <!--游戏房间-->
+  <cache
+      name = "roomCahce"
+      eternal = "false"
+      maxElementsInMemory = "50"
+      overflowToDisk = "false"
+      diskPersistent = "false"
+      timeToIdleSeconds = "3600"
+      timeToLiveSeconds = "3600"
+      memoryStoreEvictionPolicy = "LRU"/>
+
+</ehcache>

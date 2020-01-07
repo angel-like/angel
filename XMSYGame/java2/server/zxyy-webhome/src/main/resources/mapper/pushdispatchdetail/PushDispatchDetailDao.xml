@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.pushdispatchdetail.dao.PushDispatchDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.pushdispatchdetail.entity.PushDispatchDetailEntity" id="pushDispatchDetailMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="operator" column="operator"/>
+        <result property="recipient" column="recipient"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="executeTime" column="execute_time"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="status" column="status"/>
+        <result property="scope" column="scope"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="failReason" column="fail_reason"/>
+    </resultMap>
+
+
+</mapper>

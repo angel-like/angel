@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.ordercashexamine.dao.OrderCashExamineDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.ordercashexamine.entity.OrderCashExamineEntity" id="orderCashExamineMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="rechargeAmount" column="recharge_amount"/>
+        <result property="hierarchyDiscountRate" column="hierarchy_discount_rate"/>
+        <result property="hierarchyDiscountAmount" column="hierarchy_discount_amount"/>
+        <result property="hierarchyDiscountMultiple" column="hierarchy_discount_multiple"/>
+        <result property="hierarchyDiscountBet" column="hierarchy_discount_bet"/>
+        <result property="hierarchyRelaxationRate" column="hierarchy_relaxation_rate"/>
+        <result property="hierarchyRelaxationBet" column="hierarchy_relaxation_bet"/>
+        <result property="hierarchyNormalMultiple" column="hierarchy_normal_multiple"/>
+        <result property="hierarchyNormalBet" column="hierarchy_normal_bet"/>
+        <result property="totalBet" column="total_bet"/>
+        <result property="userValidBet" column="user_valid_bet"/>
+        <result property="userTotalBet" column="user_total_bet"/>
+        <result property="userNeedBet" column="user_need_bet"/>
+        <result property="status" column="status"/>
+        <result property="hierarchyAdministrativeRate" column="hierarchy_administrative_rate"/>
+        <result property="hierarchyAdministrativeAmount" column="hierarchy_administrative_amount"/>
+        <result property="deductionAdministrative" column="deduction_administrative"/>
+        <result property="deductionValidBet" column="deduction_valid_bet"/>
+        <result property="deductionNeedBet" column="deduction_need_bet"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="orderNo" column="order_no"/>
+    </resultMap>
+    
+    
+     <!-- 获取稽查审核记录 -->
+	<select id="findOrderCashExamines"
+		resultMap="orderCashExamineMap">
+		SELECT
+		o.user_need_bet,
+		o.deduction_valid_bet,
+		o.deduction_need_bet,
+		o.deduction_administrative,
+		o.user_money,
+		o.hierarchy_administrative_amount,
+		o.user_valid_bet
+		FROM
+		order_cash_examine o
+		where o.delete_status=false
+		<if test="orderCashExamineEntity.userId !=null and orderCashExamineEntity.userId !=0">
+			and o.user_id=#{orderCashExamineEntity.userId}
+		</if>
+		<if test="startTime !=null and startTime!=''">
+			AND o.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND o.create_time &lt;= #{endTime}
+		</if>
+		order by o.id desc
+	</select>
+	
+	<!-- 获取最近一条稽查审核记录 -->
+	<select id="findRecentOrderCashExamine"
+		resultMap="orderCashExamineMap">
+		SELECT
+		o.id,
+		o.user_need_bet,
+		o.deduction_valid_bet,
+		o.deduction_need_bet,
+		o.hierarchy_normal_multiple,
+		o.user_money,
+		o.hierarchy_administrative_rate,
+		o.hierarchy_administrative_amount,
+		o.user_valid_bet,
+		o.deduction_administrative,
+		o.update_time,
+		o.create_time,
+		o.version
+		FROM
+		order_cash_examine o
+		where o.delete_status=false
+		and o.user_id=#{userId}
+		and o.status=false
+	</select>
+<!-- 	查找最近一条稽查记录 不管状态 -->
+	<select id="findRecentOneOrderCashExamine"
+		resultMap="orderCashExamineMap">
+		SELECT
+		*
+		FROM
+		order_cash_examine o
+		where o.delete_status=false
+		and o.user_id=#{userId}
+		<if test="id !=null and id >0 ">
+			and o.id != #{id}
+		</if>
+		order by create_time desc
+		limit 0,1
+	</select>
+	
+	
+	
+	<!-- 修改用户需要的下注 -->
+	<update id="updateOrderCashExamineUserNeedBet">
+	update order_cash_examine set
+	<if test="userNeedBet !=null ">
+		user_need_bet =user_need_bet+#{userNeedBet}
+	</if>
+	where id=#{id}
+</update>
+
+	<!-- 修改用户需要的下注 -->
+	<update id="updateCashBet">
+		update order_cash_examine set
+		<if test="userValidBet !=null ">
+			user_valid_bet =user_valid_bet+#{userValidBet}
+		</if>
+		where user_id=#{userId}
+		and status =0
+
+	</update>
+
+
+	<!-- 修改用户需要的下注 -->
+	<update id="updateCashBetAndTime">
+		update order_cash_examine set
+		<if test="userValidBet !=null ">
+			user_valid_bet =user_valid_bet+#{userValidBet},
+		</if>
+		<if test="updateTime !=null ">
+			update_time =#{updateTime}
+		</if>
+		where user_id=#{userId}
+		and status =0
+
+	</update>
+
+
+	<!-- 修改用户需要的下注 -->
+	<update id="updateValidCashBet">
+		update order_cash_examine set
+			user_valid_bet =0
+		where user_id=#{userId}
+		and status =0
+
+	</update></mapper>

@@ -1,0 +1,17 @@
+package com.xmsy.server.zxyy.manager.modules.manager.proxyordertransactionrecord.service;
+
+import com.baomidou.mybatisplus.service.IService;
+import com.xmsy.server.zxyy.manager.modules.manager.proxyordertransactionrecord.entity.ProxyOrderTransactionRecordEntity;
+
+
+/**
+ * 代理交易订单表
+ *
+ * @author ahui
+ * @email xxxxx
+ * @date 2019-08-05 16:52:25
+ */
+public interface ProxyOrderTransactionRecordService extends IService<ProxyOrderTransactionRecordEntity> {
+
+}
+

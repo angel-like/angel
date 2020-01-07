@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.sysconfig.dao.SysConfigDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.sysconfig.entity.SysConfigEntity"
+		id="sysConfigMap">
+		<result property="id" column="id" />
+		<result property="paramKey" column="param_key" />
+		<result property="paramValue" column="param_value" />
+		<result property="type" column="type" />
+		<result property="parentId" column="parent_id" />
+	</resultMap>
+
+
+
+	<!-- 获取类型 -->
+	<select id="findSysconfigValue" resultType="string">
+		SELECT a.param_value
+		FROM sys_config a
+		LEFT JOIN sys_config b ON a.parent_id = b.id
+		WHERE
+		a.delete_status =0
+		and
+		a.parent_id != 0
+		AND b.param_value = #{parent}
+		AND a.param_key =
+		#{paramKey}
+
+
+	</select>
+
+</mapper>

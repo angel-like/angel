@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.imshuffling.dao.ImShufflingDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.imshuffling.entity.ImShufflingEntity" id="imShufflingMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="enclosureId" column="enclosure_id"/>
+        <result property="title" column="title"/>
+        <result property="enable" column="enable"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="gameId" column="game_id"/>
+    </resultMap>
+	<select id="selectShufflingList" resultType="com.xmsy.server.zxyy.webhome.modules.webim.homepage.result.ImShufflingResult">
+			SELECT
+				a.id AS id,
+				IFNULL(a.title,'') AS title,
+				IFNULL(b.url,'') AS enclosureUrl,
+				IFNULL(a.game_id,0) AS gameId
+			FROM
+				im_shuffling a
+			LEFT JOIN webhome_enclosure b ON a.enclosure_id = b.id
+			AND b.delete_status = 0
+			WHERE
+				a.delete_status = 0
+			AND a.`enable` = 1
+			ORDER BY
+				a.order_no
+	</select>
+
+</mapper>

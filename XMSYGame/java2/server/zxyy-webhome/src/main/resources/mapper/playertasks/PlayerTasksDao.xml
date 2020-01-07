@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.playertasks.dao.PlayerTasksDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.playertasks.entity.PlayerTasksEntity" id="playerTasksMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="roomId" column="room_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="enable" column="enable"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="taskNum" column="task_num"/>
+        <result property="functionalType" column="functional_type"/>
+        <result property="propId" column="prop_id"/>
+        <result property="propNum" column="prop_num"/>
+        <result property="confrontationRequirement" column="confrontation_requirement"/>
+        <result property="condition" column="condition"/>
+        <result property="cycle" column="cycle"/>
+        <result property="sorts" column="sorts"/>
+        <result property="effectTime" column="effect_time"/>
+        <result property="failureTime" column="failure_time"/>
+    </resultMap>
+    <!--  永不失效 and failure_time &gt;now()  这个条件先备注 -->
+    <select id="queryByType" resultType="com.xmsy.server.zxyy.webhome.modules.manager.playertasks.entity.PlayerTasksEntity">
+    	SELECT id,
+	    	room_id roomId,
+	    	game_id gameId, 
+	    	grade_id gradeId,
+	    	title,
+	    	type,
+	    	prop_id 
+	    	propId,
+	    	prop_num propNum,
+	    	task_num taskNum,
+	    	functional_type functionalType,
+	    	`condition`,
+	    	confrontation_requirement confrontationRequirement, 
+	    	cycle, 
+	    	sorts,
+	    	effect_time effectTime, 
+	    	failure_time failureTime 
+	    	from  player_tasks
+		where delete_status=0  and effect_time &lt;now() and `enable`=true
+		<if test="type != null">
+			and	type=#{type}
+		</if>
+		order by sorts
+    </select>
+    
+    
+    <select id="queryPropNum" resultType="Integer">
+    	select prop_num propNum 
+    	from player_tasks 
+    	WHERE delete_status=0 
+    	<if test="taskId != null">
+			and	id=#{taskId}
+		</if>
+    </select>
+    
+
+
+</mapper>

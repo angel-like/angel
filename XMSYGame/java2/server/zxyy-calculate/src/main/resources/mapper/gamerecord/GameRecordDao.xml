@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.calculate.modules.manager.gamerecord.dao.GameRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.calculate.modules.manager.gamerecord.entity.GameRecordEntity"
+		id="gameRecordMap">
+		<result property="id" column="id" />
+		<result property="userid" column="userid" />
+		<result property="userAccount" column="user_account" />
+		<result property="gameId" column="game_id" />
+		<result property="gameName" column="game_name" />
+		<result property="gradeId" column="grade_id" />
+		<result property="gradeName" column="grade_name" />
+		<result property="betCoins" column="bet_coins" />
+		<result property="prizeCoins" column="prize_coins" />
+		<result property="userType" column="user_type" />
+		<result property="createTime" column="create_time" />
+		<result property="mini" column="mini" />
+		<result property="profitCoins" column="profit_coins" />
+		<result property="waterProfit" column="water_profit" />
+		<result property="gameRoundNo" column="game_round_no" />
+		<result property="waterRate" column="water_rate" />
+		<result property="validBet" column="valid_bet" />
+		<result property="exchangeRate" column="exchange_rate" />
+		<result property="robot" column="robot" />
+	</resultMap>
+
+	<!-- 获取用户有效下注 -->
+	<select id="getUserValidBet"
+		resultType="Long">
+		SELECT
+		IFNULL(sum(gr.valid_bet), 0)
+		FROM
+		game_record gr
+		where gr.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+		AND gr.create_time &gt;= #{startTime}
+	</if>
+	<if test="endTime !=null and endTime!=''">
+		AND gr.create_time &lt;= #{endTime}
+	</if>
+	</select>
+</mapper>

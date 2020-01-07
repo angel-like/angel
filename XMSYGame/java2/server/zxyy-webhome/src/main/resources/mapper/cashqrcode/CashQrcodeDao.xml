@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.cashqrcode.dao.CashQrcodeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.cashqrcode.entity.CashQrcodeEntity"
+		id="cashQrcodeMap">
+		<result property="id" column="id" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="version" column="version" />
+		<result property="nickName" column="nick_name" />
+		<result property="account" column="account" />
+		<result property="remark" column="remark" />
+		<result property="enable" column="enable" />
+		<result property="url" column="url" />
+		<result property="type" column="type" />
+		<result property="hierarchyId" column="hierarchy_id" />
+	</resultMap>
+
+
+	<!-- 获取指定类型收款二维码，web调用 -->
+	<select id="findCashQrcodeByHierarchyId"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.cashqrcode.entity.CashQrcodeEntity">
+		SELECT
+		*
+		FROM
+		cash_qrcode c
+		WHERE
+		c.type = #{type}
+		AND find_in_set(#{hierarchyId}, c.hierarchy_id)
+		AND c.delete_status = FALSE
+		AND c.enable = true
+	</select>
+	
+	<select id="findCashQrcodeTypeByHierarchyId" resultType="map">
+		SELECT
+			DISTINCT type code ,type_str name
+		FROM
+		cash_qrcode c
+		WHERE
+		find_in_set(#{hierarchyId}, c.hierarchy_id)
+		AND c.delete_status = FALSE
+		AND c.enable = true
+		order by type
+	</select>
+	
+	<!-- 获取指定类型收款二维码，app调用 -->
+	<select id="findCashQrcode"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.recharge.result.AppQrcodeRechargeResult">
+		SELECT
+		*
+		FROM
+		cash_qrcode c
+		WHERE
+		c.type = #{type}
+<!-- 		AND find_in_set(#{hierarchyId}, c.hierarchy_id) -->
+		AND c.delete_status = FALSE
+		AND c.enable = true
+	</select>
+
+</mapper>

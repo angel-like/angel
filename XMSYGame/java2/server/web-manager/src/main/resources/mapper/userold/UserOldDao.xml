@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userold.dao.UserOldDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userold.entity.UserOldEntity" id="userOldMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="account" column="account"/>
+        <result property="portrait" column="portrait"/>
+        <result property="headframeId" column="headframe_id"/>
+        <result property="sex" column="sex"/>
+        <result property="userType" column="user_type"/>
+        <result property="token" column="token"/>
+        <result property="unionType" column="union_type"/>
+        <result property="openId" column="open_id"/>
+        <result property="unionId" column="union_id"/>
+        <result property="superiorsId" column="superiors_id"/>
+        <result property="forbiddenEnable" column="forbidden_enable"/>
+        <result property="nobetEnable" column="nobet_enable"/>
+        <result property="frozenEnable" column="frozen_enable"/>
+        <result property="abnormalEnable" column="abnormal_enable"/>
+        <result property="hierarchyId" column="hierarchy_id"/>
+        <result property="riskHierarchyId" column="risk_hierarchy_id"/>
+        <result property="vipId" column="vip_id"/>
+        <result property="coin" column="coin"/>
+        <result property="roomCard" column="room_card"/>
+        <result property="commission" column="commission"/>
+        <result property="money" column="money"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="registerIpAddress" column="register_ip_address"/>
+        <result property="registerDeviceCode" column="register_device_code"/>
+        <result property="userName" column="user_name"/>
+        <result property="remark" column="remark"/>
+        <result property="agentEnable" column="agent_enable"/>
+        <result property="firstRecharge" column="first_recharge"/>
+        <result property="gameInfoId" column="game_info_id"/>
+        <result property="gameServerId" column="game_server_id"/>
+        <result property="noScan" column="no_scan"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+	<select id="findUserPage" resultType="Map">
+		SELECT
+		false showEdit,
+		false showBtn,
+		a.id id,
+		c.`name` hierarchyName,
+		d.`name` riskHierarchyName,
+		a.account,
+		a.commission as commission,
+		a.game_info_id as gameInfoId,
+		IF(a.game_info_id = 0, 0, 1) AS
+		game_info,
+		a.user_name userName,
+		a.user_type userType,
+		a.superiors_id
+		superiorsId,
+		a.token,a.remark,a.remark oldRemark,
+		a.register_ip
+		registerIp,
+		a.register_ip_address registerIpAddress,
+		a.forbidden_enable
+		forbiddenEnable,
+		a.create_time createTime,
+		a.nobet_enable nobetEnable,
+		a.abnormal_enable abnormalEnable,
+		a.frozen_enable frozenEnable,
+		a.no_scan noScan,
+		b.create_time loginTime,
+		b.last_login_time
+		lastLoginTime,
+		b.ip LoginIp,
+		b.device_code deviceCode,
+		b.device_type
+		deviceType,
+		b.region,
+		b.nation,
+		b.ip_address loginAddress,
+		b.last_ip
+		lastLoginIp,
+		b.last_ip_address lastLoginAddress,
+		b.domain,
+		b.edition,
+		b.browser,
+		a.game_server_id gameServerId,
+		a.money,
+		a.coin,
+		e.bank_card bankCard,
+		a.room_card roomCard,
+		f.name vipName,
+		a.vip_id vipId
+		FROM
+		`user_old` a
+	<!----> LEFT JOIN user_login b ON a.id =
+		b.user_id
+		AND
+		a.token = b.token
+		AND login_status = "success" 	
+		LEFT JOIN
+		user_vip f ON a.vip_id = f.id
+		LEFT JOIN user_hierarchy
+		c ON a.hierarchy_id = c.id and c.hierarchy_type=0
+		LEFT JOIN
+		user_hierarchy d ON a.risk_hierarchy_id = d.id and d.hierarchy_type=1
+		LEFT JOIN user_info_old e ON e.user_id = a.id
+		where a.delete_status=0
+		<if test="user.account !=null and user.account!=''">
+			AND a.account=#{user.account}
+		</if>
+		<if test="user.userName !=null and user.userName !=''">
+			AND a.user_name=#{user.userName}
+		</if>
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.startTime !=null and user.startTime!='' ">
+			AND a.create_time &gt;=#{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!='' ">
+			AND a.create_time &lt;=#{user.endTime}
+		</if>
+		ORDER BY id DESC
+	<!--	<if test="user.superiorsId !=null and user.superiorsId >0">
+			AND a.superiors_id=#{user.superiorsId}
+		</if>
+		<if
+			test="user.superiorsAccount !=null and user.superiorsAccount!=''">
+			AND a.superiors_id in (select id from `user` where
+			account=#{user.superiorsAccount})
+		</if>		
+		<if test="user.bankCard !=null and user.bankCard!=''">
+			AND a.id in (SELECT user_id from user_info WHERE
+			e.bank_card=#{user.bankCard})
+		</if>
+		<if test="user.hierarchyId !=null ">
+			AND a.hierarchy_id=#{user.hierarchyId}
+		</if>
+		<if test="user.registerIp !=null and user.registerIp !=''">
+			AND a.register_ip=#{user.registerIp}
+		</if>
+		<if test="user.loginIp !=null and user.loginIp !=''">
+			AND b.ip=#{user.loginIp}
+		</if>
+		<if test="user.deviceCode !=null and user.deviceCode!=''">
+			AND b.device_code=#{user.deviceCode}
+		</if>
+		<if test="user.deviceType !=null and user.deviceType!=''">
+			AND b.device_type=#{user.deviceType}
+		</if>
+		<if test="user.userType !=null and user.userType!=''">
+			AND a.user_type=#{user.userType}
+		</if>
+		<if test="user.trial ==1">
+			AND a.user_type = 'TRIAL'
+		</if>
+		<if test="user.trial ==0">
+			AND a.user_type != 'TRIAL'
+		</if>
+		<if test="user.forbiddenEnable !=null ">
+			AND a.forbidden_enable=#{user.forbiddenEnable}
+		</if>
+		<if test="user.nobetEnable !=null ">
+			AND a.nobet_enable=#{user.nobetEnable}
+		</if>
+		<if test="user.abnormalEnable !=null ">
+			AND a.abnormal_enable=#{user.abnormalEnable}
+		</if>
+		<if test="user.frozenEnable !=null ">
+			AND a.frozen_enable=#{user.frozenEnable}
+		</if>
+		
+		<if test="user.sortOption !=null  and user.sortOption !=''">
+			ORDER BY ${user.sortOption} ${user.orientation}
+		</if>
+		<if test="user.sortOption ==null or user.sortOption ==''">
+			ORDER BY CONCAT(game_info, a.id) DESC
+		</if>-->
+
+	</select>
+<!-- 修改备注 -->
+	<update id="updateUserRemark">
+		update user_old set
+		<if test="remark !=null">
+			remark =#{remark},
+		</if>
+		update_time =now()
+		where id=#{id}
+	</update>
+</mapper>

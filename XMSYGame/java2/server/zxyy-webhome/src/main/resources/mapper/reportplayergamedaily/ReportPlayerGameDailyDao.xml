@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.reportplayergamedaily.dao.ReportPlayerGameDailyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.reportplayergamedaily.entity.ReportPlayerGameDailyEntity" id="reportPlayerGameDailyMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="roomId" column="room_id"/>
+        <result property="roomName" column="room_name"/>
+        <result property="investmentTotal" column="investment_total"/>
+        <result property="outputTotal" column="output_total"/>
+        <result property="winTotal" column="win_total"/>
+        <result property="countDay" column="count_day"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="querySum" resultType="Map">
+   		select SUM(investment_total) investmentTotalSum,SUM(output_total) outputTotalSum,SUM(win_total) winTotalSum from report_player_game_daily 
+   		where delete_status=0
+		<if test="userId !=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="gradeId !=null">
+			AND grade_id=#{gradeId}
+		</if>
+		<if test="gameId !=null">
+			AND game_id=#{gameId} 
+		</if>
+    </select>
+</mapper>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.game.modules.manager.game.dao.GameInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.game.modules.manager.game.entity.result.GameResult"
+		id="infoMap">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="roomId" column="room_id" />
+		<result property="roomName" column="room_name" />
+		<result property="gradeId" column="grade_id" />
+		<result property="gradeName" column="grade_name" />
+		<result property="enable" column="enable" />
+		<result property="display" column="display" />
+		<result property="sence" column="sence" />
+		<result property="rate" column="rate" />
+		<result property="bscore" column="bscore" />
+		<result property="restrict" column="restrict" />
+		<result property="maxTimes" column="max_times" />
+		<result property="maxLines" column="max_lines" />
+		<result property="maintenance" column="maintenance" />
+		<result property="version" column="version" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="limitHigh" column="limit_high" />
+		<result property="limitLower" column="limit_lower" />
+		<result property="onlineMin" column="online_min" />
+		<result property="onlineMax" column="online_max" />
+		<result property="finished" column="finished" />
+		<result property="provider" column="provider" />
+	</resultMap>
+		<!-- 获取游戏列表     新版页面   5.6版本的数据库才行 -->
+	 	<select id="findGameInfosNew"
+			resultMap="infoMap">
+			SELECT
+			g.game_id,
+			g.game_name,
+			g.room_id,
+			r.`name` AS room_name,
+      		g.finished,
+      		g.maintenance,
+			g.delete_status
+			FROM
+			game_info g
+			LEFT JOIN room r ON g.room_id = r.id
+			 GROUP BY g.game_id,g.game_name,g.room_id,r.`name`,g.finished,g.maintenance,g.delete_status HAVING g.delete_status = FALSE  
+			<if test="gameParam.name !=null and gameParam.name !=''">
+	          and (g.game_name =#{gameParam.name} or r.name =#{gameParam.name})
+			</if>
+			<if test="gameParam.gameId !=null and gameParam.gameId>0">
+				and g.game_id=#{gameParam.gameId}
+			</if>
+			<if test="gameParam.gradeId !=null and gameParam.gradeId>0">
+				and g.grade_id=#{gameParam.gradeId}
+			</if>
+			<if test="gameParam.roomId !=null and gameParam.roomId>0">
+				and g.room_id=#{gameParam.roomId}
+			</if>
+		</select>
+		
+		<update id="updateStatus">
+			update game_info set finished=#{finished} where game_id=#{id}
+		</update>
+		<update id="updateMaintenance">
+			update game_info set maintenance=#{maintenance} where game_id=#{id}
+		</update>
+	<select id="getGameInfos"
+			resultMap="infoMap">
+		SELECT
+		g.id,
+		g.game_id,
+		g.game_name,
+		g.room_id,
+		g.limit_high,
+		r.`name` AS room_name,
+		g.grade_id,
+		gg.`name` AS grade_name,
+		g.bscore,
+		g.display,
+		g.restrict,
+		g.`enable`,
+		g.rate,
+		g.maintenance,
+		g.max_lines,
+		g.max_times,
+		g.online_min,
+		g.online_max,
+		g.sence,
+		g.limit_lower,
+		g.provider
+		FROM
+		game_info g
+		LEFT JOIN room r ON g.room_id = r.id
+		LEFT JOIN game_grade gg ON g.grade_id = gg.id
+		WHERE
+		g.delete_status = FALSE
+		<if test="gameParam.name !=null and gameParam.name !=''">
+			and (g.game_name =#{gameParam.name} or gg.name =#{gameParam.name} or r.name =#{gameParam.name})
+		</if>
+		<if test="gameParam.gameId !=null and gameParam.gameId>0">
+			and g.game_id=#{gameParam.gameId}
+		</if>
+		<if test="gameParam.gradeId !=null and gameParam.gradeId>0">
+			and g.grade_id=#{gameParam.gradeId}
+		</if>
+		<if test="gameParam.roomId !=null and gameParam.roomId>0">
+			and g.room_id=#{gameParam.roomId}
+		</if>
+	</select>
+		<select id="findGameInfos"
+			resultMap="infoMap">
+			SELECT
+			g.id,
+			g.game_id,
+			g.game_name,
+			g.room_id,
+			g.limit_high,
+			r.`name` AS room_name,
+			g.grade_id,
+			gg.`name` AS grade_name,
+			g.bscore,
+			g.display,
+			g.restrict,
+			g.`enable`,
+			g.rate,
+			g.maintenance,
+			g.max_lines,
+			g.max_times,
+			g.online_min,
+			g.online_max,
+			g.sence,
+			g.limit_lower,
+			g.provider
+			FROM
+			game_info g
+			LEFT JOIN room r ON g.room_id = r.id
+			LEFT JOIN game_grade gg ON g.grade_id = gg.id
+			WHERE
+			g.delete_status = FALSE
+			<if test="gameParam.name !=null and gameParam.name !=''">
+	          and (g.game_name =#{gameParam.name} or gg.name =#{gameParam.name} or r.name =#{gameParam.name})
+			</if>
+			<if test="gameParam.gameId !=null and gameParam.gameId>0">
+				and g.game_id=#{gameParam.gameId}
+			</if>
+			<if test="gameParam.gradeId !=null and gameParam.gradeId>0">
+				and g.grade_id=#{gameParam.gradeId}
+			</if>
+			<if test="gameParam.roomId !=null and gameParam.roomId>0">
+				and g.room_id=#{gameParam.roomId}
+			</if>
+			ORDER BY game_id
+		</select>
+
+
+		<select id="gameSelect"
+			resultType="com.xmsy.server.zxyy.game.modules.web.game.param.GameInfoSelectResult">
+			SELECT
+				a.game_id as id,
+				a.game_name as name,
+				a.sence AS sence,
+				a.room_id as room
+			FROM
+				game_info a
+			WHERE
+				a. ENABLE != 0
+			AND a.display != 0
+			AND a.finished != 0
+			AND a.maintenance != 0
+			AND a.delete_status != 1
+			<if test="roomId !=null and  roomId!=0">
+			AND a.room_id=#{roomId}
+			</if>
+			GROUP BY
+				a.game_name,
+				a.game_id,
+				a.sence,
+				a.room_id
+		</select>
+		<!--  屏蔽掉开源游戏  -->
+		<select id="gameSelectForTask"
+			resultType="com.xmsy.server.zxyy.game.modules.web.game.param.GameInfoSelectResult">
+			SELECT
+				a.game_id as id,
+				a.game_name as name,
+				a.sence AS sence,
+				a.room_id as room
+			FROM
+				game_info a
+			WHERE
+				a. ENABLE != 0
+			AND a.display != 0
+			AND a.finished != 0
+			AND a.maintenance != 0
+			AND a.delete_status != 1
+			AND a.provider != 1
+			<if test="roomId !=null and  roomId!=0">
+			AND a.room_id=#{roomId}
+			</if>
+			GROUP BY
+				a.game_name,
+				a.game_id,
+				a.sence,
+				a.room_id
+		</select>
+		<!--  通过游戏id获取 不用游戏下的  厅次信息 -->
+		<select id="gameSelectGradeIdForTask"
+			resultType="com.xmsy.server.zxyy.game.modules.web.game.param.GameInfoSelectResult">
+			SELECT
+				a.grade_id as id,
+				b.`name` as name
+			FROM
+				game_info a
+			LEFT JOIN game_grade b on a.grade_id=b.id
+			WHERE
+				a.delete_status != 1
+			<if test="gameId !=null and  gameId!=0">
+				AND a.game_id=#{gameId}
+			</if>
+		</select>
+		<select id="gameSelectForRobot"
+			resultType="com.xmsy.server.zxyy.game.modules.web.game.param.GameInfoSelectForRobotResult">
+			SELECT
+				a.id as id,
+				a.game_id as gameId,
+			a.game_name as gameName,
+			a.grade_id as gradeId,
+			a.room_id as roomId,
+			b.`name` as gradeName
+			FROM
+				game_info a
+			LEFT JOIN game_grade b ON a.grade_id = b.id
+			WHERE
+				a. ENABLE = 1
+			and	a.display =1
+			and	a.maintenance=1
+			AND a.delete_status = 0
+			<if test="roomId !=null and  roomId!=0">
+			and a.room_id=#{roomId}
+			</if>
+			AND a.display != 0
+			AND a.maintenance != 0
+			AND a.delete_status != 1
+			ORDER BY a.game_id,a.grade_id
+		</select>
+		<resultMap id="queryForListMap" type="com.xmsy.server.zxyy.game.modules.web.game.param.RoomInfoMenuResult">
+	        <result column="roomId" property="roomId" />
+	        <result column="roomName" property="name" />
+		        <collection property="gameList" javaType="java.util.List" ofType="com.xmsy.server.zxyy.game.modules.web.game.param.GameInfoMenuResult">
+		            <result column="gameName" property="name"  />
+		            <result column="gameId" property="gameId"  />
+		        </collection>
+   	 	</resultMap>
+		<select id="gameMenu"
+			resultMap="queryForListMap">
+			SELECT
+				a.id as roomId,
+				a.`name` as roomName,
+				b.game_id as gameId,
+				b.game_name as gameName
+			FROM
+				room a
+			LEFT JOIN game_info b ON a.id = b.room_id
+			where b.finished=1
+			GROUP BY
+				a.id,
+				a. NAME,
+				b.game_id,
+				b.game_name
+		</select>
+
+	<select id="queryconfig" resultType="com.xmsy.server.zxyy.game.modules.manager.game.entity.GameInfoEntity">
+		SELECT
+		grade_id
+		FROM
+		game_info g
+		WHERE
+		g.delete_status=false
+		<if test="gradeId !=null and  gradeId!=0">
+			and g.grade_id=#{gradeId}
+		</if>
+	</select>
+</mapper>

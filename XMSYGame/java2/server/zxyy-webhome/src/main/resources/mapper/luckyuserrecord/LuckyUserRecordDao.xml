@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.luckyuserrecord.dao.LuckyUserRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.luckyuserrecord.entity.LuckyUserRecordEntity" id="luckyUserRecordMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="luckyName" column="lucky_name"/>
+        <result property="propName" column="prop_name"/>
+        <result property="propNum" column="prop_num"/>
+        <result property="propId" column="prop_id"/>
+        <result property="luckyId" column="lucky_id"/>
+    </resultMap>
+    <select id="selectByUserId" resultType="map" >
+        SELECT a.user_id  as userId, a.user_account as userAccount,a.lucky_name as luckyName,CONVERT( FROM_BASE64(b.nick_name)  using utf8) as nickName,
+        DATE_FORMAT(a.create_time,"%Y-%m-%d") AS createTime,
+        a.prop_name as propName,a.prop_num as propNum,a.grand as grand, IFNULL(a.prop_id,0)as propId,
+        a.lucky_id as luckyId
+        FROM lucky_user_record a
+         left join user  b
+        on b.id =a.user_id
+        where a.delete_status=0 and  a.user_id=#{userId} and a.prop_id>0
+        order by a.create_time desc
+        limit 20
+
+    </select>
+    <select id="selectGrand" resultType="map" >
+        SELECT a.user_id  as userId, insert(a.user_account, 1, 5, '*****') as userAccount,a.lucky_name as luckyName,CONVERT( FROM_BASE64(b.nick_name)  using utf8) as nickName,
+        DATE_FORMAT(a.create_time,"%Y-%m-%d") AS createTime,
+        a.prop_name as propName,a.prop_num as propNum,a.grand as grand,IFNULL(a.prop_id,0)as  propId,
+          a.lucky_id as luckyId
+        FROM lucky_user_record a
+         left join user  b
+        on b.id =a.user_id
+        where a.delete_status=0 and  a.grand = 1 and a.prop_id>0
+        order by a.create_time desc
+        limit 20
+
+    </select>
+    <select id="selectAll" resultType="map" >
+        SELECT a.user_id  as userId, insert(a.user_account, 1, 5, '*****')
+       as userAccount,a.lucky_name as luckyName,CONVERT( FROM_BASE64(b.nick_name)  using utf8) as nickName,
+        DATE_FORMAT(a.create_time,"%Y-%m-%d") AS createTime,
+        a.prop_name as propName,a.prop_num as propNum,a.grand as grand,IFNULL(a.prop_id,0)as  propId,
+        a.lucky_id as luckyId
+        FROM lucky_user_record a
+         left join user  b
+        on b.id =a.user_id
+        where a.delete_status=0 and a.prop_id>0
+        order by a.create_time desc
+        limit 20
+
+    </select>
+
+</mapper>

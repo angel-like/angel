@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.robot.modules.manager.robotprofitrecord.dao.RobotProfitRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.robot.modules.manager.robotprofitrecord.entity.RobotProfitRecordEntity" id="robotProfitRecordMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="profitCoin" column="profit_coin"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="userId" column="user_id"/>
+         <result property="gameId" column="game_id"/>
+          <result property="gradeId" column="grade_id"/>
+        <result property="recordTime" column="record_time"/>
+    </resultMap>
+
+	<delete id="deleteByDate">
+	delete from robot_profit_record 
+		where 
+			record_time =date_sub(date_format(now(), '%Y-%m-%d'),INTERVAL 1 DAY)
+	</delete>
+
+	<!-- 获取每个机器人昨天总盈利 -->
+<!--
+	<select id="sumYesterdayProfit" resultType="com.xmsy.server.zxyy.robot.modules.manager.robotprofitrecord.entity.RobotProfitRecordEntity">
+		SELECT
+			-SUM(a.profit_coins) as profitCoin,
+			a.provider_code as  providerCode,
+			b.id as userId,
+			b.name as userAccount,
+			b.game_id as gameId,
+			b.grade_id as gradeId,
+			date_sub(
+				date_format(now(), '%Y-%m-%d'),
+				INTERVAL 1 DAY
+			) as recordTime
+		FROM
+			game_record a
+		LEFT JOIN robot b ON a.user_id = b.id
+		WHERE
+			date_format(a.create_time, '%Y-%m-%d') = date_sub(
+				date_format(now(), '%Y-%m-%d'),
+				INTERVAL 1 DAY
+			)
+		GROUP BY
+			a.user_id,a.provider_code
+	</select>
+
+-->
+	<select id="sumYesterdayProfit" resultType="com.xmsy.server.zxyy.robot.modules.manager.robotprofitrecord.entity.RobotProfitRecordEntity">
+		SELECT
+			-SUM(a.profit_coins) as profitCoin,
+			b.id as userId,
+			b.name as userAccount,
+			b.game_id as gameId,
+			b.grade_id as gradeId,
+			date_sub(
+				date_format(now(), '%Y-%m-%d'),
+				INTERVAL 1 DAY
+			) as recordTime
+		FROM
+			game_record a
+		LEFT JOIN robot b ON a.user_id = b.id
+		WHERE
+			date_format(a.create_time, '%Y-%m-%d') = date_sub(
+				date_format(now(), '%Y-%m-%d'),
+				INTERVAL 1 DAY
+			)
+		GROUP BY
+			a.user_id
+	</select>
+
+
+	<!-- 获取机器人总盈利 -->
+	<select id="countProfitCoin"
+		resultType="Long">
+			SELECT
+			IFNULL(SUM(profit_coin),0)
+			FROM
+				robot_profit_record a
+			WHERE
+				a.delete_status = 0
+			<if test="entity.startTime !=null and entity.startTime!=''">
+			AND a.record_time &gt;=#{entity.startTime}
+			</if>
+			<if test="entity.endTime !=null and entity.endTime!=''">
+			AND a.record_time &lt;=#{entity.endTime}
+			</if>
+			<if test="entity.userAccount !=null and entity.userAccount!=''">
+			AND a.user_account=#{entity.userAccount}
+			</if>
+			<if test="entity.gameId !=null and entity.gameId!=''">
+			AND a.game_id=#{entity.gameId}
+			</if>
+			<if test="entity.gradeId !=null and entity.gradeId!=''">
+			AND a.grade_id=#{entity.gradeId}
+			</if>
+	</select>
+</mapper>

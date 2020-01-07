@@ -1,0 +1,2 @@
+INSERT INTO `webhome`.`sys_dictionary` (`delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-06-15 13:44:22', '2019-06-15 13:44:22', '0', 'logon', '登入配置', '0', '');
+INSERT INTO `webhome`.`sys_dictionary` (`delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-06-15 13:48:50', '2019-06-15 13:48:50', '0', 'passwordErrorLimit', '10', 'logon', '');

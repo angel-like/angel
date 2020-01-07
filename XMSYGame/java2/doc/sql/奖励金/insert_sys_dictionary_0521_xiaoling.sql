@@ -1,0 +1,12 @@
+
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:25:09', '2019-05-21 16:49:27', '0', '6', '鼓励金', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:24:51', '2019-05-21 16:49:17', '0', '5', '救济金', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:22:56', '2019-05-21 16:49:12', '0', '4', '约好友对战', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:22:38', '2019-05-21 16:49:02', '0', '3', '分享App', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:22:12', '2019-05-21 16:48:57', '0', '2', '推荐实名好友', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:21:46', '2019-05-21 16:48:52', '0', '1', '对局奖励', 'UserActivityAward', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-21 11:17:44', '2019-05-21 11:17:44', '0', 'UserActivityAward', '会员活动奖励', '0', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-25 16:10:13', '2019-05-25 16:10:13', '0', '41', '用户鼓励金', '004', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-25 16:10:00', '2019-05-25 16:10:00', '0', '40', '用户救济金', '004', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-25 16:09:47', '2019-05-25 16:09:47', '0', '39', '用户分享App奖励', '004', '');
+INSERT INTO `sys_dictionary` ( `delete_status`, `create_time`, `update_time`, `version`, `code`, `name`, `parent_code`, `enable`) VALUES ( '0', '2019-05-25 16:09:32', '2019-05-25 16:09:32', '0', '38', '用户对局奖励', '004', '');

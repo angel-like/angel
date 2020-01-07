@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.dao.OrderRechargeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeEntity"
+		id="orderRechargeMap">
+		<result property="id" column="id" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="deleteStatus" column="delete_status" />
+		<result property="version" column="version" />
+		<result property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="type" column="type"  />
+		<result property="orderNo" column="order_no" />
+		<result property="amount" column="amount" />
+		<result property="remake" column="remake" />
+		<result property="fristrecharge" column="fristrecharge" />
+		<result property="money" column="money" />
+		<result property="coin" column="coin" />
+		<result property="commission" column="commission" />
+		<result property="status" column="status" />
+	</resultMap>
+	<!--统计查询-->
+	<select id="count" resultType="Map">
+		select sum(discount_amount)discountAmountCount,sum(amount)rechargeAmountCount from order_recharge where user_id in  (SELECT id from user where superiors_id=#{id})
+	</select>
+	<!-- 新增用户返回用户ID -->
+	<insert id="insertGetId" keyProperty="id"
+		useGeneratedKeys="true"
+		parameterType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeEntity">
+		insert into
+		order_recharge(user_id,user_account,type,order_no,amount,remake,
+		fristrecharge,money,coin,commission,status,create_time)
+		values(#{userId},#{userAccount},#{type},#{orderNo},#{amount},#{remake},
+		#{fristrecharge},#{money},#{coin},#{commission},#{status},now())
+	</insert>
+
+	<!-- 订单回调修改回调订单 -->
+	<update id="updateOrderRecharge">
+		UPDATE order_recharge
+		SET
+		<if test="merchantOrderNo !=null and merchantOrderNo !=''">
+			merchant_order_no = #{merchantOrderNo},
+		</if>
+		final_money = pre_money +
+		amount + discount_amount,
+		STATUS =
+		#{completed},
+		recharge_time=#{rechargeTime}
+		WHERE
+		order_no = #{orderNo}
+		AND STATUS = #{uncomfirmed}
+	</update>
+	<select id="getRechargeReport"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.statistics.entity.RechargeReport">
+		SELECT
+		SUM(a.amount) AS rechargeAmount,
+		sum(
+		CASE
+		WHEN a.recharge_type = 1 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS adminAmount,
+		sum(
+		CASE
+		WHEN a.recharge_type = 2 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS thirdAmount,
+		sum(
+		CASE
+		WHEN a.recharge_type = 3 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS bankAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 0 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS unconfirmedAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 0
+		AND a.recharge_type = 1 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS adminAnconfirmedAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 0
+		AND a.recharge_type = 2 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS thirdAnconfirmedAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 0
+		AND a.recharge_type = 3 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS bankAnconfirmedAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 0
+		 THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS discountAnconfirmedAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 1
+		OR a.STATUS = 3 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS cancelAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 3
+		AND a.recharge_type = 1 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS adminCancelAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 1
+		AND a.recharge_type = 2 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS thirdCancelAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 1
+		AND a.recharge_type = 3 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS bankCancelAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 1
+		THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS discountCancelAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS confirmAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		AND a.recharge_type = 1 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS adminConfirmAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		AND a.recharge_type = 2 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS thirdConfirmAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		AND a.recharge_type = 3 THEN
+		a.amount
+		ELSE
+		0
+		END
+		) AS bankConfirmAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS discountConfirmAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2 THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS discountAmount,
+		sum(
+		CASE
+		WHEN a. STATUS = 2
+		AND a.recharge_type = 1 THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS adminDiscountAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		AND a.recharge_type = 2 THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS thirdDiscountAmount,
+		sum(
+		CASE
+		WHEN a.STATUS = 2
+		AND a.recharge_type = 3 THEN
+		a.discount_amount
+		ELSE
+		0
+		END
+		) AS bankDiscountAmount
+		FROM
+		order_recharge a
+		WHERE
+		a.delete_status = 0 and  a.gm_user = 0
+		<if test="startTime !=null and startTime!=''">
+			AND a.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND a.create_time &lt;= #{endTime}
+		</if>
+
+	</select>
+
+	<!-- 按照用户id统计充值的金额 -->
+	<select id="statisticsRechargeByUserId"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeStatistics">
+		SELECT
+		user_id,
+		user_account userAccount,
+		sum(amount) amount,
+		sum(discount_amount) discountAmount,
+		count(1) rechargeNum
+		FROM
+		order_recharge
+		WHERE
+		user_id = #{userId} and `status`= 2
+		GROUP BY
+		user_id,
+		user_account
+
+	</select>
+
+	<!-- 按照用户id统计充值的金额 -->
+	<select id="statisticsRechargeByUserIdV2"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeStatistics">
+		SELECT
+		sum(amount) amount,
+		sum(discount_amount) discountAmount,
+		count(1) rechargeNum
+		FROM
+		order_recharge
+		WHERE
+		user_id = #{userId} and `status`= 2
+	</select>
+
+
+	<select id="statisticsRechargeByUserIdV3"
+			resultType="java.math.BigDecimal">
+		SELECT
+		sum(amount) discountAmount
+		FROM
+		user_transaction_record
+		WHERE
+		user_id = #{userId} and `type`= 3
+	</select>
+
+	<!-- 按照日期范围统计充值的金额 -->
+	<select id="statisticsRechargeByDay"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.rankinglistday.entity.RankingListDayEntity">
+		SELECT user_id,user_account,SUM(amount) amount
+		from order_recharge
+		where`status`= 2
+
+		<if test="startTime !=null and startTime!=''">
+			AND recharge_time &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND recharge_time &lt;= #{endTime}
+		</if>
+		GROUP BY user_id,user_account
+		order by amount DESC
+
+	</select>
+	<!-- 周排行榜，前7日，前20名 -->
+	<select id="weeklyRanking"
+		resultType="com.xmsy.server.zxyy.manager.modules.app.ranking.param.AppRechargeRankingParam">
+		SELECT
+		a.user_account as userAccount,
+		(
+		CASE
+		WHEN b.portrait IS
+		NULL THEN
+		''
+		ELSE
+		b.portrait
+		END
+		) AS portrait,
+		SUM(a.final_money) * 100 AS
+		rechargeAmount
+		FROM
+		order_recharge a
+		LEFT JOIN `user` b ON a.user_id =
+		b.id
+		WHERE
+		a.`status` = 2
+		AND DATE_SUB(CURDATE(), INTERVAL 8 DAY) &lt;=
+		a.create_time
+		AND
+		DATE_FORMAT(a.create_time, '%Y-%m-%d') !=
+		DATE_FORMAT(NOW(),
+		'%Y-%m-%d')
+		AND a.delete_status = 0
+		AND
+		b.delete_status = 0
+		AND
+		b.forbidden_enable = 0
+		AND b.nobet_enable = 0
+		AND
+		b.frozen_enable = 0
+		GROUP BY
+		a.user_account,
+		b.portrait
+		ORDER BY
+		SUM(a.final_money) DESC
+		LIMIT 20
+	</select>
+	<!-- 日排行榜，昨日，前20名 -->
+	<select id="dayRanking"
+		resultType="com.xmsy.server.zxyy.manager.modules.app.ranking.param.AppRechargeRankingParam">
+		SELECT
+		a.user_account as userAccount,
+		(
+		CASE
+		WHEN b.portrait IS
+		NULL THEN
+		''
+		ELSE
+		b.portrait
+		END
+		) AS portrait,
+		SUM(a.final_money) * 100 AS
+		rechargeAmount
+		FROM
+		order_recharge a
+		LEFT JOIN `user` b ON a.user_id =
+		b.id
+		WHERE
+		a.`status` = 2
+		AND TO_DAYS(NOW()) - TO_DAYS(a.create_time) = 1
+		AND a.delete_status
+		= 0
+		AND b.delete_status = 0
+		AND b.forbidden_enable =
+		0
+		AND b.nobet_enable
+		= 0
+		AND b.frozen_enable = 0
+		GROUP BY
+		a.user_account,
+		b.portrait
+		ORDER BY
+		SUM(a.final_money) DESC
+		LIMIT 20
+	</select>
+
+	<select id="getRechargeTableReport" resultType="com.xmsy.server.zxyy.manager.modules.manager.statistics.entity.RechargeTableReport" >
+		SELECT
+			recharge_platform rechargePlatform,
+			recharge_type rechargeType,
+			recharge_channel rechargeChannel,
+			sum( CASE WHEN  STATUS = 0 THEN 	amount ELSE 	0 END ) AS unconfirmedAmount,
+			sum( CASE WHEN  STATUS = 1 THEN 	amount ELSE 	0 END ) AS cancelAmount,
+			sum( CASE WHEN  STATUS = 2 THEN 	amount ELSE 	0 END ) AS confirmedAmount,
+			sum( CASE WHEN  STATUS = 0 THEN 	discountAmount ELSE 	0 END ) AS unconfirmedDiscountAmount,
+			sum( CASE WHEN  STATUS = 1 THEN 	discountAmount ELSE 	0 END ) AS cancelDiscountAmount,
+			sum( CASE WHEN  STATUS = 2 THEN 	discountAmount ELSE 	0 END ) AS confirmedDiscountAmount,
+			sum( CASE WHEN  STATUS = 0 THEN 	num ELSE 	0 END ) AS unconfirmedNum,
+			sum( CASE WHEN  STATUS = 1 THEN 	num ELSE 	0 END ) AS cancelNum,
+			sum( CASE WHEN  STATUS = 2 THEN 	num ELSE 	0 END ) AS confirmedNum
+			from (
+			SELECT recharge_platform,`status`,recharge_type,SUM(discount_amount) discountAmount,SUM(amount) amount,COUNT(1) num,
+			rc.name recharge_channel
+			from order_recharge o
+			LEFT JOIN recharge_channel rc on rc.type=o.recharge_channel
+			where o.delete_status = 0 and STATUS != 3 and gm_user = 0
+			<if test="startTime !=null and startTime!=''">
+				AND o.create_time &gt;= #{startTime}
+			</if>
+			<if test="endTime !=null and endTime!=''">
+				AND o.create_time &lt;= #{endTime}
+			</if>
+			GROUP BY recharge_platform,`status`,recharge_type,o.recharge_channel
+			) tem
+			GROUP BY recharge_platform,recharge_type,recharge_channel
+			ORDER BY recharge_type,recharge_platform
+	</select>
+	<!-- 官网用户充值记录列表 -->
+	<select id="rechargeExamineList"
+		resultType="com.xmsy.server.zxyy.manager.modules.web.user.result.UserOrderRechargeExchangeParam">
+		SELECT
+		IFNULL(DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%S'),'') AS createTime,
+		IFNULL(DATE_FORMAT(a.recharge_time, '%Y-%m-%d %H:%i:%S'),'') AS rechargeTime,
+		a.amount AS amount,
+		a.status AS status,
+		a.order_no AS orderNo,
+		a.recharge_type AS rechargeType,
+		a.recharge_terminal AS rechargeTerminal,
+		a.discount_amount AS discountAmount
+		FROM
+		order_recharge a
+		where a.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+			AND a.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND a.create_time &lt;= #{endTime}
+		</if>
+		ORDER BY a.id DESC
+	</select>
+
+	<!-- 按照类型统计充值的金额 -->
+	<select id="sumAmountForDate"
+		resultType="int">
+		SELECT
+			IFNULL(sum(amount),0) as amount
+		FROM
+			order_recharge
+		WHERE
+			`status` = 2
+		AND delete_status = 0
+		AND DATE_FORMAT(create_time, '%Y-%m-%d') = #{date}
+		AND recharge_type=#{rechargeType};
+	</select>
+
+	<select id="getLastRechargeByUserId" resultMap="orderRechargeMap">
+	select * from order_recharge
+		where user_id = #{userId} and `status`= 2
+		order by deposit_date desc limit 1
+	</select>
+	<select id="getLastRechargeByUser" resultType="java.math.BigDecimal">
+	select amount from user_transaction_record
+		where user_id = #{userId} and `type`= 3
+		order by create_time desc limit 1
+	</select>
+
+	<!-- 根据用户id查询取款总数和取款总金额 -->
+	<select id="orderRechargeNum"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeStatisticsTwo">
+		SELECT
+			count(1) rechargeNum,
+			sum(amount) amountNum
+			FROM
+				order_recharge
+			WHERE
+			user_id = #{userId} and `status`= 2
+	</select>
+
+	<!-- 查询最新一条存款 中的存款金额和时间-->
+	<select id="getLastRechargeAmountByUserId" resultType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeStatisticsThree">
+		select amount , create_time createTime from order_recharge
+		where user_id = #{userId} and `status`= 2
+		order by deposit_date desc limit 1
+	</select>
+
+	<!-- 通过时间,充值类型获取成功的订单总额和数量-->
+	<select id="sumRechargeAmount"
+		resultType="Map">
+		SELECT
+			IFNULL(COUNT(*),0) as num,
+			IFNULL(
+		sum(
+			CASE
+			WHEN STATUS = 2 THEN
+				1
+			ELSE
+				0
+			END
+		),
+		0
+		) AS successAmount,
+		IFNULL((select sum(amount) from user_transaction_record u where u.type=3)
+		,0
+		) AS disAmount,
+		IFNULL(
+			sum(
+				CASE
+				WHEN STATUS = 2 THEN
+					amount
+				ELSE
+					0
+				END
+			),
+			0
+		) AS amount
+		FROM
+			order_recharge
+		WHERE
+		 	delete_status = 0 and gm_user=0
+		<if test="startDate !=null and startDate!=''">
+			AND date_format(create_time, '%Y-%m-%d') &gt;= #{startDate}
+		</if>
+		<if test="endDate !=null and endDate!=''">
+			AND date_format(create_time, '%Y-%m-%d') &lt;= #{endDate}
+		</if>
+		<if test="rechargeType !=null">
+		AND recharge_type=#{rechargeType};
+		</if>
+	</select>
+	<!-- 修改订单 -->
+	<update id="updateAll">
+		UPDATE order_recharge
+		SET
+		sys_user_id =#{orderRecharge.sysUserId},
+		status =#{orderRecharge.status},
+		sys_user_account=#{orderRecharge.sysUserAccount}
+		WHERE
+		id = #{orderRecharge.id}
+	</update>
+	<select id="selectListOrderRecharge" resultType="Map">
+	SELECT a.ID AS id,a.order_no AS orderNo,a.admin_order_no AS adminOrderNo,a.sys_user_account AS sysUserAccount,a.sys_user_id AS sysUserId,a.amount,a.hierarchy_id AS hierarchyId,a.deposit_name AS depositName,a.deposit_date AS depositDate,a.deposit_type AS depositType,a.deposit_bank AS depositBank,a.deposit_bank_account AS depositBankAccount,a.income_bank AS incomeBank,a.income_bank_account AS incomeBankAccount,a.payee,a.open_bank AS openBank,
+ 	 		case a.status
+				when 0 then '未确认'
+				when 1 then '已取消'
+				when 2 then '已完成'
+				when 4 then '已锁定'
+			else '其他' END as status,
+		a.user_id AS userId,a.user_account AS userAccount,a.recharge_time AS rechargeTime,
+  			case a.fristrecharge
+      			 when 0 then '否'
+				when 1 then '是'
+			else '其他' END as fristrecharge,
+		a.merchant_order_no AS merchantOrderNo,a.recharge_platform AS rechargePlatform,a.recharge_type AS rechargeType,a.recharge_terminal AS rechargeTerminal,a.pre_money AS preMoney,a.final_money AS finalMoney,a.discount_id AS discountId,
+ 		a.recharge_channel  AS rechargeChannel,b.name as rechargeChannelName,
+		a.discount_amount AS discountAmount,a.unwithdraw,a.ip,a.remark,a.user_need_bet AS userNeedBet,a.VERSION AS version,a.DELETE_STATUS AS deleteStatus,a.CREATE_TIME AS createTime,a.UPDATE_TIME AS updateTime
+	FROM order_recharge as a
+ 	left join recharge_channel as  b on a.recharge_channel=b.type
+ 	where a.DELETE_STATUS=0
+ 	<if test="orderRecharge.rechargeType !=null">
+			AND a.recharge_type=#{orderRecharge.rechargeType}
+	</if>
+ 	<if test="orderRecharge.userAccount !=null and orderRecharge.userAccount!=''">
+			AND a.user_account=#{orderRecharge.userAccount}
+	</if>
+	<if test="orderRecharge.orderNo !=null and orderRecharge.orderNo !=''">
+			AND a.order_no=#{orderRecharge.orderNo}
+	</if>
+	<if test="orderRecharge.merchantOrderNo !=null and orderRecharge.merchantOrderNo !=''">
+			AND a.merchant_order_no=#{orderRecharge.merchantOrderNo}
+	</if>
+	<if test="orderRecharge.status !=null">
+			AND a.status=#{orderRecharge.status}
+	</if>
+	<if test="orderRecharge.rechargePlatform !=null and orderRecharge.rechargePlatform !=''">
+			AND a.recharge_platform=#{orderRecharge.rechargePlatform}
+	</if>
+	<if test="orderRecharge.querythirdTime !=null and orderRecharge.querythirdTime !=''" >
+			AND date_format(a.create_time, '%Y-%m-%d')=#{orderRecharge.querythirdTime}
+	</if>
+	<if test="orderRecharge.amountMin !=null">
+			AND a.amount &gt;=#{orderRecharge.amountMin}
+	</if>
+	<if test="orderRecharge.amountMax !=null">
+			AND a.amount &lt;=#{orderRecharge.amountMax}
+	</if>
+	<if test="orderRecharge.rechargeChannel !=null">
+			AND a.recharge_channel=#{orderRecharge.rechargeChannel}
+	</if>
+	<if test="orderRecharge.depositName != null and orderRecharge.depositName != ''">
+			AND a.deposit_name=#{orderRecharge.depositName}
+	</if>
+	<if test="orderRecharge.sysUserAccount !=null and orderRecharge.sysUserAccount!=''">
+			AND a.sys_user_account=#{orderRecharge.sysUserAccount}
+	</if>
+	<if test="orderRecharge.queryTime !=null and orderRecharge.queryTime !=''" >
+			AND date_format(a.deposit_date, '%Y-%m-%d')=#{orderRecharge.queryTime}
+	</if>
+	<if test="orderRecharge.discountAmountMin !=null">
+			AND a.discount_amount &gt;=#{orderRecharge.discountAmountMin}
+	</if>
+	<if test="orderRecharge.discountAmountMax !=null">
+			AND a.discount_amount &lt;=#{orderRecharge.discountAmountMax}
+	</if>
+	<if test="orderRecharge.depositType !=null">
+			AND a.deposit_type=#{orderRecharge.depositType}
+	</if>
+		<if test="orderRecharge.fristrecharge !=null">
+			AND a.fristrecharge=#{orderRecharge.fristrecharge}
+		</if>
+		<if test="orderRecharge.startTime !=null and orderRecharge.startTime!=''">
+			AND a.create_time &gt;= #{orderRecharge.startTime}
+		</if>
+		<if test="orderRecharge.endTime !=null and orderRecharge.endTime!=''">
+			AND a.create_time &lt;= #{orderRecharge.endTime}
+		</if>
+	<!--  收款银行账号-->
+	<if test="orderRecharge.bankAccount !=null and orderRecharge.bankAccount !=''">
+			AND a.income_bank_account like "%${orderRecharge.bankAccount}%"
+	</if>
+	<!-- 存款银行账号
+	<if test="orderRecharge.bankAccount !=null and orderRecharge.bankAccount !=''">
+			AND a.deposit_bank_account like "%${orderRecharge.bankAccount}%"
+	</if>-->
+
+ 	ORDER BY id DESC
+	</select>
+
+	<!-- 单个会员存款记录-->
+	<select id="depositRecord" resultType="com.xmsy.server.zxyy.manager.modules.manager.orderrecharge.entity.OrderRechargeEntity">
+		SELECT id,
+		create_time createTime,
+		order_no orderNo,
+		final_money finalMoney,
+		amount,
+		`status`,
+		recharge_type rechargeType
+		from order_recharge
+		where delete_status=0
+		<if test="user.account !=null and user.account!='' ">
+			AND user_account=#{user.account}
+		</if>
+		<if test="user.startTime !=null and user.startTime!=''">
+			AND create_time &gt;= #{user.startTime}
+		</if>
+		<if test="user.endTime !=null and user.endTime!=''">
+			AND create_time &lt;= #{user.endTime}
+		</if>
+		ORDER BY id DESC
+	</select>
+</mapper>

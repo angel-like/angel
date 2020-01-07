@@ -1,0 +1,1 @@
+ALTER TABLE im_material add order_num int(10) DEFAULT '0' COMMENT '排序';

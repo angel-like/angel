@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.dao.GameRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.entity.GameRecordEntity"
+		id="gameRecordMap">
+		<result property="id" column="id" />
+		<result property="userid" column="userid" />
+		<result property="userAccount" column="user_account" />
+		<result property="gameId" column="game_id" />
+		<result property="gameName" column="game_name" />
+		<result property="gradeId" column="grade_id" />
+		<result property="gradeName" column="grade_name" />
+		<result property="gradeNumber" column="grade_number" />
+		<result property="roomId" column="room_id" />
+		<result property="roomName" column="room_name" />
+		<result property="betCoins" column="bet_coins" />
+		<result property="prizeCoins" column="prize_coins" />
+		<result property="userType" column="user_type" />
+		<result property="createTime" column="create_time" />
+		<result property="mini" column="mini" />
+		<result property="profitCoins" column="profit_coins" />
+		<result property="waterProfit" column="water_profit" />
+		<result property="round" column="round" />
+		<result property="gameRoundNo" column="game_round_no" />
+		<result property="waterRate" column="water_rate" />
+		<result property="validBet" column="valid_bet" />
+		<result property="exchangeRate" column="exchange_rate" />
+		<result property="robot" column="robot" />
+	</resultMap>
+
+	<!-- 游戏记录列表 -->
+	<select id="getGameRecords"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.entity.GameRecordEntity">
+		SELECT
+		gr.id,
+		gr.create_time as createTime,
+		gr.user_id,
+		gr.user_account,
+		gr.game_id,
+		gr.game_name,
+		gr.grade_id,
+		gr.grade_name,
+		gr.room_id,
+		gr.room_name,
+		gr.bet_coins,
+		gr.prize_coins,
+		gr.user_type,
+		gr.round,
+		gr.mini,
+		gr.profit_coins,
+		gr.water_profit,
+		gr.valid_bet,
+		gr.water_rate,
+		gr.robot,
+		gr.game_round_no,
+		gr.exchange_rate
+		FROM
+		game_record gr
+<!-- 		LEFT -->
+<!-- 		JOIN game_info gi ON gr.game_id = gi.id -->
+<!-- 		AND gi.delete_status = FALSE -->
+<!-- 		LEFT JOIN game_grade gg ON gr.grade_id = gg.id -->
+<!-- 		AND gg.delete_status = -->
+<!-- 		FALSE -->
+		<where>
+			<if test="record.gameId !=null and record.gameId!=0 ">
+				AND gr.game_id=#{record.gameId}
+			</if>
+			<if test="record.gradeId !=null and record.gradeId!=0 ">
+				AND gr.grade_id=#{record.gradeId}
+			</if>
+			<!-- <if test="record.gameName !=null and record.gameName!=''">
+				AND gr.game_name=#{record.gameName}
+			</if> -->
+			<if test="record.userId !=null and record.userId!=0 ">
+				AND gr.user_id=#{record.userId}
+			</if>
+			<if test="record.userAccount !=null and record.userAccount!='' ">
+				AND gr.user_account=#{record.userAccount}
+			</if>
+			<if test="record.robot !=null ">
+				AND gr.robot=#{record.robot}
+			</if>
+			<if test="startTime !=null and startTime!=''">
+				AND gr.create_time &gt;= #{startTime}
+			</if>
+			<if test="endTime !=null and endTime!=''">
+				AND gr.create_time &lt;= #{endTime}
+			</if>
+		</where>
+		ORDER BY gr.id desc
+	</select>
+	
+	<select id="getGameRecordsByUserIdForFangka"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.gamerecord.result.AppGameRecordParams">
+		SELECT
+			gr.room_no as roomNo,
+			gr.game_id as gameId,
+			gr.game_round_no as gameRoundNo,
+			gr.game_name as gameName,
+			sum(gr.prize_coins) as prizeCoins,
+			Max(DATE_FORMAT(gr.create_time, '%Y-%m-%d %H:%i:%S')) as createTime 
+		FROM
+		game_record gr
+		<where>
+			AND gr.user_id=#{userId}
+			AND gr.room_id=#{roomId}
+			AND gr.game_id=#{gameId}
+		</where>
+		group by gr.room_no,gr.game_round_no,gr.game_name
+		ORDER BY createTime DESC
+		limit 30
+	</select>
+	
+	<select id="getGameRecordsByRoomNoForFangka"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.gamerecord.result.AppGameRecordParams">
+		SELECT
+			gr.room_no as roomNo,
+			gr.game_name as gameName,
+			gr.user_account as userAccount,
+     		gr.round,
+			gr.prize_coins as prizeCoins, 
+			DATE_FORMAT(gr.create_time, '%Y-%m-%d %H:%i:%S') as createTime 
+		FROM
+		game_record gr
+		<where>
+				AND gr.room_no=#{param.roomNo}
+				AND gr.game_round_no=#{param.gameRoundNo}
+		</where>
+		ORDER BY round DESC
+	</select>
+	
+	<select id="sumPrizeCoinsByParam"
+		resultType="java.math.BigDecimal">
+		SELECT Sum(prize_coins)  prize_coins
+		FROM
+		game_record gr
+		<where>
+			<if test="record.gameId !=null and record.gameId!=0 ">
+				AND gr.game_id=#{record.gameId}
+			</if>
+			<if test="record.gradeId !=null and record.gradeId!=0 ">
+				AND gr.grade_id=#{record.gradeId}
+			</if>
+			<if test="record.userId !=null and record.userId!=0 ">
+				AND gr.user_id=#{record.userId}
+			</if>
+			<if test="record.userAccount !=null and record.userAccount!='' ">
+				AND gr.user_account=#{record.userAccount}
+			</if>
+			<if test="record.robot !=null ">
+				AND gr.robot=#{record.robot}
+			</if>
+			<if test="startTime !=null and startTime!=''">
+				AND gr.create_time &gt;= #{startTime}
+			</if>
+			<if test="endTime !=null and endTime!=''">
+				AND gr.create_time &lt;= #{endTime}
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取用户有效下注 -->
+	<select id="getUserValidBet"
+		resultType="Long">
+		SELECT
+		IFNULL(sum(gr.valid_bet), 0)
+		FROM
+		game_record gr
+		where gr.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+		AND gr.create_time &gt;= #{startTime}
+	</if>
+	<if test="endTime !=null and endTime!=''">
+		AND gr.create_time &lt;= #{endTime}
+	</if>
+	</select>
+	<!-- 通过游戏id +房间id  获取用户有效下注 -->
+	<select id="getUserValidBetByGameId"
+		resultType="Long">
+		SELECT
+		IFNULL(sum(gr.valid_bet), 0)
+		FROM
+		game_record gr
+		where gr.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+			AND gr.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND gr.create_time &lt;= #{endTime}
+		</if>
+		<if test="gameId !=null and gameId !=0">
+			AND gr.game_id = #{gameId}
+		</if>
+		<if test="roomId !=null and roomId !=0">
+			AND gr.room_id = #{roomId}
+		</if>
+		<if test="gradeId !=null and gradeId !=0">
+			AND gr.grade_id = #{gradeId}
+		</if>
+	</select>
+	<!-- 获取游戏有效下注 -->
+	<select id="getGameValidBet"
+		resultType="Long">
+		SELECT
+		IFNULL(sum(gr.valid_bet), 0)
+		FROM
+		game_record gr
+		where gr.game_id=#{gameId} and robot = 0
+		<if test="startTime !=null and startTime!=''">
+		AND gr.create_time &gt;= #{startTime}
+	</if>
+	<if test="endTime !=null and endTime!=''">
+		AND gr.create_time &lt;= #{endTime}
+	</if>
+	</select>
+	<!-- 获取用户玩过游戏列表 -->
+	<select id="userGameForRoomId"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.gamerecord.result.AppGameParams">
+		SELECT
+			a.game_id as gameId,
+			a.game_name as gameName
+		FROM
+			game_record a
+		WHERE
+			a.room_id = #{roomId}
+		AND a.user_id = #{userId}
+		AND a.delete_status != 1
+		GROUP BY
+			a.game_id,
+			a.game_name
+		ORDER BY
+			a.game_id
+	</select>
+	<!-- 获取用户玩过游戏列的游戏记录 -->
+	<select id="userGameRecordForGameId"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.gamerecord.result.AppGameRecordParams">
+		SELECT
+			a.game_name as gameName,
+			a.game_id  as gameId,
+			a.grade_name as gradeName,
+			a.grade_id  as  gradeId,
+			a.bet_coins as betCoins,
+			a.prize_coins as prizeCoins,
+			DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%S') as createTime 
+		FROM
+			game_record a
+		WHERE
+			a.game_id = #{gameId}
+		AND a.user_id = #{userId}
+		AND a.delete_status != 1
+		ORDER BY
+			a.create_time DESC
+		LIMIT 20	
+	</select>
+	<!-- 获取用户玩过游戏列的游戏记录 -->
+	<select id="userBjlGameRecordForGameId"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.gamerecord.result.AppGameRecordParams">
+		SELECT
+			a.game_id  as gameId,
+			a.game_name as gameName,
+			a.grade_name as gradeName,
+			a.bet_coins as betCoins,
+			a.prize_coins as prizeCoins,
+			a.banker_card_str as bankerCardStr,
+			a.idle_card_str as idleCardStr,
+			DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%S') as createTime 
+		FROM
+			game_record_baijia a
+		WHERE
+			a.game_id = #{gameId}
+		AND a.user_id = #{userId}
+		AND a.delete_status != 1
+		ORDER BY
+			a.create_time DESC
+		LIMIT 20	
+	</select>
+	<select id="queryField" resultType="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.entity.GameRecordEntity">
+	    select * from game_record 
+	    where delete_status=0
+	    <if test="userId !=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="userAccount !=null and userAccount != '' ">
+			AND user_account=#{userAccount}
+		</if>
+		<if test="gradeId !=null">
+			AND grade_id=#{gradeId}
+		</if>
+		<if test="gameId !=null">
+			AND game_id=#{gameId} 
+		</if>
+		<if test="countDay !=null">
+			AND datediff(create_time,#{countDay})=0
+		</if>
+    </select>
+   <!-- 查询同一局号所有玩家id和输赢金币 -->
+   <select id="queryByGameRoundNo" resultType="com.xmsy.server.zxyy.webhome.modules.manager.gamerecord.entity.GameRecordEntity">
+   	select user_id as userId , prize_coins as prizeCoins from game_record 
+   	where delete_status=0
+   	<if test="round !=null">
+		AND round=#{round} 
+	</if>
+	<if test="gameRoundNo !=null">
+		AND game_round_no=#{gameRoundNo} 
+	</if>
+   </select>
+   <!-- 获取用户输赢场数 -->
+	<select id="queryGameStatistics"
+		resultType="Map">
+		SELECT
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins &lt; 0 THEN
+						1
+					ELSE
+						0
+					END
+				),
+				0
+			) AS winNum,
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins &gt; 0 THEN
+						1
+					ELSE
+						0
+					END
+				),
+				0
+			) AS loseNum,
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins = 0 THEN
+						1
+					ELSE
+						0
+					END
+				),
+				0
+			) AS drawNum
+		FROM
+			game_record a
+		where delete_status=0
+		and a.game_id IN
+		<foreach collection="list" item="gameIds" open="("
+			separator="," close=")">
+			#{gameIds}
+		</foreach>
+	    <if test="userId !=null">
+			AND a.user_id=#{userId}
+		</if>
+		
+	</select>
+	 <!-- 统计时间区间内  +某个游戏 +某个场次（某个厅）=》  的输赢次数次     profit_coins(代理商盈利金币)-->
+	<select id="queryGameNumByGameIdGradeId"
+		resultType="Map">
+		SELECT
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins &lt; 0 THEN	1
+					ELSE 0 END),0 ) AS winNum,
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins &gt; 0 THEN 1
+					ELSE 0 END ),0) AS loseNum,
+			IFNULL(
+				sum(
+					CASE
+					WHEN a.profit_coins = 0 THEN 1
+					ELSE 0 END ),0) AS drawNum
+		FROM
+			game_record a
+		where delete_status=0
+		<if test="userId !=null">
+			AND a.user_id=#{userId}
+		</if>
+		<if test="startTime !=null and startTime!=''">
+			AND a.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND a.create_time &lt;= #{endTime}
+		</if>
+		<if test="gameId !=null and gameId !=0">
+			AND a.game_id = #{gameId}
+		</if>
+		<if test="roomId !=null and roomId !=0">
+			AND a.room_id = #{roomId}
+		</if>
+		<if test="gradeId !=null and gradeId !=0">
+			AND a.grade_id = #{gradeId}
+		</if>
+	</select>	
+</mapper>

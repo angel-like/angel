@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.ordertakemoney.dao.OrderTakeMoneyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.ordertakemoney.entity.OrderTakeMoneyEntity" id="orderTakeMoneyMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="account" column="account"/>
+        <result property="takeAmount" column="take_amount"/>
+        <result property="userValidBet" column="user_valid_bet"/>
+        <result property="userNeedBet" column="user_need_bet"/>
+        <result property="poundage" column="poundage"/>
+        <result property="userSurplusCoin" column="user_surplus_coin"/>
+        <result property="obtainAmount" column="obtain_amount"/>
+        <result property="incomeNo" column="income_no"/>
+        <result property="bankName" column="bank_name"/>
+        <result property="accountName" column="account_name"/>
+        <result property="status" column="status"/>
+        <result property="takeMoneyId" column="take_money_id"/>
+        <result property="accountType" column="account_type"/>
+        <result property="sysUserId" column="sys_user_id"/>
+        <result property="sysUserAccount" column="sys_user_account"/>
+        <result property="remark" column="remark"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+<select id="getTakeMoneyReport"
+			resultType="com.xmsy.server.zxyy.webhome.modules.manager.statistics.entity.TakeMoneyReport">
+		SELECT
+			IFNULL(SUM(a.take_amount), 0) AS takeAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS moneyAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a.`status` = 0 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS moneyWaitAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a.`status` = 1 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS moneyCancelAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a.`status` = 2 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS moneySuccessAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 1 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS commissionAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 1
+					AND a.`status` = 0 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS commissionWaitAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 1
+					AND a.`status` = 1 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS commissionCancelAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 1
+					AND a.`status` = 2 THEN
+						a.take_amount
+					END
+				),
+				0
+			) AS commissionSuccessAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0 THEN
+						a.poundage
+					END
+				),
+				0
+			) AS poundage,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 0 THEN
+						a.poundage
+					END
+				),
+				0
+			) AS moneyWaitPoundage,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 1 THEN
+						a.poundage
+					END
+				),
+				0
+			) AS moneyCancelPoundage,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 2 THEN
+						a.poundage
+					END
+				),
+				0
+			) AS moneySuccessPoundage,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0 THEN
+						a.obtain_amount
+					END
+				),
+				0
+			) AS moneyObtainAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 0 THEN
+						a.obtain_amount
+					END
+				),
+				0
+			) AS moneyWaitObtainAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 1 THEN
+						a.obtain_amount
+					END
+				),
+				0
+			) AS moneyCancelObtainAmount,
+			IFNULL(
+				SUM(
+					CASE
+					WHEN a.type = 0
+					AND a. STATUS = 2 THEN
+						a.obtain_amount
+					END
+				),
+				0
+			) AS moneySuccessObtainAmount
+		FROM
+			order_take_money a
+		WHERE
+			a.delete_status = 0
+		
+		<if test="startTime !=null and startTime!=''">
+			AND a.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND a.create_time &lt;= #{endTime}
+		</if>
+		
+	</select>
+
+	<select id="getTakeMoneyRecord"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.take.result.OrderTakeMoneyResult">
+		SELECT
+		otm.order_no AS orderNo,
+		otm.`status`,
+		otm.create_time AS time,
+		otm.take_amount AS amount,
+		otm.take_amount AS commission,
+		otm.poundage AS poundage,
+		otm.type
+		FROM
+		order_take_money otm
+		where otm.user_id=#{userId}
+		<if test="startTime !=null and startTime!=''">
+			AND otm.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND otm.create_time &lt;= #{endTime}
+		</if>
+		order by otm.id desc
+	</select>
+	<select id="commissionTakeMoneyRecord"
+		resultType="com.xmsy.server.zxyy.webhome.modules.app.take.result.OrderCommissionTakeMoneyResult">
+		SELECT
+		otm.`status` as status,
+		DATE_FORMAT(otm.create_time, '%Y-%m-%d %H:%i:%S') AS takeTime,
+		otm.take_amount AS money
+		FROM
+		order_take_money otm
+		where otm.user_id=#{userId}
+		and otm.type=1
+		<if test="startTime !=null and startTime!=''">
+			AND otm.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime!=''">
+			AND otm.create_time &lt;= #{endTime}
+		</if>
+	</select>
+	
+<!-- 	根据会员id统计总的取款金额 取款次数 -->
+	<select id="orderTakeStatistics"
+		resultType="com.xmsy.server.zxyy.webhome.modules.manager.ordertakemoney.entity.OrderTakeMoneyStatistics">
+		SELECT
+			user_id userId,
+			user_account userAccount,
+			sum(take_amount) takeAmount,
+			count(1) takeNum
+		FROM
+			order_take_money
+		WHERE
+			user_id = #{userId} and `status`= 2
+		GROUP BY
+			user_id,
+			user_account
+	</select>
+	<select id="getTakeMoneyTableReport" resultType="com.xmsy.server.zxyy.webhome.modules.manager.statistics.entity.TakeMoneyTableReport" >
+			SELECT
+			type,SUM( CASE WHEN  STATUS = 2 THEN 	obtainAmount ELSE 	0 END ) as obtainAmount,
+			SUM( CASE WHEN  STATUS = 0 THEN 	takeAmount ELSE 	0 END ) AS moneyWaitAmount,
+			SUM( CASE WHEN  STATUS = 1 THEN 	takeAmount ELSE 	0 END ) AS moneyCancelAmount,
+			SUM( CASE WHEN  STATUS = 2 THEN 	takeAmount ELSE 	0 END ) AS moneySuccessAmount,
+			SUM( CASE WHEN  STATUS = 0 THEN 	poundage ELSE 	0 END ) AS unconfirmedPoundage,
+			SUM( CASE WHEN  STATUS = 1 THEN 	poundage ELSE 	0 END ) AS cancelPoundage,
+			SUM( CASE WHEN  STATUS = 2 THEN 	poundage ELSE 	0 END ) AS confirmedPoundage,
+			SUM( CASE WHEN  STATUS = 0 THEN 	num ELSE 	0 END ) AS unconfirmedNum,
+			SUM( CASE WHEN  STATUS = 1 THEN 	num ELSE 	0 END ) AS cancelNum,
+			SUM( CASE WHEN  STATUS = 2 THEN 	num ELSE 	0 END ) AS confirmedNum
+			from (
+			SELECT type,`status`,SUM(obtain_amount) obtainAmount,SUM(poundage) poundage,SUM(take_amount) takeAmount,COUNT(1) num 
+			from order_take_money
+			where delete_status = 0 and STATUS != 3
+			<if test="startTime !=null and startTime!=''">
+				AND create_time &gt;= #{startTime}
+			</if>
+			<if test="endTime !=null and endTime!=''">
+				AND create_time &lt;= #{endTime}
+			</if>
+			GROUP BY `status`,type
+			) tem 
+			GROUP BY type
+			ORDER BY type
+	</select>
+	
+	<select id="getLastTakeMoney" resultMap="orderTakeMoneyMap">
+		select * from order_take_money
+		where user_id = #{userId} and `status`= 2
+		order by update_time desc limit 1
+	</select>
+	<!-- 修改订单 -->
+	<update id="updateAll">
+		UPDATE order_take_money
+		SET
+		sys_user_id =#{entity.sysUserId},
+		status =#{entity.status},
+		sys_user_account=#{entity.sysUserAccount}
+		WHERE
+		id = #{entity.id}
+	</update>
+</mapper>

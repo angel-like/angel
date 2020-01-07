@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.calculate.modules.manager.userrecommendation.dao.UserRecommendationDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.calculate.modules.manager.userrecommendation.entity.UserRecommendationEntity" id="userrecommendationMap">
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="recommendationCode" column="recommendation_code"/>
+        <result property="num" column="num"/>
+        <result property="amount" column="amount"/>
+        <result property="coin" column="coin"/>
+        <result property="agentHierarchyId" column="agent_hierarchy_id"/>
+    </resultMap>
+	<!-- 根据用户ID修改邀请总人数及总盈利 -->
+	<update id="updateSuperiors" keyProperty="com.xmsy.server.zxyy.calculate.modules.manager.userrecommendation.entity.UserRecommendationEntity">
+		update user_recommendation set num=num+1  where user_id=#{id} 
+	</update>
+	<!-- 根据用户ID修改总盈利 -->
+	<update id="updateSuperiorsAmount" keyProperty="com.xmsy.server.zxyy.calculate.modules.manager.userrecommendation.entity.UserRecommendationEntity">
+		update 
+			user_recommendation 
+		set 
+		<if test="amount != null">
+			amount =amount+#{amount},
+		</if>
+		<if test="coin != null">
+			coin =coin+#{coin},
+		</if>   
+		update_time=now()
+		where user_id=#{userId} 
+	</update>
+	
+	<select id="getAgentHierarchyByUserId" resultType="Map">
+		select id,name,type,coin,commission ,proportion
+			from user_agent_hierarchy
+			where id = 
+			(SELECT agent_hierarchy_id from user_recommendation where user_id=#{userId})
+	</select>
+</mapper>

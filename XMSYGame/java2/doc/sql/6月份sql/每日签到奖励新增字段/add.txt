@@ -1,0 +1,4 @@
+ALTER TABLE `sign_reward_continuous_every_day`
+ADD COLUMN `day_num`  int(2) NULL DEFAULT 0 COMMENT '第几天' AFTER `reward`,
+ADD COLUMN `vip_id`  bigint(22) NULL DEFAULT 0 COMMENT 'vip等级' AFTER `day_num`;
+

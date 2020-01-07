@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.gamerecordfightlandlords.dao.GameRecordFightlandlordsDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.gamerecordfightlandlords.entity.GameRecordFightlandlordsEntity" id="gameRecordFightlandlordsMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gradeId" column="grade_id"/>
+        <result property="roomId" column="room_id"/>
+        <result property="score" column="score"/>
+        <result property="coins" column="coins"/>
+        <result property="landlord" column="landlord"/>
+        <result property="multiple" column="multiple"/>
+        <result property="robot" column="robot"/>
+        <result property="gameRoundNo" column="game_round_no"/>
+        <result property="version" column="version"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="getGameList" resultType="com.xmsy.server.zxyy.webhome.modules.manager.gamerecordfightlandlords.entity.GameRecordFightlandlordsEntity">
+    	SELECT * from game_record_fightlandlords
+		where game_round_no = #{gameRoundNo}
+    </select>
+
+
+</mapper>

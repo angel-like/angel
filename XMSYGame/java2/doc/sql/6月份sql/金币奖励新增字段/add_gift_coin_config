@@ -1,0 +1,2 @@
+ALTER TABLE `gift_coin_config`
+ADD COLUMN `vip_id`  bigint(22) NOT NULL COMMENT 'vip等級' AFTER `template_id`;

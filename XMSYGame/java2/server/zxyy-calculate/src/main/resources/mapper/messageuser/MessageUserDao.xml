@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.calculate.modules.manager.messageuser.dao.MessageUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.calculate.modules.manager.messageuser.entity.MessageUserEntity" id="messageUserMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="messageId" column="message_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="failureTime" column="failure_time"/>
+		<result property="effectTime" column="effect_time"/>
+		<result property="contentType" column="content_type"/>
+        <result property="status" column="status"/>
+        <result property="deleteMessage" column="delete_message"/>
+    </resultMap>
+    
+    <delete id="deleteUserByMessageId">
+    	delete from sys_message_user where message_id=#{messageId}
+    </delete>
+    <insert id="insertBatch" >
+    	insert into sys_message_user(message_id,user_id,user_account,status,delete_message,create_time,receive)
+    	values 
+    	<foreach collection="list" item="item" separator=",">
+    		(#{item.messageId},#{item.userId},#{item.userAccount},#{item.status},#{item.deleteMessage},now(),#{item.receive})
+    	</foreach>
+    </insert>
+    <select id="findMessageUser"  resultMap="messageUserMap">
+    	select *  from sys_message_user
+    	where delete_status=0 
+    	and user_id = #{userId}
+    	and message_id in 
+    	<foreach collection="messageIds" item="item" separator="," open="("  close=")">
+    		#{item}
+    	</foreach>
+    </select>
+    
+    <select id="queryByMessageId" resultType="com.xmsy.server.zxyy.calculate.modules.manager.messageuser.entity.MessageUserEntity">
+    	SELECT * From sys_message_user 
+    	where delete_status=0 
+    	and message_id=#{messageId}
+    	and user_id=#{userId}
+    </select>
+
+	<!-- 通过用户id查找 当前用户所有 未领取道具信息-->
+	<select id="findMessageProp" 
+		resultType="com.xmsy.server.zxyy.calculate.modules.manager.sysmessageprop.entity.SysMessagePropEntity">
+		SELECT a.id,a.message_id as messageId,a.prop_id propId,a.prop_num as propNum,b.user_id as userId
+		FROM sys_message_prop a
+		INNER JOIN sys_message_user b ON a.message_id=b.message_id
+		where
+		a.delete_status=0 and b.delete_status=0 and b.delete_message=0 and
+		b.receive=0
+		and
+		user_id=#{vo.userId}
+	</select>
+	<!-- 通过用户id查找包含有 未领取 道具邮件的   站内信用户关系表 -->
+	<select id="findMessageUserByUserId" resultMap="messageUserMap">
+		SELECT a.id,a.message_id,a.user_id,a.user_account
+		FROM  sys_message_user a 
+		LEFT JOIN sys_message_prop b ON a.message_id=b.message_id
+		where
+		a.delete_status=0 and b.delete_status=0 and a.delete_message=0 and
+		a.receive=0 
+		and
+		user_id=#{vo.userId}  GROUP BY a.id
+	</select>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.webhomemenu.dao.WebhomeMenuDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.webhomemenu.entity.WebhomeMenuEntity" id="webhomeMenuMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="englishName" column="english_name"/>
+        <result property="type" column="type"/>
+        <result property="icon" column="icon"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="gameId" column="game_id"/>
+        <result property="menuColor" column="menu_color"/>
+    </resultMap>
+	<!-- 官网获取菜单列表 -->
+	<select id="selectListByWeb" resultType="com.xmsy.server.zxyy.webhome.modules.manager.webhomemenu.entity.MenuEntity">
+			SELECT
+				a.id,
+				a.NAME,
+				a.english_name,
+				a.type,
+				a.parent_id,
+				b.url  AS photo_url,
+				a.game_id,
+				a.menu_color
+			FROM
+				webhome_menu a
+			LEFT JOIN webhome_enclosure b ON a.icon = b.id
+			where a.delete_status!=1
+			ORDER BY
+				a.TYPE,
+				a.order_num
+	</select>
+
+</mapper>

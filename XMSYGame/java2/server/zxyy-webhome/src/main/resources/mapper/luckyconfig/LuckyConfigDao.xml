@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.webhome.modules.manager.luckyconfig.dao.LuckyConfigDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.webhome.modules.manager.luckyconfig.entity.LuckyConfigEntity"
+               id="luckyConfigMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="luckyId" column="lucky_id"/>
+        <result property="propId" column="prop_id"/>
+        <result property="propNum" column="prop_num"/>
+        <result property="name" column="name"/>
+        <result property="grand" column="grand"/>
+        <result property="chance" column="chance"/>
+    </resultMap>
+    <select id="getAllconfig"
+            resultType="com.xmsy.server.zxyy.webhome.modules.manager.luckyconfig.entity.LuckyConfigEntity">
+    select a.id as  id, a.lucky_id as luckyId ,a.prop_id as  propId,
+    a.chance as chance,
+    a.name as  name,
+    a.grand as grand,
+     b.name as  propName,
+     a.prop_num  as  propNum
+     from
+    lucky_config a
+    left join  sys_prop b
+    on  a.prop_id = b.id
+
+    where
+   a.lucky_id
+    = #{luckyId}
+    and a.prop_id>0
+    </select>
+    <select id="getSettings"
+            resultType="com.xmsy.server.zxyy.webhome.modules.manager.luckyconfig.entity.LuckyConfigEntity">
+    select a.id as  id, a.lucky_id as luckyId ,a.prop_id as  propId,
+    case
+	WHEN 	 a.prop_id =-1 THEN
+		'再来一次'
+	WHEN 	 a.prop_id = 0 THEN
+		'谢谢参与'
+		else
+		 b.name
+		END AS propName,
+    a.chance as chance,
+    a.name as  name,
+    a.grand as grand,
+    case
+    WHEN a.prop_id = -1 THEN
+          0
+     WHEN a.prop_id = 0 THEN
+          0
+      else a.prop_num
+      end as  propNum
+     from
+    lucky_config a
+    left join  sys_prop b
+    on  a.prop_id = b.id
+    where
+   a.lucky_id
+    = #{luckyId}
+    order by a.order_no
+    </select>
+    <select id="getNames"
+            resultType="string">
+    select
+    a.name as  name
+     from
+    lucky_config a
+
+    where
+   a.lucky_id
+    = #{luckyId}
+      and a.prop_id>0
+    </select>
+
+
+</mapper>

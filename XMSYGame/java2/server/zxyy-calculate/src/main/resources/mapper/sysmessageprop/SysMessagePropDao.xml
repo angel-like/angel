@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.calculate.modules.manager.sysmessageprop.dao.SysMessagePropDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.calculate.modules.manager.sysmessageprop.entity.SysMessagePropEntity" id="sysMessagePropMap">
+        <result property="id" column="id"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="messageId" column="message_id"/>
+        <result property="propId" column="prop_id"/>
+        <result property="propNum" column="prop_num"/>
+    </resultMap>
+ <insert id="insertBatch" >
+    	insert into sys_message_prop(message_id,prop_id,prop_num,create_time,update_time)
+    	values 
+    	<foreach collection="list" item="item" separator=",">
+    		(#{item.messageId},#{item.propId},#{item.propNum},now(),now())
+    	</foreach>
+    </insert>
+<!--     根据邮件id取得道具列表 -->
+	<select id="findMessagePropListByMessageId" resultType="map">
+		select a.prop_id propId,a.prop_num propNum,b.name propName
+		from sys_message_prop a
+		left join sys_prop b on a.prop_id=b.id
+		where a.message_id=#{messageId} and a.delete_status=0
+	</select>
+</mapper>

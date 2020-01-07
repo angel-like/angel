@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.dao.UserRebateCommissionRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.entity.UserRebateCommissionRecordEntity" id="userRebateCommissionRecordMap">
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleteStatus" column="delete_status"/>
+        <result property="version" column="version"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="commission" column="commission"/>
+        <result property="provideUserId" column="provide_user_id"/>
+        <result property="provideUserAccount" column="provide_user_account"/>
+    </resultMap>
+	<select id="getList" resultType="map" >
+		select a.*, IFNULL(b.betCoins*0.01,0) betCoins ,IFNULL(b.num-1,0) num from
+(SELECT
+			a.id AS userId,
+			a.account AS userAccount,
+			a.money AS money,
+			a.commission AS commission,
+			b.num AS subordinateNum,
+			b.amount AS obtainCommission,
+			b.recommendation_code AS recommendationCode
+			,
+			(b.amount-a.commission)  AS takeMoney
+
+		FROM
+			 user_recommendation b,`user` a
+
+		WHERE  a.id = b.user_id and
+			b.num > 0)
+			 a
+
+				LEFT JOIN
+
+			(	SELECT a.parant_user_id userId,IFNULL(SUM(b.bet_coins), 0) as betCoins,
+		COUNT(DISTINCT a.user_id ) num
+		 from  user_recommendation_tree a
+		LEFT JOIN user_bet_record b ON a.user_id = b.user_id
+		where a.parant_user_id in
+		(SELECT a.id AS userId	FROM user_recommendation b,`user` a WHERE  a.id = b.user_id and b.num > 0)
+		GROUP BY  a.parant_user_id) b ON a.userId = b.userId
+	</select>
+
+    <select id="getDetailsListForSimplify"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.entity.UserRebateCommissionDetailsEntity">
+		SELECT
+			a.id AS userId,
+			a.account AS userAccount,
+			a.money AS money,
+			a.commission AS commission,
+			b.num AS subordinateNum,
+			b.amount AS obtainCommission,
+			b.recommendation_code AS recommendationCode
+
+		FROM
+			 user_recommendation b,`user` a
+
+		WHERE  a.id = b.user_id and
+			b.num > 0
+			<if test="entity.userAccount !=null and entity.userAccount!=''">
+					AND a.account=#{entity.userAccount}
+			</if>
+			<if test="entity.userId !=null ">
+					AND a.id=#{entity.userId}
+			</if>
+			<if test="entity.recommendationCode !=null and entity.recommendationCode!='' ">
+					AND b.recommendation_code=#{entity.recommendationCode}
+			</if>
+
+	</select>
+	 <select id="findUserTotalBetCoin" resultType="map" >
+	 	SELECT a.parant_user_id userId,IFNULL(SUM(b.bet_coins), 0) as betCoins,
+		COUNT(DISTINCT a.user_id ) num
+		 from  user_recommendation_tree a
+		LEFT JOIN user_bet_record b ON a.user_id = b.user_id
+		where a.parant_user_id in
+	 	<foreach collection="idList" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		GROUP BY  a.parant_user_id
+	 </select>
+
+	<!-- 代理详情列表 -->
+	<select id="getDetailsList"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.entity.UserRebateCommissionDetailsEntity">
+		SELECT
+			a.id AS userId,
+			a.account AS userAccount,
+			a.money AS money,
+			a.commission AS commission,
+			b.num AS subordinateNum,
+			sum(case WHEN c.user_parant_distance!=0 THEN 1 ELSE 0 END) AS num,
+			b.recommendation_code AS recommendationCode,
+			IFNULL(SUM(d.bet_coins), 0) as betCoins,
+			IFNULL(
+				(
+					SELECT
+						SUM(commission)
+					FROM
+						user_rebate_commission_record
+					WHERE
+						user_id = a.id
+				),
+				0
+			) AS obtainCommission,
+			IFNULL(
+				(
+					select
+						SUM(take_amount)
+					from
+						order_take_money
+					where
+						user_id=a.id AND status = 2 AND type = 1
+				),
+			0) as takeAmount
+		FROM
+			`user` a
+		LEFT JOIN user_recommendation b ON a.id = b.user_id
+		LEFT JOIN user_recommendation_tree c ON b.user_id = c.parant_user_id
+		LEFT JOIN user_bet_record d ON c.user_id = d.user_id
+
+		WHERE
+			b.num > 0
+			<if test="entity.userAccount !=null and entity.userAccount!=''">
+					AND a.account=#{entity.userAccount}
+			</if>
+			<if test="entity.userId !=null ">
+					AND a.id=#{entity.userId}
+			</if>
+			<if test="entity.recommendationCode !=null and entity.recommendationCode!='' ">
+					AND b.recommendation_code=#{entity.recommendationCode}
+			</if>
+		GROUP BY
+			a.id
+	</select>
+	<!-- 日统计代理详情列表 -->
+	<select id="dateList"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.entity.UserRebateCommissionDateDetailsEntity">
+		SELECT
+			IFNULL(SUM(commission),0) AS commission ,
+			IFNULL(COUNT(id),0) AS num,
+			record_date AS recordDate
+		FROM
+			user_rebate_commission_record
+		WHERE
+			delete_status = 0
+			<if test="entity.userId !=null ">
+					AND user_Id=#{entity.userId}
+			</if>
+			<if test="entity.startDate !=null and entity.startDate!='' ">
+					AND record_date &gt;=#{entity.startDate}
+			</if>
+			<if test="entity.endDate !=null and entity.endDate!='' ">
+					AND record_date &lt;=#{entity.endDate}
+			</if>
+		GROUP BY
+			record_date
+	</select>
+	<!-- 用户返佣详情-->
+	<select id="selectSumCommission"
+		resultType="com.xmsy.server.zxyy.manager.modules.manager.userrebatecommissionrecord.entity.UserRebateCommissionSumEntity">
+		SELECT
+			sum(CASE WHEN DATE_FORMAT(create_time, '%Y-%m-%d')=#{queryDate} THEN commission ELSE 0 END) AS dateCommission,
+			sum(CASE WHEN create_time>#{startDate} AND create_time>#{endDate} THEN commission ELSE 0 END) AS intervalCommission,
+			sum(commission) as totalCommission
+		FROM
+			user_rebate_commission_record
+		WHERE
+			delete_status=0
+		<if test="userId !=null">
+			AND user_id = #{userId}
+		</if>
+
+	</select>
+</mapper>

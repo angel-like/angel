@@ -1,0 +1,18 @@
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+    VALUES ('0', '平台数据报表', NULL, NULL, '0', 'mudedi', '6');
+	-- 按钮父菜单ID
+set @parentId = @@identity;
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+ SELECT @parentId, '每日平台数据', 'platformdatareporting/platformdatareporting', NULL, '1', 'config', '1';	
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+    SELECT @parentId,  '模块营收数据', 'platformdatareporting/modularrevenuedata', NULL, '1', 'config', '2';
+	
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+    SELECT @parentId,  '游戏场次详情', 'platformdatareporting/playgrounddetails', NULL, '1', 'config', '3';
+	
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+    SELECT @parentId,  '游戏用户数据', 'platformdatareporting/gameuserdata', NULL, '1', 'config', '4';
+	
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+    SELECT @parentId,  '用户场次详情', 'platformdatareporting/userfielddetails', NULL, '1', 'config', '5';
+	

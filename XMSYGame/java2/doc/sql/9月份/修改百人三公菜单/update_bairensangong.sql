@@ -1,0 +1,5 @@
+update sys_menu set url='gamerecordbairensangong/gamerecordbairensangong' where url='gamerecordbairesangong/gamerecordbairesangong';
+update sys_menu set perms='gamerecordbairensangong:gamerecordbairensangong:list,gamerecordbairensangong:gamerecordbairensangong:info' where perms='gamerecordbairesangong:gamerecordbairesangong:list,gamerecordbairesangong:gamerecordbairesangong:info';
+update sys_menu set perms='gamerecordbairensangong:gamerecordbairensangong:save' where perms='gamerecordbairesangong:gamerecordbairesangong:save';
+update sys_menu set perms='gamerecordbairensangong:gamerecordbairensangong:update' where perms='gamerecordbairesangong:gamerecordbairesangong:update';
+update sys_menu set perms='gamerecordbairensangong:gamerecordbairensangong:delete' where perms='gamerecordbairesangong:gamerecordbairesangong:delete';
