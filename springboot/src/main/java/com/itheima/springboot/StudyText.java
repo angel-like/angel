@@ -34,6 +34,39 @@ public class StudyText {
 				System.out.print(valArray[j]+",");
 			}
 		}
+		
+		System.out.println();
+		System.out.println("=================List.asList()=============================");
+		
+		String[] s = {"aa","bb","cc"};
+        List<String> strlist = Arrays.asList(s);
+        for(String str:strlist){
+            System.out.println(str);
+        }
+        System.out.println("------------------------1");
+        //基本数据类型结果打印为一个元素（byte,short,int,long,float,double,boolean,char）
+        int[] i ={11,22,33}; 
+        List intlist = Arrays.asList(i);
+        for(Object o:intlist){//asList不适合基本数据类型
+            System.out.println(o.toString());//[I@1b6d3586
+        }
+        System.out.println("------------------------2");
+        Integer[] ob = {11,22,33};
+        List<Integer> oblist = Arrays.asList(ob);
+        for(int a:oblist){
+            System.out.println(a);
+        }
+        System.out.println("------------------------3");
+        
+        List<Integer> list = new ArrayList<>();
+        list.add(11);
+        list.add(11);
+        list.add(11);
+        for(int a:list){
+            System.out.println(a);
+        }
+		
+		
 	}
 	
 	
