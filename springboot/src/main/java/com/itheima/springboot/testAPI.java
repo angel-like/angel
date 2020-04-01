@@ -10,7 +10,7 @@ import com.itheima.springboot.param.RequestParam;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 
-public class test {
+public class testAPI {
 	public static void main(String[] args) {
 		RequestParam requestParam=new RequestParam();
 		requestParam.setAppkey("f9e4166015dbe671170b6cce35865154");

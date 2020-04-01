@@ -1,4 +1,8 @@
-package com.li.zixue;
+package com.itheima.springboot;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StudyText {
 	public static void main(String[] args) {
@@ -10,8 +14,9 @@ public class StudyText {
 		String format = String.format(ss, "鸿沟","深渊","归于");
 		System.out.println(format);
 		
-		
-		
+		System.out.printf("视频流：a = %d, b = %d, c= %d", 1, 2, 3);
+		System.out.println();
+		System.out.println("======================数组=============================");
 		int areaSize=4;
 		int[]  valArray=new int[5];
 		valArray[0]=1;
@@ -36,10 +41,10 @@ public class StudyText {
 		}
 		
 		System.out.println();
-		System.out.println("=================List.asList()=============================");
+		System.out.println("=====================List.asList()=============================");
 		
-		String[] s = {"aa","bb","cc"};
-        List<String> strlist = Arrays.asList(s);
+		String[] s1 = {"aa","bb","cc"};
+        List<String> strlist = Arrays.asList(s1);
         for(String str:strlist){
             System.out.println(str);
         }

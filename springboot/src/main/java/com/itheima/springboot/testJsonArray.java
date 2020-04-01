@@ -22,8 +22,8 @@ public class testJsonArray {
 		
 		testAPI testAPI=new testAPI();
 		Class<? extends com.itheima.springboot.testAPI> class1 = testAPI.getClass();
-		System.out.println(class1);
-		System.out.println(class1.getName());
+		System.out.println(class1);//class com.itheima.springboot.testAPI
+		System.out.println(class1.getName());//com.itheima.springboot.testAPI
 		
 		
 		int num=(10-3)/3;
