@@ -17,7 +17,12 @@ public class Seller {
 	  */
 	 public class DoCalculator implements DoJob {
 		@Override
-		public void fillBlank(int a, int b, int result) {
+		public void fillBlank(int a, int b, int result) {//小红那边通过接口把数据传出来，这边通过实现类重写抽象方法->对接口方法 传过来数据  操作
+			for(int i=0;i<10000;i++) {
+				if(i==9999) {
+					System.out.println(i);
+				}
+			}
 			System.out.println(name + "求助小红算账:" + a + " + " + b + " = " + result);
 		}
 	 }
