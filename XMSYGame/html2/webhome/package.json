@@ -27,7 +27,7 @@
     "gulp-shell": "0.6.5",
     "js-cookie": "^2.2.0",
     "json2csv": "^4.3.3",
-    "lodash": "4.17.5",
+    "lodash": "4.17.19",
     "moment": "^2.24.0",
     "natives": "^1.1.6",
     "node-sass": "4.9.0",
