@@ -9,7 +9,7 @@ import com.atguigu.myrule.MySelfRule;
 
 @SpringBootApplication
 @EnableEurekaClient//跟服务提供者一样也是客户端
-@RibbonClient(name="SPRINGCLOUD-DEPT",configuration=MySelfRule.class)
+@RibbonClient(name="SPRINGCLOUD-DEPT",configuration=MySelfRule.class)//抓取策略算法  用自定义算法
 public class DeptConsumer80_App {
 	public static void main(String[] args) {
 		SpringApplication.run(DeptConsumer80_App.class, args);

@@ -6,10 +6,16 @@ import java.util.List;
 
 public class StudyText {
 	public static void main(String[] args) {
-		String s="C:\\n盘";
+		String s="C:\\n盘";		//     \代表转义符，\\n代表\n   ,  \n代表着换行
+		String s1="\\n";
+		String s2="\\\\n";
+		String s3="\\\n";
 		String replaceAll = s.replaceAll("\\\\n","\\\n");
 		System.out.println(replaceAll);
-		
+		System.out.println(s);
+		System.out.println(s1);
+		System.out.println(s2);
+		System.out.println(s3);
 		String ss="恒越一切%s,世界犹如%s,万物%s寂静";
 		String format = String.format(ss, "鸿沟","深渊","归于");
 		System.out.println(format);
@@ -43,15 +49,16 @@ public class StudyText {
 		System.out.println();
 		System.out.println("=====================List.asList()=============================");
 		
-		String[] s1 = {"aa","bb","cc"};
-        List<String> strlist = Arrays.asList(s1);
+		String[] s11 = {"aa","bb","cc"};
+        List<String> strlist = Arrays.asList(s11);
         for(String str:strlist){
             System.out.println(str);
         }
         System.out.println("------------------------1");
         //基本数据类型结果打印为一个元素（byte,short,int,long,float,double,boolean,char）
         int[] i ={11,22,33}; 
-        List intlist = Arrays.asList(i);
+        @SuppressWarnings("rawtypes")
+		List intlist = Arrays.asList(i);
         for(Object o:intlist){//asList不适合基本数据类型
             System.out.println(o.toString());//[I@1b6d3586
         }

@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.itheima.springboot</groupId>
@@ -7,17 +6,24 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>springbootfirst</name>
-	<description>第二次编写springboo</description>
-	
-	<parent><!-- 1.必须添加的父依赖-->
+	<description>第二次编写springboo </description>
+
+	<parent><!-- 1.必须添加的父依赖 -->
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.2.RELEASE</version>
 	</parent>
-	
+
 	<dependencies>
-	 	  <!-- 2.starter模块  插件运行  在debug maven  一系列的依赖包组合：web starter模块，就是包含了Spring Boot预定义的一些Web开发的常用依赖-->
-		 <dependency>
+
+		<dependency>
+			<groupId>com.zhenzikj</groupId>
+			<artifactId>zhenzisms</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+		<!-- 2.starter模块 插件运行 在debug maven 一系列的依赖包组合：web starter模块，就是包含了Spring 
+			Boot预定义的一些Web开发的常用依赖 -->
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -25,43 +31,37 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		<!--  <parent>里已经有了 这里不需要
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.7.RELEASE</version>
-		</dependency>-->
+		<!-- <parent>里已经有了 这里不需要 <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-webmvc</artifactId> <version>4.3.7.RELEASE</version> </dependency> -->
 		<!-- 连接池 -->
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp-spring</artifactId>
 			<version>0.8.0.RELEASE</version>
 		</dependency>
-		<!-- 热部署-->
+		<!-- 热部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
-		<!-- 监管   配置management.security.enabled=false
-					management.context-path=/manage  访问前加的配置，方便项目里面设置权限
-					management.port=8081  设置监管的端点端口
-		-->
+		<!-- 监管 配置management.security.enabled=false management.context-path=/manage 
+			访问前加的配置，方便项目里面设置权限 management.port=8081 设置监管的端点端口 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-actuator</artifactId>
 		</dependency>
 		<!-- HttpRequest请求工具 -->
 		<dependency>
-				<groupId>cn.hutool</groupId>
-				<artifactId>hutool-all</artifactId>
-				<version>4.5.12</version>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>4.5.12</version>
 		</dependency>
 		<!-- lombok -->
 		<dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-		<!-- alibaba   json工具 -->
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<!-- alibaba json工具 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-starter</artifactId>
@@ -89,9 +89,19 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
+					<!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中不能使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+					<source>1.8</source><!-- 源代码使用的JDK版本 -->
+					<target>1.8</target><!-- 需要生成的目标class文件的编译版本 -->
+					<encoding>UTF-8</encoding><!-- 字符集编码 -->
+					<skipTests>true</skipTests><!-- 跳过测试 -->                                                                             
+			        <!-- <verbose>true</verbose>
+			        <showWarnings>true</showWarnings>                                                                                                               
+			        <fork>true</fork>要使compilerVersion标签生效，还需要将fork设为true，用于明确表示编译版本配置的可用 -->                                                        
+			        <executable><!-- path-to-javac --></executable><!-- 使用指定的javac命令，例如：<executable>${JAVA_1_4_HOME}/bin/javac</executable> -->           
+			        <!--<compilerVersion>1.3</compilerVersion> 指定插件将使用的编译器的版本 -->                                                                         
+			        <!-- <meminitial>128m</meminitial>编译器使用的初始内存 -->                                                                                      
+			        <!--<maxmem>512m</maxmem> 编译器使用的最大内存 -->                                                                                              
+			        <!--<compilerArgument>-verbose -bootclasspath ${java.home}\lib\rt.jar</compilerArgument> 这个选项用来传递编译器自身不包含但是却支持的参数选项 -->               
 				</configuration>
 			</plugin>
 			<plugin><!-- 3.打包成可执行的架包 -->

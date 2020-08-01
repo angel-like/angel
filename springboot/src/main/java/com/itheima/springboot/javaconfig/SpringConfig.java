@@ -43,7 +43,7 @@ public class SpringConfig {
         // 数据库的用户名
         boneCPDataSource.setUsername(jdbcUsername);
         // 数据库的密码
-        boneCPDataSource.setPassword(jdbcUsername);
+        boneCPDataSource.setPassword(jdbcPassword);
         // 检查数据库连接池中空闲连接的间隔时间，单位是分，默认值：240，如果要取消则设置为0
         boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
         // 连接池中未使用的链接最大存活时间，单位是分，默认值：60，如果要永远存活设置为0

@@ -16,12 +16,12 @@ public class DeptController_Consumer {
 	//private static final String REST_URL_PREFIX = "http://localhost:8001";//写死的  没有负载均衡
 	
 	//对应上提供方的  spring.application.name: springcloud-dept
-	//也就是eureka上的  SPRINGCLOUD-DEPT大写的 名称
+	//也就是eureka上的  SPRINGCLOUD-DEPT大写的 名称  =》不用关系ip与端口
 	private static final String REST_URL_PREFIX = "http://SPRINGCLOUD-DEPT";
 	
 	
-	@Autowired
-	private RestTemplate restTemplate;
+	@Autowired //是一种简单的访问restful服务模板类
+	private RestTemplate restTemplate;//restful风格的请求 模板调用
 
 	@RequestMapping(value = "/consumer/dept/add")
 	public boolean add(@RequestBody Dept dept) {

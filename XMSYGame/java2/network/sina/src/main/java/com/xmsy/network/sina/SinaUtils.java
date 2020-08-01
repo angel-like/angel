@@ -41,7 +41,7 @@ public class SinaUtils {
 	public static void main(String[] args) {
 		String requestUrl="http://www.mynb8.com/api2/sina";
 		String appkey="f9e4166015dbe671170b6cce35865154";
-		String longUrl="https://www.baidu.com/";
+		String longUrl="http://218.19.252.140:8334/qqxt/template/download/各区主要指标排名导入模板.xlsx";
 		String links = conversionLinks(requestUrl,appkey,longUrl);
 		System.out.println(links);
 	}

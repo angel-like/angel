@@ -16,7 +16,7 @@ public class Main {
         // 调用对象中的方法
         List<User> list = userService.queryUserList();
         for (User user : list) {
-            System.out.println(user.getUsername() + ", " + user.getPassword() + ", " + user.getPassword());
+            System.out.println(user.getUsername() + ", " + user.getPassword() + ", " + user.getAge());
         }
         
         // 销毁该容器
