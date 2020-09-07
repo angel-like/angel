@@ -48,7 +48,7 @@ public class ThreadPoolTest {
 		(6)handler： 线程池对拒绝任务的处理策略
 		 */
 		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 4, 3, TimeUnit.SECONDS,
-				new ArrayBlockingQueue<Runnable>(3), new ThreadPoolExecutor.CallerRunsPolicy());
+				new ArrayBlockingQueue<Runnable>(3), new ThreadPoolExecutor.AbortPolicy());
 		for (int i = 1; i <= produceTaskMaxNumber; i++) {
 			try {
 				// 一个任务，并将其加入到线程池
@@ -83,6 +83,7 @@ public class ThreadPoolTest {
 			try {
 				// 便于观察，等待一段时间
 				Thread.sleep(consumeTaskSleepTime);
+				System.out.println("睡眠五秒后+++"+threadPoolTaskData);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
