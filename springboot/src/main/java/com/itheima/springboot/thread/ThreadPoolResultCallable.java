@@ -18,7 +18,7 @@ public class ThreadPoolResultCallable implements Callable<Integer>{
         //for (int i = begin; i <= end; i++) {
             //result += i;
 			result=begin+end;
-            Thread.sleep(100);
+            Thread.sleep(1000);
         //}
         System.out.printf("(%s) - 运行结束，结果为 %d\n",
                 Thread.currentThread().getName(), result);

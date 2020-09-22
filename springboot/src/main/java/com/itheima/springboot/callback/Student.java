@@ -20,6 +20,10 @@ public class Student {
 		public void fillBlank(int a, int b, int result) {
 			System.out.println(name + "求助小红计算:" + a + " + " + b + " = " + result);
 		}
+		
+		public void testDefault() {
+			System.out.println("-----小明重写接口默认方法\n");
+		}
 	 }
 	 /**
 	  * 去请求帮助方法 

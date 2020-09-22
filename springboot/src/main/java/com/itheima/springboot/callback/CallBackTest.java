@@ -15,7 +15,14 @@ public class CallBackTest {
 			public void fillBlank(int a, int b, int result) {
 				System.out.println("主方法直接获取结果："+result);
 			}
+			public void testDefault() {
+				System.out.println("-----主类重写接口默认方法\n");
+			}
 		};
 		new SuperCalculator().add(11, 44, doJob);
+		
+		
+		//====接口有公用变量
+		System.out.println("接口公用变量为："+DoJob.i);
 	}
 }
