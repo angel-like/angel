@@ -20,9 +20,15 @@ public class Student {
 		public void fillBlank(int a, int b, int result) {
 			System.out.println(name + "求助小红计算:" + a + " + " + b + " = " + result);
 		}
-		
+		/*
+		 * 在不写@Override注解的情况下，当基类存在与子类各种条件都符合的方法时实现覆盖；
+		 * 如果条件不符合时，则是当成新定义的方法使用。
+		 * 覆盖基类方法时，最好还是写上@Override注解，这样有利于编译器帮助检查错误
+		 */
+		@Override//加不加注解不影响 都是重写父类方法
 		public void testDefault() {
-			System.out.println("-----小明重写接口默认方法\n");
+			 
+			System.out.println("-----小明重写接口默认方法(有加注解@Override)\n");
 		}
 	 }
 	 /**

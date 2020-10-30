@@ -5,6 +5,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.annotation.Configuration;
 
+import com.itheima.springboot.param.RequestParam;
+
 /**
  * 请描述类 <br>
  *
@@ -20,11 +22,11 @@ public class OpLogAspect {
     }
 
     //@Before("@annotation(opLog)") 这两个 注解  功能都一样 ，上面这个比较简洁
-    @Before("logPointCut() && @annotation(opLog)") //3.3 前置通知
-    public void before(OpLog opLog) {
+    @Before("logPointCut() && @annotation(opLog)  && args(param,..)") //3.3 前置通知
+    public void before(OpLog opLog,RequestParam param) { //可以获取传入的参数
         String value = opLog.value();
         long timout = opLog.timout();
-        System.out.println("字符串:"+value+"\n超时:"+timout);
+        System.out.println("字符串:"+value+"\n超时:"+timout+"\n参数:"+param.getAppkey());
     }
 
 }
