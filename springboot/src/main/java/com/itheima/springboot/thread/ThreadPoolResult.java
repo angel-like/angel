@@ -2,11 +2,7 @@ package com.itheima.springboot.thread;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Thread.join()：当前线程会立即被执行,其他所有的线程会被暂停执行.当这个线程执行完后,其他线程才会继续执行.
@@ -24,7 +20,8 @@ public class ThreadPoolResult {
 	 *  Executors.newFixedThreadPool()就是 ThreadPoolTest.class 里线程池的调用
 	 */
 	final static ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-	
+	ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 5, 3, TimeUnit.SECONDS,
+			new ArrayBlockingQueue<Runnable>(3), new ThreadPoolExecutor.CallerRunsPolicy());
 	public static void main(String[] args) throws Exception {
 		
 		//basic();// 初学者 测试
@@ -55,35 +52,33 @@ public class ThreadPoolResult {
 			total += futureTask.get(); // get() 方法会阻塞直到获得结果
 		}
 		System.out.println("累加的结果: " + total+"\r\n\r\n");
-		
-		lastMethod();
+		//futureTaskList.clear();//关闭线程池
+		ThreadPoolResult t=new ThreadPoolResult();
+		t.lastMethod();
 		
 	}
 	/**
 	 * 最终方法
 	 * @throws Exception
 	 */
-	public static void lastMethod() throws Exception {
+	public void lastMethod() throws Exception {
 		System.out.println("使用 最终方法  Callable 获得返回结果：");
-
-		//List<FutureTask<Integer>> futureTaskList = new ArrayList<>(10);
+		//1. 创建实现Callable接口的 类的实例集合
 		List<ThreadPoolResultCallable> taskList=new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			ThreadPoolResultCallable task = new ThreadPoolResultCallable(i, 2 * i);//(i * 10 + 1, (i + 1) * 10)
+			ThreadPoolResultCallable task = new ThreadPoolResultCallable(i, 2 * i);
 			taskList.add(task);
-			/*//1.通过一个 Callable<V> 任务或者一个 Runnable（一开始就指定 result）任务构造 FutureTask<V>
-			FutureTask<Integer> futureTask = new FutureTask<>(task);
-			futureTaskList.add(futureTask);
-			Thread worker = new Thread(futureTask, "慢速累加器线程" + i);
-			worker.start(); //2.将 FutureTask<V> 交给 Thread 去运行；  这里可以优化成 直接一整个list线程  交给线程池执行*/
 		}
+		//2.把类实例集合交给线程池运行
 		List<Future<Integer>> invokeAll = pool.invokeAll(taskList, 15000, TimeUnit.SECONDS);
+		//List<Future<Integer>> invokeAll = threadPool.invokeAll(taskList); //用这个也是可以的
 		int total = 0;
 		for (Future<Integer> future : invokeAll) {
 			//3.使用 FutureTask<V>的 get 方法（或者 Thread 的 join 方法）阻塞当前线程直到获得任务的结果。
 			total += future.get(); // get() 方法会阻塞直到获得结果
 		}
 		System.out.println(" 最终方法 累加的结果: " + total);
+		//pool.shutdown();//关闭线程池
 	}
 	/**
 	 * 使用Runnable 获取返回值 

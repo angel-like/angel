@@ -17,7 +17,7 @@ import com.itheima.springboot.param.RequestParam;
 @Aspect	//3.2 切面类
 @Configuration  //配置文件
 public class OpLogAspect {
-    @Pointcut("@annotation(com.ipukr.wants.cloud.manager.annnotation.OpLog)")//3.1  切入点
+    @Pointcut("@annotation(com.itheima.springboot.aspect.OpLog)")//3.1  切入点
     public void logPointCut() {
     }
 

@@ -77,9 +77,7 @@ public class StudyText {
         for(int a:list){
             System.out.println(a);
         }
-		
-		
 	}
-	
-	
+
+
 }
