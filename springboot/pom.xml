@@ -5,8 +5,8 @@
 	<artifactId>springboot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>springbootfirst</name>
-	<description>第二次编写springboo </description>
+	<name>springbootfirst</name> <!--右边项目名-->
+	<description>第二次编写springboot </description>
 
 	<parent><!-- 1.必须添加的父依赖 -->
 		<groupId>org.springframework.boot</groupId>
@@ -77,12 +77,26 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>1.8.13</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!-- cglib 动态代理 -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>5.2</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName><!--打包出来jar包名-->
 		<plugins>
-			<!-- 资源文件拷贝插件 -->
+			<!-- 资源文件拷贝插件 是处理将 主程序与 测试程序所需的源文件复制到输出编译文件夹中 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -90,7 +104,8 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<!-- java编译插件 -->
+			<!-- java编译插件 ，如果不指定 JDK 版本，maven-compiler-plugin 会自动使用一个默认的版本，该版本可能与你使用的 IDE 所使用的 JDK 版本不一致，
+				这种情况可能会导致代码无法通过 maven 的编译，例如：在 IDE 指定 JDK 1.8 ，coding 的时候使用了JDK 1.8 的特性，而 maven-compiler-plugin 默认的 JDK 版本为 1.5-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -99,7 +114,7 @@
 					<source>1.8</source><!-- 源代码使用的JDK版本 -->
 					<target>1.8</target><!-- 需要生成的目标class文件的编译版本 -->
 					<encoding>UTF-8</encoding><!-- 字符集编码 -->
-					<skipTests>true</skipTests><!-- 跳过测试 -->                                                                             
+					<!--skipTests>true</skipTests>< 跳过测试 -->
 			        <!-- <verbose>true</verbose>
 			        <showWarnings>true</showWarnings>                                                                                                               
 			        <fork>true</fork>要使compilerVersion标签生效，还需要将fork设为true，用于明确表示编译版本配置的可用 -->                                                        
