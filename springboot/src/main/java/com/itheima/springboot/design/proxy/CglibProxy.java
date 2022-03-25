@@ -1,4 +1,4 @@
-package com.itheima.springboot.proxy;
+package com.itheima.springboot.design.proxy;
 
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;

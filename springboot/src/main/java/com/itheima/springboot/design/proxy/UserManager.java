@@ -1,4 +1,4 @@
-package com.itheima.springboot.proxy;
+package com.itheima.springboot.design.proxy;
 
 public interface UserManager {
     public abstract Integer addUser(String userName,String password);

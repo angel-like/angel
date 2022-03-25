@@ -1,4 +1,4 @@
-package com.itheima.springboot.proxy;
+package com.itheima.springboot.design.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

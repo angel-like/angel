@@ -1,4 +1,4 @@
-package com.itheima.springboot.proxy;
+package com.itheima.springboot.design.proxy;
 
 public class UserManagerImpl implements UserManager{
     @Override
