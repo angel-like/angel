@@ -40,11 +40,11 @@ public class ThreadPoolTest {
 	public static void main(String[] args) {
 		// 构造一个线程池
 		/*
-		(1)corePoolSize： 线程池维护线程的最少数量 （core : 核心） 
-		(2)maximumPoolSize： 线程池维护线程的最大数量 
-		(3)keepAliveTime： 线程池维护线程所允许的空闲时间 
-		(4)unit： 线程池维护线程所允许的空闲时间的单位 
-		(5)workQueue： 线程池所使用的缓冲队列    -- 最后执行的几个线程
+		(1)corePoolSize： 线程池维护线程的最少数量 （core : 核心）
+		(2)maximumPoolSize： 线程池维护线程的最大数量    核心满了，工作队列也满了，才会创建的
+		(3)keepAliveTime： 线程池维护 最大线程 所允许的空闲时间
+		(4)unit： 线程池维护线程所允许的空闲  时间的单位
+		(5)workQueue： 线程池所使用的缓冲队列    -- 最后执行的几个线程   (FIFO先进先出队列、双端队列、阻塞队列)这里用的就是阻塞队列
 		(6)handler： 线程池对拒绝任务的处理策略
 		 */
 		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 4, 3, TimeUnit.SECONDS,
@@ -59,11 +59,30 @@ public class ThreadPoolTest {
 				// 便于观察，等待一段时间
 				Thread.sleep(produceTaskSleepTime);
 			} catch (Exception e) {
+				//最大线程4+队列3 =7个 所以后面3个抛异常
 				System.out.println("异常：<<<<<<" +i);
 			}
 		}
 		//关闭线程池 之后不能再调用了
-		//threadPool.shutdown();
+		threadPool.shutdown();
+		/*
+		ThreadPoolExecutor 里的
+			// 线程池中的运算重点    TODO   32位-> 前三位标识线程池状态，后29位标识线程池数量
+			1). private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));本质int类型的数  前三位标识线程池状态，后29位标识线程池数量
+			2). private static final int COUNT_BITS = Integer.SIZE - 3;			本质就是29，方便ctl做运算的常量
+			//线程池的最大容量
+    		3). private static final int CAPACITY   = (1 << COUNT_BITS) - 1;	线程池的最大容量 28个1组成
+    		//线程池状态
+    		4). private static final int RUNNING    = -1 << COUNT_BITS;   	111 正常运行
+    		5). private static final int SHUTDOWN   =  0 << COUNT_BITS;		000 线程池ShutDown，继续执行剩下的任务（未完成任务继续执行）
+    		6). private static final int STOP       =  1 << COUNT_BITS;		001 线程池ShutDownNow，并且所有任务中断
+    		7). private static final int TIDYING    =  2 << COUNT_BITS;		010 ShutDown或 ShutDownNow之后，任务都被处理完，到这个过渡状态
+    		8). private static final int TERMINATED =  3 << COUNT_BITS;		011	线程池停止 （TIDYING状态后就为了执行 TERMINATED线程终止）
+
+    		里面都是基于Worker（包含Thread thread 成员变量）类去 做start操作  ，放进HashSet<Worker> workers里  ,
+    		执行start()操作是 执行Worker里的run（）{ runWork(); }方法； 里面调用runWork();
+    		runWork() 里面才是调用真正任务的run方法
+		 */
 	}
 
 	/**
@@ -90,7 +109,15 @@ public class ThreadPoolTest {
 			}
 			//threadPoolTaskData = null;
 		}
-		
+		/**
+		 * 队列信息
+		 *  ArrayBlockingQueue ：一个由数组支持的有界队列。
+		 *  LinkedBlockingQueue ：一个由链接节点支持的可选有界队列。
+		 *  PriorityBlockingQueue ：一个由优先级堆支持的无界优先级队列。
+		 *  DelayQueue ：一个由优先级堆支持的、基于时间的调度队列。
+		 *  SynchronousQueue ：一个利用 BlockingQueue 接口的简单聚集（rendezvous）机制。
+		 */
+
 		/*private static final long serialVersionUID = 0;
 		// 保存任务所需要的数据
 		private Object threadPoolTaskData;

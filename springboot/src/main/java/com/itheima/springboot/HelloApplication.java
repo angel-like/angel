@@ -2,6 +2,7 @@ package com.itheima.springboot;
 
 import java.nio.charset.Charset;
 
+import com.itheima.springboot.aspect.OpLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -36,6 +38,7 @@ public class HelloApplication {
 	private ScheduleService scheduleService;
 	@RequestMapping("hello4")
     @ResponseBody
+    @OpLog(value ="454555")
 	public String hello4() {
 		scheduleService.hello4();//定时任务
 		return "success4";
