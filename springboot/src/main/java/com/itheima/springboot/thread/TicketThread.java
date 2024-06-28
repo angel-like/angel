@@ -56,7 +56,7 @@ public class TicketThread implements Runnable {
 
 	@SuppressWarnings("unused")
 	private synchronized void method() {
-		// 当火车票小于0开始售票
+		// 当火车票大于0开始售票
 		if (tickets > 0) {
 			/*
 			 * t1,t2,t3 假设只剩一张票 t1过来了，他一看有票，他就进来了，但是他突然肚子不舒服，然后他就去上卫生间了
@@ -79,7 +79,7 @@ public class TicketThread implements Runnable {
 	}
 	private static synchronized void method1() {
 		//静态方法随着类的加载而加载优先所有对象
-		// 当火车票小于0开始售票
+		// 当火车票大于0开始售票
 		if (tickets > 0) {
 			/*
 			 * t1,t2,t3 假设只剩一张票 t1过来了，他一看有票，他就进来了，但是他突然肚子不舒服，然后他就去上卫生间了

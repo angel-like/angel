@@ -1,5 +1,8 @@
 package com.itheima.springboot;
 
+import com.itheima.springboot.javaconfig.User;
+import org.springframework.util.CollectionUtils;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -8,11 +11,20 @@ import java.util.stream.Collectors;
  * @author <p>
  * Created by ljx on 2020-03-24.
  */
-public class StreamTest {
+public class
+StreamTest {
     public static void main(String[] args) throws IOException {
         /**java8中的stream使用*/
+        Integer a=1;
+        System.out.println("1".equals(a));//false
         List<Map<String, Object>> mapList = getMapList();
         System.out.println(mapList);
+        //0.流排序 （也可用字符串的时间格式去排序）
+        List<User> list=fetchUserList();
+        // 默认从小到大，，，reversed() 下即从大到小
+        List<User> sortList = list.stream().
+                sorted(Comparator.comparing(User::getAge).reversed()).
+                collect(Collectors.toList());
         //1.过滤函数 List.stream().filter()的使用（filter()里返回true或者false）
         List<Map<String, Object>> mapListFilter = mapList.stream().filter(stu -> stu.get("sex").equals("男")).collect(Collectors.toList());
         System.out.println(mapListFilter);
@@ -50,6 +62,20 @@ public class StreamTest {
         printPIC();
 
 
+    }
+
+    /**
+     * 判断集合是否为null
+     */
+    public void JudgeList(){
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        System.out.println(list); //list.size()==2　
+        CollectionUtils.isEmpty(list);//false
+        List<String> list2 =null;
+        CollectionUtils.isEmpty(list2);//true
+        CollectionUtils.isEmpty(new ArrayList<>());//true
     }
 
     //打印图片
@@ -100,5 +126,22 @@ public class StreamTest {
     }
     public void funMethod(Fun fun){
         fun.interfaceMethod("aaa");
+    }
+
+    private static List<User> fetchUserList() {
+        List<User> list=new ArrayList<>();
+        User user1=new User();
+        user1.setAge(50);
+        user1.setUsername("50岁人员");
+        User user2=new User();
+        user2.setAge(20);
+        user2.setUsername("20岁人员");
+        User user3=new User();
+        user3.setAge(40);
+        user3.setUsername("40岁人员");
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
+        return list;
     }
 }

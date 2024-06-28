@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 /**
  * 1.JDK动态代理机制能对 实现了接口的类(接口的实现类) 生成代理，而不是针对类（单纯的一个类就行）
  *      利用反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理         JDK是基于实现接口生成代理类
+ *      必须要有实现接口的类才行，没有的话报错java.lang.ClassCastException:
  * 2.CGLIB是 针对类(该类不需要实现接口) 实现代理，主要对指定的类生成一个子类，覆盖其中的方法，添加额外功能，
  *      因为是继承，所以该类方法不能用final来声明.            Cglib是基于继承父类生成的代理类.
  *
@@ -64,6 +65,10 @@ public class JdkProxy implements InvocationHandler {
         userManager.addUser("admin","123546");
         userManager.addUser("user","123546");
         userManager.delUser("123");
+
+        //报错
+        System.out.println("===============测试错误的代理，不实现接口的代理===============");
+        UserManagerAAAImpl userManager22 = (UserManagerAAAImpl)jdkProxy.getJdkProxy(new UserManagerAAAImpl());
     }
 
     /**

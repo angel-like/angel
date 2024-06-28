@@ -31,7 +31,7 @@ public class GuangZhouBankTest {
             ctr += ch =='0'?1:0;
         }
         System.out.println("第四题"+ctr);
-        //5.
+        //5.  <<表示二进制下，位数左移   1<<7 为2^7=128
         int n5=8;
         int sult=(n5*(n5+1)/2)*(1<<(n5-1));
         System.out.println(sult);//36*128=4608
