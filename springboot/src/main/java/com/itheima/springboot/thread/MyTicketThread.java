@@ -1,10 +1,10 @@
 package com.itheima.springboot.thread;
 
-public class MyThread extends Thread {
+public class MyTicketThread extends Thread {
 	private static Integer i = 100;
 	Object obj = new Object();
 	
-	public MyThread(Integer num){
+	public MyTicketThread(Integer num){
 		i=num;
 	}
 	@Override

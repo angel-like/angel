@@ -1,10 +1,13 @@
 package com.itheima.springboot;
 
+import com.google.common.base.Supplier;
 import com.itheima.springboot.javaconfig.User;
+import org.junit.Test;
 import org.springframework.util.CollectionUtils;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +63,14 @@ StreamTest {
         System.out.println("3.------------------------------------------------------------------------------------------------");
         //4.打印图片
         printPIC();
-
+        //5. ::双冒号的使用方式
+        Integer integer = StreamTest.listTest();
+        Callable<Integer> listTest = StreamTest::listTest;
+        try {
+            listTest.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -144,4 +154,30 @@ StreamTest {
         list.add(user3);
         return list;
     }
+
+    @Test
+    public static Integer listTest(){
+        List<User> usersList = fetchUserList();
+        for(User u:usersList){
+            //usersList.remove(u);//出现 java.util.ConcurrentModificationException
+        }
+        System.out.println(usersList);
+        //这样子程序有问题，会出现有些值无法全部删除 ，比如 i=2时，usersList.size()=1.就无法移除最后一个
+        for(int i=0;i<usersList.size();i++){
+            //usersList.remove(i);
+        }
+        System.out.println(usersList);
+
+        //这里会卡住，不知道为啥，视频里这么用时可以的
+        Iterator<User> iterator = usersList.iterator();
+        while(iterator.hasNext()); {
+            User value=iterator.next();
+           // usersList.remove(value);
+        }
+        System.out.println(usersList);
+        return null;
+    }
+
+
+
 }

@@ -9,7 +9,7 @@ public class WaitDemo {
 
 
     public static void main(String[] args) throws InterruptedException {
-
+        Integer a=0;
         // 新建两个线程 测试wait方法。
         new Thread(new Runnable() {
             public void run() {
@@ -38,10 +38,11 @@ public class WaitDemo {
                     //如果不调用这个方法，线程永远都是刮起的状态。
                     //WaitDemo.class.notify();
                     System.out.println("线程二结束了");
+                    lock.notify();
                 }
 
             }
         }).start();
-        lock.notify();
+        //lock.notify(); //写在这里是错误的 会抛异常 java.lang.IllegalMonitorStateException
     }
 }

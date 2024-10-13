@@ -39,6 +39,13 @@ public class StringTest {
         final String s7="a";
         String s8=s7+"b";
         System.out.println(s8==s3);//true
+
+        // int+字面量的Str
+        int number = 10;
+        String str = "Hello";
+        //Integer对象 +StringBuilder对象 +最后的String 对象
+        String result = number + str; // 自动装箱，可能创建一个Integer对象，然后执行字符串连接
+        System.out.println(result); // 输出"10Hello"
     }
     /**
      * 1.  体会执行效率：通过StringBuilder的append()的方式添加字符串的效率要远高于使用String的字符串拼接方式！
@@ -73,9 +80,10 @@ public class StringTest {
     @Test
     public void StringNewtest(){
         String s = new String("1");
-        s.intern();//调用此方法之前，字符串常量池中已经存在了"1"
+        String intern = s.intern();//调用此方法之前，字符串常量池中已经存在了"1"
         String s2 = "1";
         System.out.println(s == s2);//jdk6：false   jdk7/8：false
+        System.out.println(intern == s2);//true
 
         /*
          1、s3变量记录的地址为：new String("11")
@@ -92,6 +100,23 @@ public class StringTest {
         s3.intern();/**不会在常量池中生成11，则该方法会使常量池中的存放new String（"11"）堆中的地址  */
         String s4 = "11";//s4变量记录的地址：使用的是上一行代码代码执行时，在常量池中生成的"11"的地址
         System.out.println(s3 == s4);//jdk6：false  jdk7/8：true  我这边写在test里为false，放在main里为true
+
+        String a=new String("1");
+        String b=new String("1");
+        System.out.println("a == b");
+        System.out.println(a == b); //false
+        System.out.println(a.hashCode() == b.hashCode());//true
+
+        /**
+         * 池有则返回地址；
+         * 池中无则拷贝对象的引用地址放入池中并返回池中的引用地址
+         */
+        //String cccc="haaa"; 如果这里放开  aaaa=bbbb就为 false
+        String aaaa=new StringBuilder("ha").append("aa").toString();
+        String bbbb = aaaa.intern();
+        System.out.println("aaaa == bbbb");
+        System.out.println(aaaa == bbbb); //true
+        System.out.println(aaaa.hashCode() == bbbb.hashCode());//true
     }
     /**】
         Java堆中存活的数据集合差不多25%是String对象。更进一步，这里面差不多一半String对象是重复的，重复的意思是说：`str1.equals(str2)= true`。

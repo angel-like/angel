@@ -18,8 +18,10 @@ import java.util.concurrent.*;
 public class ThreadPoolResult {
 	/*Runtime.getRuntime().availableProcessors()  返回 jvm虚拟机可用核心数  :  获取处理器核数 
 	 *  Executors.newFixedThreadPool()就是 ThreadPoolTest.class 里线程池的调用
+	 * 	pool.execute(()->{}); 该方法是只执行一个线程
 	 */
 	final static ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+	final static ExecutorService pool2 = Executors.newCachedThreadPool();
 	ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 5, 3, TimeUnit.SECONDS,
 			new ArrayBlockingQueue<Runnable>(3), new ThreadPoolExecutor.CallerRunsPolicy());
 	public static void main(String[] args) throws Exception {
@@ -29,8 +31,8 @@ public class ThreadPoolResult {
 		
 		// 一、Runnable 获取返回结果 基本调用方式
 		//runnableMethod();
-		
-		
+
+		int i1 = Runtime.getRuntime().availableProcessors();
 		// 二、：使用 Callable<V> 和 FutureTask<V> 进阶方式
 		
 		System.out.println("使用 Callable 获得返回结果：");
@@ -52,10 +54,11 @@ public class ThreadPoolResult {
 			total += futureTask.get(); // get() 方法会阻塞直到获得结果
 		}
 		System.out.println("累加的结果: " + total+"\r\n\r\n");
-		//futureTaskList.clear();//关闭线程池
-		ThreadPoolResult t=new ThreadPoolResult();
-		t.lastMethod();
-		
+		//futureTaskList.clear();//关闭线程池，这里不是关闭线程池，不加这行也能运行结束
+		//ThreadPoolResult t=new ThreadPoolResult();
+		//t.lastMethod();
+		Future<?> submit = pool.submit(() -> {
+		});
 	}
 	/**
 	 * 最终方法
@@ -74,11 +77,16 @@ public class ThreadPoolResult {
 		//List<Future<Integer>> invokeAll = threadPool.invokeAll(taskList); //用这个也是可以的
 		int total = 0;
 		for (Future<Integer> future : invokeAll) {
+			//自旋锁，可以不阻塞线程，但是耗费cpu资源 (这里在线程池那里就阻塞了，这里一直都是完成的状态)
+			while(!future.isDone()){ //如果线程没完成，就一直执行while循环
+				System.out.println("线程等待");
+			}
 			//3.使用 FutureTask<V>的 get 方法（或者 Thread 的 join 方法）阻塞当前线程直到获得任务的结果。
 			total += future.get(); // get() 方法会阻塞直到获得结果
 		}
 		System.out.println(" 最终方法 累加的结果: " + total);
-		//pool.shutdown();//关闭线程池
+		pool.awaitTermination(500,TimeUnit.SECONDS);
+		pool.shutdown();//关闭线程池
 	}
 	/**
 	 * 使用Runnable 获取返回值 
@@ -114,7 +122,7 @@ public class ThreadPoolResult {
 	}
 
 	public static void basic() throws Exception {
-		MyThread tt = new MyThread(100);// △△△只能有一个 共享一个参数
+		MyTicketThread tt = new MyTicketThread(100);// △△△只能有一个 共享一个参数
 		Thread t1 = new Thread(tt, "窗口1");
 		// t1.setName("窗口1");
 		Thread t2 = new Thread(tt);
