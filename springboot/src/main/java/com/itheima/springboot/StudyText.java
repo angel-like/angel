@@ -6,6 +6,9 @@ import java.util.List;
 
 public class StudyText {
 	public static void main(String[] args) {
+		String[] s22 =new String[0];//有地址值，里面元素为0
+		//String ar=s22[0];//这里会报错ArrayIndexOutOfBoundsException: 0
+		String[] s23=null;//null的值
 		String s="C:\\n盘";		//     \代表转义符，\\n代表\n   ,  \n代表着换行
 		String s1="\\n";
 		String s2="\\\\n";

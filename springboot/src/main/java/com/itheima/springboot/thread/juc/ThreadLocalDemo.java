@@ -15,8 +15,9 @@ public class ThreadLocalDemo {
             saleTotal++;
         }
 
-        //初始化参数为0
+        //成员变量 初始化参数为0
         ThreadLocal<Integer> salePersonal=ThreadLocal.withInitial(()->0);
+
         //每个线程都会初始化一个salePersonal参数=0的，代表自己卖出的车辆信息
         public void salePersonal(){
             salePersonal.set(1+salePersonal.get());
