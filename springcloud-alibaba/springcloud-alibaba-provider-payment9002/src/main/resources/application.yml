@@ -1,0 +1,18 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: nacos-payment-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址
+        #server-addr: www.lxiaol.cn:1111   # ip:port nginx配置的负载均衡 代理的 nacos的集群地址
+
+#端口暴漏
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
