@@ -57,6 +57,11 @@ public class ListThreadDemo {
                 demo.readSync(String.valueOf(tem));
             },"线程:"+i).start();
         }
+        try {
+            TimeUnit.MILLISECONDS.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     class MyCache{

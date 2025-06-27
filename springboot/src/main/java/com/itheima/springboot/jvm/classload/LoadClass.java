@@ -19,7 +19,7 @@ public class LoadClass {
     public void loadClass() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         ClassLoader classLoader1 = Thread.currentThread().getContextClassLoader();
 
-        ClassLoader classLoader2 = ClassLoader.getSystemClassLoader();
+        ClassLoader classLoader2 = ClassLoader.getSystemClassLoader();//不会执行类的初始化clinit()方法
         ClassLoader classLoader3 = Class.forName("com.itheima.springboot.jvm.classload.LoadClass").getClassLoader();
 
         Class<?> aClass1 = classLoader1.loadClass("com.itheima.springboot.callback.Student");

@@ -104,7 +104,7 @@ public class CompletableFutureDemo{
             }
             System.out.println("睡两秒出结果：" + res);
         });
-        //这里不执行get不会打印 "睡两秒出结果" + res 语句，因为main线程关闭，所以导致后面的不执行
+        //这里不执行get不会打印 "睡两秒出结果" + res 语句，因为main线程关闭，所以导致后面的不执行,用线程池可以避免
         completableFuture.get();
     }
 }

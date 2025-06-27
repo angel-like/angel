@@ -54,7 +54,7 @@ public class JavaDemoImplPowerTest {
      */
     @Test
     public void newTest2() throws Exception {
-        //mock 方法里new 出来的对象
+        //mock 方法里new 出来的对象    注意类上要加@PrepareForTest({JavaDemoImpl.class})
         File file = PowerMockito.mock(File.class);
         PowerMockito.whenNew(File.class).withAnyArguments().thenReturn(file);
         PowerMockito.doReturn(true).when(file, "exist");
