@@ -6,7 +6,6 @@
 **/.metadata
 **/.recommenders
 **/.class
-/springboot/.idea
 **/.idea/**
 **.iml
 **.log
