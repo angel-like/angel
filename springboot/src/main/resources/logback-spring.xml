@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- 定义日志文件的存储路径 -->
+    <property name="LOG_HOME" value="logs"/>
+    <!-- 定义日志文件名 ,默认当前项目地址下的logs    D:\project\angel\springboot\logs-->
+    <property name="LOG_FILE_NAME" value="application.log"/>
+    <!-- 定义日志文件的最大历史记录天数 -->
+    <property name="LOG_MAX_HISTORY" value="365"/>
+    <!-- 定义日志文件的最大大小 -->
+    <property name="LOG_MAX_FILE_SIZE" value="10MB"/>
+    <!-- 定义日志文件的总大小上限 -->
+    <property name="LOG_TOTAL_SIZE_CAP" value="10GB"/>
+    <!-- 定义日志格式 -->
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][%X{traceId}]  %-5level- %logger{20} -[%method,%line] - %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${LOG_FILE_NAME}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${LOG_MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${LOG_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 根日志级别设置为INFO，并添加控制台和文件输出 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- 配置特定包的日志级别 -->
+    <logger name="org.springframework.web" level="debug"/>
+    <logger name="com.itheima.springboot" level="TRACE"/>
+</configuration>
