@@ -34,6 +34,7 @@ public class XssFilter implements Filter {
         //1. 根据不同的请求获取 请求参数
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             StringBuilder stringBuilder = new StringBuilder();
+            //request.getInputStream() 只能执行一次，所以后续post方法会失败，徐需要换成
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
@@ -63,7 +64,7 @@ public class XssFilter implements Filter {
         HttpServletResponse response=(HttpServletResponse)servletResponse;
         response.setHeader(MDCUtils.TRACE_ID_KEY, traceId);
         //3. 打印请求日志信息
-        log.info("接口调用前日志：{}，请求参数：{}" , request.getRequestURL(),requestParams);
+        log.info(" 接口调用前日志：{}，请求参数：{}" , request.getRequestURL(),requestParams);
 
         filterChain.doFilter(request,response);
         long time=System.currentTimeMillis()-startTime;

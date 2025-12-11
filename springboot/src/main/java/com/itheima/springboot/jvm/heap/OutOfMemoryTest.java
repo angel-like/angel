@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * -verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseSerialGC -Xloggc:./logs/gc.log
+ * -XX:+PrintGC与-verbose:gc  [GC (Allocation Failure)  61805K->9849K(256000K), 0.0041139 secs]
+ *  打印简略信息      堆大小     栈空间大小      打印GC详情           Eden占10分8     使用Serial垃圾回收器   日志放在当前项目log目录下   控制台(打印)命令行相关参数(log里没有也会打)
+ * -verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseSerialGC -Xloggc:./logs/gc.log  -XX:+PrintCommandLineFlags
  *         GC产生原因                年轻代                           堆大小                     时间
  * [GC (Allocation Failure) [PSYoungGen: 17857K->2555K(17920K)] 27791K->27873K(58880K), 0.0040476 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
  *                                 年轻代                           老年代                                堆大小                     元空间
@@ -25,7 +27,7 @@ public class OutOfMemoryTest {
         ArrayList<Picture> list=new ArrayList();
         while (true){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10);
                 list.add(new Picture(new Random().nextInt(100*1024)));
                 System.out.println(++count);
             }catch (Exception e){

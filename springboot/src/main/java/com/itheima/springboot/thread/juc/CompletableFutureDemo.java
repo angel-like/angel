@@ -115,7 +115,7 @@ public class CompletableFutureDemo{
     }
 
     /**
-     * CompletableFuture异步处理多个不同任务并获取返回值
+     * CompletableFuture异步处理多个不同任务并获取返回值 (多线程获取返回结果，不同的任务返回结果)
      */
     @Test
     public void fetcManyResult(){

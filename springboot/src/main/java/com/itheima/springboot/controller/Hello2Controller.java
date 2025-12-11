@@ -1,22 +1,19 @@
 package com.itheima.springboot.controller;
 
 import com.itheima.springboot.config.filter.MDCUtils;
+import com.itheima.springboot.test.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
-@Controller
+@RestController
 public class Hello2Controller {
 
     @Autowired
@@ -27,6 +24,16 @@ public class Hello2Controller {
     public String hello() {
         fetchSameTaskResult();
         return "hello2 world！第二个！";
+    }
+
+    /**
+     * 增加日志打印后
+     * @param stu
+     * @return
+     */
+    @PostMapping("hello3")
+    public String hello3(@RequestBody Student stu) {
+        return "hello3 world！第三个！"+stu.getName();
     }
 
 

@@ -5,10 +5,10 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Vector;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -184,7 +184,7 @@ public class FileUtil {
     }
 
     /**
-     *
+     * 根据 文件 或者 文件夹  压缩文件
      * @param file  文件路径对象
      * @param zipOutputStream zip流信息
      * @param baseDir 基本路径
@@ -260,6 +260,102 @@ public class FileUtil {
             System.out.println("");
             return null;
         }
-
     }
+
+    /**
+     * 写出txt文件
+     * @param fullPathFileNameTxt   带全路径的文件名 +有后缀名
+     * @param strList   要写出的字符串信息
+     */
+    public void generateTxt(String fullPathFileNameTxt, List<String> strList){
+        FileOutputStream fos =null;
+        OutputStreamWriter osw=null;
+        BufferedWriter bw=null;
+        try {
+            fos=new FileOutputStream(fullPathFileNameTxt);
+            osw=new OutputStreamWriter(fos,"UTF-8");
+            bw=new BufferedWriter(osw);
+            for(String str:strList){
+                bw.write(str);
+                bw.newLine();
+            }
+        }catch (Exception e){
+            System.out.println("写出txt文件异常："+e);
+            throw new RuntimeException(e);
+        }finally {
+            if (bw!=null){
+                try {
+                    bw.close();
+                }catch (IOException e){
+                    System.out.println("关闭BufferedWriter的IO流异常："+e);
+                }
+            }
+            if (osw!=null){
+                try {
+                    osw.close();
+                }catch (IOException e){
+                    System.out.println("关闭OutputStreamWriter的IO流异常："+e);
+                }
+            }
+            if (fos!=null){
+                try {
+                    fos.close();
+                }catch (IOException e){
+                    System.out.println("关闭FileOutputStream的IO流异常："+e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 带全路径的文件名 +有后缀名
+     *   file.deleteOnExit();方法 在虚拟机终止时删除指定的文件或目录
+     *   注意不会立即删除文件，而是将删除请求缓存起来，直到JVM正常终止时才会执行删除操作
+     */
+    public Boolean delFileTxt(String fullPathFileNameTxt){
+        File file=new File(fullPathFileNameTxt);
+        if(file.exists()){
+            boolean flag = file.delete();
+            System.out.println("删除"+fullPathFileNameTxt+"文件："+flag);
+            return flag;
+        }else {
+            System.out.println(fullPathFileNameTxt+"文件不存在，无需删除：");
+        }
+        return true;
+    }
+
+
+    /**
+     * 对两个文件进行硬链接  ，window里为复制文件，但在linux系统里为 ln命令
+     * @param fileExistPath   已经存在的 文件路径
+     * @param filLinkPath   要转移的 文件路径
+     * @param fileName   文件名
+     * @return
+     */
+    public Boolean linkFile(String fileExistPath ,String filLinkPath,String fileName) {
+        try {
+            // 源文件路径（即源文件的路径，要复制的文件的路径）
+            Path sourcePath = Paths.get(fileExistPath + fileName);
+            // 检查源文件是否存在
+            if (!Files.exists(sourcePath)) {
+                System.err.println("源文件不存在: " + sourcePath);
+                return false;
+            }
+            // 目标文件路径（即硬链接的路径）
+            Path linkPath = Paths.get(filLinkPath + fileName);
+            // 创建硬链接
+            Path link = Files.createLink(linkPath, sourcePath);
+            System.out.println("创建硬链接成功：" + link.toString());
+        } catch (IOException e) {
+            System.err.println("创建硬链接时发生IO错误: " + e.getMessage());
+        } catch (UnsupportedOperationException e) {
+            System.err.println("当前文件系统不支持硬链接: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("创建硬链接异常：" + e);
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+
 }

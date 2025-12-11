@@ -21,6 +21,11 @@ public class OpLogAspect {
     public void logPointCut() {
     }
 
+    /**
+     * 注解无效解决方式
+     * 启动类加上： @EnableAspectJAutoProxy
+     * 依赖加上： aspectjrt、aspectjweaver
+     */
     //@Before("@annotation(opLog)") 这两个 注解  功能都一样 ，上面这个比较简洁
     @Before("logPointCut() && @annotation(opLog)  && args(param,..)") //3.3 前置通知
     public void before(OpLog opLog,RequestParam param) { //可以获取传入的参数

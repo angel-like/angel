@@ -9,9 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,6 +24,8 @@ import com.itheima.springboot.service.ScheduleService;
 @Controller  //扫描当前包以及子包下的service ，所以扫描不到外面的包
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class})//排除redis的自动配置//RedisAutoConfiguration.class ,
 @Configuration
+@EnableAspectJAutoProxy
+@ComponentScan("com.itheima.springboot")
 public class HelloApplication {
 
     @RequestMapping("hello")//路径直接http://localhost:8080/hello   不要写项目名
