@@ -2,6 +2,7 @@ package com.itheima.springboot.utils;
 
 import cn.hutool.core.text.StrBuilder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -36,6 +37,7 @@ public class FileUtil {
         BufferedReader reader= null;
         String line;
         try {
+            //如果 是MultipartFile file，就直接  file.getInputStream()传进去替换new FileInputStream(file)
             reader=new BufferedReader(new InputStreamReader(new FileInputStream(file),charset));
             while ((line=reader.readLine())!=null){
                 //读取时，每一行拆分就用 System.lineSeparator()标识来区分

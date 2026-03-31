@@ -3,6 +3,7 @@ package com.itheima.springboot;
 import java.nio.charset.Charset;
 
 import com.itheima.springboot.aspect.OpLog;
+import com.itheima.springboot.config.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringApplication;
@@ -28,6 +29,9 @@ import com.itheima.springboot.service.ScheduleService;
 @ComponentScan("com.itheima.springboot")
 public class HelloApplication {
 
+    @Autowired
+    AppProperties appProperties;
+
     @RequestMapping("hello")//路径直接http://localhost:8080/hello   不要写项目名
     @ResponseBody
     public String hello() {
@@ -40,7 +44,9 @@ public class HelloApplication {
     @ResponseBody
     @OpLog(value ="454555")
 	public String hello4() {
-		scheduleService.hello4();//定时任务
+        String name = appProperties.getName();
+        System.out.println(name);
+        scheduleService.hello4();//定时任务
 		return "success4";
 	}
 	

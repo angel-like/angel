@@ -56,5 +56,24 @@ public class ThreadLocalDemo {
     }
 
 
+    // ThreadLocal：互不影响
+    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
+    // InheritableThreadLocal：子线程能继承父线程的值
+    private static final InheritableThreadLocal<String> inheritableThreadLocal = new InheritableThreadLocal<>();
+    @Test
+    public void inheritableThreadLocalTest() throws InterruptedException {
+        threadLocal.set("父线程的值");
+        inheritableThreadLocal.set("父线程的值");
+        Thread child = new Thread(() -> {
+            // 结果：ThreadLocal 为 null，InheritableThreadLocal 为 "父线程的值"
+            System.out.println("ThreadLocal: " + threadLocal.get());
+            System.out.println("InheritableThreadLocal: " + inheritableThreadLocal.get());
+        });
+        child.start();
+        child.join();
 
+        // 清理（防止内存泄漏）
+        threadLocal.remove();
+        inheritableThreadLocal.remove();
+    }
 }

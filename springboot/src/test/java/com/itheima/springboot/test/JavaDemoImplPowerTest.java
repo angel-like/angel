@@ -1,21 +1,33 @@
 package com.itheima.springboot.test;
 
 import cn.hutool.log.Log;
+import com.itheima.springboot.utils.EasyExcelUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Multipart;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -31,6 +43,11 @@ public class JavaDemoImplPowerTest {
     @Mock
     private JavaDemoDao dao;
 
+    /**
+     * 这里时junit4版本的单侧，
+     * junit5版本单测改为@BeforeEach。同时@Test 依赖包也修改为
+     *  org.junit.iupiter.api.BeforeEach 和 org.junit.iupiter.api.test
+     */
     @Before
     public void setup() throws Exception {
         //isNull() 可以用在匹配null值
@@ -201,4 +218,35 @@ public class JavaDemoImplPowerTest {
         //PowerMockito.field(javaDemoImpl.getClass(),"logField");
 
     }
+
+    /**
+     * 7.1  MultipartFile的导入单元测试
+     */
+    @Test
+    public void otherTest() throws Exception {
+        //这里用 Mockito.mock()也是一样
+        HttpServletRequest req=PowerMockito.mock(HttpServletRequest.class);
+        //MultipartFile的流式mock
+        MultipartFile file=PowerMockito.mock(MultipartFile.class);
+        InputStream inputStream=new ByteArrayInputStream("需要的数据".getBytes(StandardCharsets.UTF_8));
+        PowerMockito.when(file.getInputStream()).thenReturn(inputStream);
+    }
+
+    /**
+     * 7.2 通用导出单元测试
+     * @throws Exception
+     */
+    @Test
+    public void otherTest2() throws Exception {
+        //1.HttpServletResponse的mock
+        HttpServletResponse res=PowerMockito.mock(HttpServletResponse.class);
+        ServletOutputStream servletOutputStream=PowerMockito.mock(ServletOutputStream.class);
+        PowerMockito.when(res.getOutputStream()).thenReturn(servletOutputStream);
+        //2调用要覆盖的方法
+        List<Object> list=new ArrayList<>();
+        EasyExcelUtils.writeLine(res,"导出",list,Object.class);
+        //3.断言
+        Mockito.verify(res,Mockito.times(1)).getOutputStream();
+    }
+
 }
