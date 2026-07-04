@@ -1,0 +1,1 @@
+讲一个关于{topic}的故事，并以{output_format}格式输出。
