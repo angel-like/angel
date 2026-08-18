@@ -15,7 +15,7 @@
 		<springcloud.version>Greenwich.RELEASE</springcloud.version>
 		<mybatis-plus.version>2.1.8</mybatis-plus.version>
 		<mybatis-plus3.version>3.1.1</mybatis-plus3.version>
-		<fastjson.version>1.2.58</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<kaptcha.version>0.0.9</kaptcha.version>
 		<jbcrypt.version>0.4</jbcrypt.version>
 		<druid.version>1.1.17</druid.version>
